@@ -33,27 +33,22 @@ app.get('/api/applicant/status', async (c) => {
 
     if (email) {
       result = await sql`
-        SELECT id, email, name, nationality, phone, 
-               stage1_completed, stage2_completed, stage3_completed,
-               created_at
+        SELECT *
         FROM applicants 
         WHERE LOWER(email) = LOWER(${email})
         LIMIT 1;
       `;
     } else if (phone) {
-      // Sanitize phone digits (extract numbers only, e.g. 0812345678 -> 812345678)
       const cleanPhone = phone.replace(/\D/g, '');
       const phoneTail = cleanPhone.length >= 8 ? cleanPhone.slice(-8) : cleanPhone;
       const firstName = name ? name.split(' ')[0].trim() : '';
 
       if (firstName) {
         result = await sql`
-          SELECT id, email, name, nationality, phone, 
-                 stage1_completed, stage2_completed, stage3_completed,
-                 created_at
+          SELECT *
           FROM applicants 
           WHERE (
-            REGEXP_REPLACE(phone, '[^0-9]', '', 'g') LIKE ${'%' + phoneTail}
+            REGEXP_REPLACE(COALESCE(phone, ''), '[^0-9]', '', 'g') LIKE ${'%' + phoneTail}
             OR phone = ${phone}
           )
           AND (
@@ -66,12 +61,10 @@ app.get('/api/applicant/status', async (c) => {
 
       if (result.length === 0) {
         result = await sql`
-          SELECT id, email, name, nationality, phone, 
-                 stage1_completed, stage2_completed, stage3_completed,
-                 created_at
+          SELECT *
           FROM applicants 
           WHERE (
-            REGEXP_REPLACE(phone, '[^0-9]', '', 'g') LIKE ${'%' + phoneTail}
+            REGEXP_REPLACE(COALESCE(phone, ''), '[^0-9]', '', 'g') LIKE ${'%' + phoneTail}
             OR phone = ${phone}
           )
           ORDER BY updated_at DESC
@@ -94,12 +87,16 @@ app.get('/api/applicant/status', async (c) => {
 
     const appRecord = result[0];
 
-    // Fetch latest known prefill data
+    // Prefill data for all forms
     let prefill: Record<string, any> = {
       email: appRecord.email,
       name: appRecord.name,
       nationality: appRecord.nationality,
-      phone: appRecord.phone
+      phone: appRecord.phone,
+      country: appRecord.country,
+      university: appRecord.university,
+      major: appRecord.major,
+      bachelor_degree: appRecord.s1_bachelor_degree
     };
 
     return c.json({
@@ -118,7 +115,7 @@ app.get('/api/applicant/status', async (c) => {
   }
 });
 
-// 2. Submit Stage 1 (Interested / Lead)
+// 2. Submit Stage 1 (Interested / Lead) -> Update into Single Table
 app.post('/api/submit/stage1', async (c) => {
   const body = await c.req.json();
   const email = body.email?.trim().toLowerCase();
@@ -129,51 +126,45 @@ app.post('/api/submit/stage1', async (c) => {
 
   const sql = getDb(c);
   try {
-    // 1. Upsert into applicants table
-    const applicantResult = await sql`
+    const result = await sql`
       INSERT INTO applicants (
-        email, name, nationality, 
+        email, name, nationality, country, university,
         stage1_completed, stage1_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
+        s1_bachelor_degree, s1_apply_intent, s1_req_readiness,
+        s1_heard_from, s1_heard_other, s1_suggestion_process, s1_suggestion_openhouse, s1_consent_pdpa,
         updated_at
       ) VALUES (
-        ${email}, ${body.name || ''}, ${body.nationality || ''},
+        ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''}, ${body.university || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
+        ${body.bachelor_degree || ''}, ${body.apply_intent || ''}, ${JSON.stringify(body.req_readiness || {})},
+        ${JSON.stringify(body.heard_from || [])}, ${body.heard_other || ''}, ${body.suggestion_process || ''}, ${body.suggestion_openhouse || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
         nationality = COALESCE(NULLIF(EXCLUDED.nationality, ''), applicants.nationality),
+        country = COALESCE(NULLIF(EXCLUDED.country, ''), applicants.country),
+        university = COALESCE(NULLIF(EXCLUDED.university, ''), applicants.university),
         stage1_completed = true,
         stage1_completed_at = COALESCE(applicants.stage1_completed_at, CURRENT_TIMESTAMP),
+        s1_bachelor_degree = COALESCE(NULLIF(EXCLUDED.s1_bachelor_degree, ''), applicants.s1_bachelor_degree),
+        s1_apply_intent = COALESCE(NULLIF(EXCLUDED.s1_apply_intent, ''), applicants.s1_apply_intent),
+        s1_req_readiness = EXCLUDED.s1_req_readiness,
+        s1_heard_from = EXCLUDED.s1_heard_from,
+        s1_heard_other = EXCLUDED.s1_heard_other,
+        s1_suggestion_process = EXCLUDED.s1_suggestion_process,
+        s1_suggestion_openhouse = EXCLUDED.s1_suggestion_openhouse,
+        s1_consent_pdpa = EXCLUDED.s1_consent_pdpa,
         updated_at = CURRENT_TIMESTAMP
-      RETURNING id, email, name, stage1_completed, stage2_completed, stage3_completed;
-    `;
-
-    const applicant = applicantResult[0];
-
-    // 2. Insert into form1_interested record
-    await sql`
-      INSERT INTO form1_interested (
-        applicant_id, email, name, nationality, country,
-        bachelor_degree, university, apply_intent,
-        req_readiness, heard_from, heard_other,
-        suggestion_process, suggestion_openhouse, consent_pdpa,
-        utm_data
-      ) VALUES (
-        ${applicant.id}, ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''},
-        ${body.bachelor_degree || ''}, ${body.university || ''}, ${body.apply_intent || ''},
-        ${JSON.stringify(body.req_readiness || {})}, ${JSON.stringify(body.heard_from || [])}, ${body.heard_other || ''},
-        ${body.suggestion_process || ''}, ${body.suggestion_openhouse || ''}, ${body.consent_pdpa !== false},
-        ${JSON.stringify(body.utm_data || {})}
-      );
+      RETURNING *;
     `;
 
     return c.json({
       success: true,
-      message: 'Stage 1 application submitted successfully',
-      applicant
+      message: 'Stage 1 saved to master profile',
+      applicant: result[0]
     });
   } catch (err: any) {
     console.error('Error submitting Stage 1:', err);
@@ -181,7 +172,7 @@ app.post('/api/submit/stage1', async (c) => {
   }
 });
 
-// 3. Submit Stage 2 (Open House)
+// 3. Submit Stage 2 (Open House) -> Update into Single Table
 app.post('/api/submit/stage2', async (c) => {
   const body = await c.req.json();
   const email = body.email?.trim().toLowerCase();
@@ -192,48 +183,44 @@ app.post('/api/submit/stage2', async (c) => {
 
   const sql = getDb(c);
   try {
-    // 1. Upsert into applicants table
-    const applicantResult = await sql`
+    const result = await sql`
       INSERT INTO applicants (
-        email, name, nationality, phone,
+        email, name, nationality, phone, university, major,
         stage2_completed, stage2_completed_at,
+        s2_recipient_group, s2_education_level, s2_year_of_study, s2_apply_intent,
+        s2_attend_mode, s2_session_choice, s2_comments, s2_consent_pdpa,
         updated_at
       ) VALUES (
-        ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''},
+        ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''}, ${body.university || ''}, ${body.major || ''},
         true, CURRENT_TIMESTAMP,
+        ${body.recipient_group || ''}, ${body.education_level || ''}, ${body.year_of_study || ''}, ${body.apply_intent || ''},
+        ${body.attend_mode || ''}, ${body.session_choice || ''}, ${body.comments || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
         nationality = COALESCE(NULLIF(EXCLUDED.nationality, ''), applicants.nationality),
         phone = COALESCE(NULLIF(EXCLUDED.phone, ''), applicants.phone),
+        university = COALESCE(NULLIF(EXCLUDED.university, ''), applicants.university),
+        major = COALESCE(NULLIF(EXCLUDED.major, ''), applicants.major),
         stage2_completed = true,
         stage2_completed_at = COALESCE(applicants.stage2_completed_at, CURRENT_TIMESTAMP),
+        s2_recipient_group = EXCLUDED.s2_recipient_group,
+        s2_education_level = EXCLUDED.s2_education_level,
+        s2_year_of_study = EXCLUDED.s2_year_of_study,
+        s2_apply_intent = EXCLUDED.s2_apply_intent,
+        s2_attend_mode = EXCLUDED.s2_attend_mode,
+        s2_session_choice = EXCLUDED.s2_session_choice,
+        s2_comments = EXCLUDED.s2_comments,
+        s2_consent_pdpa = EXCLUDED.s2_consent_pdpa,
         updated_at = CURRENT_TIMESTAMP
-      RETURNING id, email, name, stage1_completed, stage2_completed, stage3_completed;
-    `;
-
-    const applicant = applicantResult[0];
-
-    // 2. Insert into form2_openhouse
-    await sql`
-      INSERT INTO form2_openhouse (
-        applicant_id, email, name, nationality, phone,
-        recipient_group, education_level, year_of_study, university, major,
-        apply_intent, heard_from, attend_mode, session_choice,
-        comments, consent_pdpa, utm_data
-      ) VALUES (
-        ${applicant.id}, ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''},
-        ${body.recipient_group || ''}, ${body.education_level || ''}, ${body.year_of_study || ''}, ${body.university || ''}, ${body.major || ''},
-        ${body.apply_intent || ''}, ${JSON.stringify(body.heard_from || [])}, ${body.attend_mode || ''}, ${body.session_choice || ''},
-        ${body.comments || ''}, ${body.consent_pdpa !== false}, ${JSON.stringify(body.utm_data || {})}
-      );
+      RETURNING *;
     `;
 
     return c.json({
       success: true,
-      message: 'Stage 2 Open House registration submitted successfully',
-      applicant
+      message: 'Stage 2 Open House saved to master profile',
+      applicant: result[0]
     });
   } catch (err: any) {
     console.error('Error submitting Stage 2:', err);
@@ -241,7 +228,7 @@ app.post('/api/submit/stage2', async (c) => {
   }
 });
 
-// 4. Submit Stage 3 (Applicant Survey)
+// 4. Submit Stage 3 (Applicant Survey) -> Update into Single Table
 app.post('/api/submit/stage3', async (c) => {
   const body = await c.req.json();
   const email = body.email?.trim().toLowerCase();
@@ -252,48 +239,46 @@ app.post('/api/submit/stage3', async (c) => {
 
   const sql = getDb(c);
   try {
-    // 1. Upsert into applicants table
-    const applicantResult = await sql`
+    const result = await sql`
       INSERT INTO applicants (
         email, name,
         stage3_completed, stage3_completed_at,
+        s3_applied_status, s3_gender, s3_age, s3_region,
+        s3_schools_rank, s3_destination_rank, s3_future_location, s3_postgrad_plan,
+        s3_decision_factors_30, s3_first_choice, s3_why_cumedi, s3_consent_pdpa,
         updated_at
       ) VALUES (
         ${email}, ${body.name || ''},
         true, CURRENT_TIMESTAMP,
+        ${body.applied_status || ''}, ${body.gender || ''}, ${body.age ? parseInt(body.age) : null}, ${body.region || ''},
+        ${JSON.stringify(body.schools_rank || {})}, ${JSON.stringify(body.destination_rank || {})}, ${body.future_location || ''}, ${body.postgrad_plan || ''},
+        ${JSON.stringify(body.decision_factors_30 || {})}, ${body.first_choice || ''}, ${body.why_cumedi || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
         stage3_completed = true,
         stage3_completed_at = COALESCE(applicants.stage3_completed_at, CURRENT_TIMESTAMP),
+        s3_applied_status = EXCLUDED.s3_applied_status,
+        s3_gender = EXCLUDED.s3_gender,
+        s3_age = EXCLUDED.s3_age,
+        s3_region = EXCLUDED.s3_region,
+        s3_schools_rank = EXCLUDED.s3_schools_rank,
+        s3_destination_rank = EXCLUDED.s3_destination_rank,
+        s3_future_location = EXCLUDED.s3_future_location,
+        s3_postgrad_plan = EXCLUDED.s3_postgrad_plan,
+        s3_decision_factors_30 = EXCLUDED.s3_decision_factors_30,
+        s3_first_choice = EXCLUDED.s3_first_choice,
+        s3_why_cumedi = EXCLUDED.s3_why_cumedi,
+        s3_consent_pdpa = EXCLUDED.s3_consent_pdpa,
         updated_at = CURRENT_TIMESTAMP
-      RETURNING id, email, name, stage1_completed, stage2_completed, stage3_completed;
-    `;
-
-    const applicant = applicantResult[0];
-
-    // 2. Insert into form3_survey
-    await sql`
-      INSERT INTO form3_survey (
-        applicant_id, email, name, applied_status, req_readiness,
-        gender, age, education_level, major, university, region,
-        schools_rank, destination_rank, future_location, postgrad_plan,
-        decision_factors_30, first_choice, why_cumedi, consent_pdpa,
-        utm_data
-      ) VALUES (
-        ${applicant.id}, ${email}, ${body.name || ''}, ${body.applied_status || ''}, ${JSON.stringify(body.req_readiness || {})},
-        ${body.gender || ''}, ${body.age ? parseInt(body.age) : null}, ${body.education_level || ''}, ${body.major || ''}, ${body.university || ''}, ${body.region || ''},
-        ${JSON.stringify(body.schools_rank || {})}, ${JSON.stringify(body.destination_rank || {})}, ${body.future_location || ''}, ${body.postgrad_plan || ''},
-        ${JSON.stringify(body.decision_factors_30 || {})}, ${body.first_choice || ''}, ${body.why_cumedi || ''}, ${body.consent_pdpa !== false},
-        ${JSON.stringify(body.utm_data || {})}
-      );
+      RETURNING *;
     `;
 
     return c.json({
       success: true,
-      message: 'Stage 3 Applicant Survey submitted successfully',
-      applicant
+      message: 'Stage 3 Survey saved to master profile',
+      applicant: result[0]
     });
   } catch (err: any) {
     console.error('Error submitting Stage 3:', err);
@@ -301,7 +286,7 @@ app.post('/api/submit/stage3', async (c) => {
   }
 });
 
-// 5. Admin Stats & Summary
+// 5. Admin Stats & Summary (from single table)
 app.get('/api/stats', async (c) => {
   const sql = getDb(c);
   try {
@@ -310,7 +295,7 @@ app.get('/api/stats', async (c) => {
     const stage2Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage2_completed = true;`;
     const stage3Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage3_completed = true;`;
     const recent = await sql`
-      SELECT email, name, stage1_completed, stage2_completed, stage3_completed, updated_at 
+      SELECT id, email, name, phone, stage1_completed, stage2_completed, stage3_completed, updated_at 
       FROM applicants 
       ORDER BY updated_at DESC 
       LIMIT 10;

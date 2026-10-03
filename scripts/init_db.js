@@ -7,6 +7,15 @@ const databaseUrl = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_N
 async function initDb() {
   console.log("Connecting to Neon PostgreSQL...");
   const sql = neon(databaseUrl);
+
+  // Drop old tables to migrate cleanly to Single Master Table
+  try {
+    await sql.query("DROP TABLE IF EXISTS form1_interested, form2_openhouse, form3_survey, applicants CASCADE;");
+    console.log("Old tables dropped cleanly.");
+  } catch (err) {
+    console.error("Drop error:", err.message);
+  }
+
   const schema = fs.readFileSync(path.join(process.cwd(), 'schema.sql'), 'utf-8');
   
   const statements = schema
@@ -22,7 +31,7 @@ async function initDb() {
       console.error("Error executing statement:", err.message);
     }
   }
-  console.log("All tables created successfully!");
+  console.log("Single Master Table 'applicants' initialized successfully!");
 }
 
 initDb();
