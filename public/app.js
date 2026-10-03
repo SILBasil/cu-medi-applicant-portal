@@ -39,10 +39,21 @@ const GROUP3_FACTORS = [
 ];
 
 let factorRatings = {};
-let currentApplicantEmail = "";
-let currentApplicantData = null;
+let currentStage = 1;
+let verifiedApplicant = null;
 
-// UTM Parameters Capture
+// Determine active stage from URL Path or Query parameter
+function detectStage() {
+  const path = window.location.pathname.toLowerCase();
+  const params = new URLSearchParams(window.location.search);
+  const qStage = parseInt(params.get('stage'));
+
+  if (path.includes('/openhouse') || qStage === 2) return 2;
+  if (path.includes('/survey') || qStage === 3) return 3;
+  return 1; // default to stage 1 (/interested or /)
+}
+
+// Get UTM Parameters
 function getUTMParams() {
   const params = new URLSearchParams(window.location.search);
   return {
@@ -54,25 +65,24 @@ function getUTMParams() {
   };
 }
 
-// Show Toast Message
+// Show Toast
 function showToast(msg, isSuccess = true) {
   const toast = document.getElementById('toast');
+  if (!toast) return;
   toast.textContent = msg;
   toast.style.background = isSuccess ? '#10b981' : '#ef4444';
   toast.style.display = 'block';
-  setTimeout(() => {
-    toast.style.display = 'none';
-  }, 4000);
+  setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
 
-// Render 30 Decision Factor Grid
+// Render 30 Decision Factor Scale
 function renderFactors() {
   const renderList = (factors, containerId, prefix) => {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = factors.map((f, idx) => {
       const factorKey = `${prefix}_${idx + 1}`;
-      factorRatings[factorKey] = 3; // default rating
+      factorRatings[factorKey] = 3;
       return `
         <div class="factor-item">
           <div class="factor-name">${idx + 1}. ${f}</div>
@@ -101,121 +111,165 @@ window.selectFactor = function(key, val, el) {
   el.classList.add('active');
 };
 
-// Switch Stage Tab
-window.switchStage = function(stageNum) {
-  document.querySelectorAll('.form-card').forEach(el => el.style.display = 'none');
-  document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
+// Setup Titles based on active stage
+function setupStageHeader() {
+  const title = document.getElementById('header-stage-title');
+  const gateTitle = document.getElementById('gate-title');
+  const gateDesc = document.getElementById('gate-desc');
 
-  const formCard = document.getElementById(`form-stage-${stageNum}`);
-  const stepBtn = document.getElementById(`step-btn-${stageNum}`);
-
-  if (formCard) formCard.style.display = 'block';
-  if (stepBtn) stepBtn.classList.add('active');
-
-  // Update URL search param
-  const url = new URL(window.location);
-  url.searchParams.set('stage', stageNum);
-  window.history.pushState({}, '', url);
-
-  // If we have an active applicant, prefill fields
-  if (currentApplicantData && currentApplicantData.prefill) {
-    prefillFormFields(currentApplicantData.prefill);
+  if (currentStage === 1) {
+    if (title) title.textContent = "CU-MEDi 2027 Admissions (Stage 1: Lead)";
+    if (gateTitle) gateTitle.textContent = "Sign up for CU-MEDi 2027 Updates";
+    if (gateDesc) gateDesc.textContent = "Enter your email to start your application journey and receive admission reminders.";
+  } else if (currentStage === 2) {
+    if (title) title.textContent = "CU-MEDi Open House Registration (Stage 2)";
+    if (gateTitle) gateTitle.textContent = "Open House Registration Verification";
+    if (gateDesc) gateDesc.textContent = "Enter your email to register for the Open House or link to your existing applicant profile.";
+  } else if (currentStage === 3) {
+    if (title) title.textContent = "CU-MEDi Applicant Survey (Stage 3)";
+    if (gateTitle) gateTitle.textContent = "Applicant Survey Verification";
+    if (gateDesc) gateDesc.textContent = "Enter your email to verify your application and complete the 30 decision factors survey.";
   }
-};
-
-// Prefill form inputs
-function prefillFormFields(prefill) {
-  ['form1', 'form2', 'form3'].forEach(formId => {
-    const form = document.getElementById(formId);
-    if (!form) return;
-    if (prefill.email && form.elements['email']) form.elements['email'].value = prefill.email;
-    if (prefill.name && form.elements['name']) form.elements['name'].value = prefill.name;
-    if (prefill.nationality && form.elements['nationality']) form.elements['nationality'].value = prefill.nationality;
-    if (prefill.phone && form.elements['phone']) form.elements['phone'].value = prefill.phone;
-  });
 }
 
-// Update Step Tracker Visuals
-function updateTrackerUI(status) {
-  const badge1 = document.getElementById('badge-1');
-  const badge2 = document.getElementById('badge-2');
-  const badge3 = document.getElementById('badge-3');
+// Prefill form inputs with existing data
+function prefillData(prefill) {
+  if (!prefill) return;
 
-  const step1 = document.getElementById('step-btn-1');
-  const step2 = document.getElementById('step-btn-2');
-  const step3 = document.getElementById('step-btn-3');
-
-  const txt1 = document.getElementById('status-text-1');
-  const txt2 = document.getElementById('status-text-2');
-  const txt3 = document.getElementById('status-text-3');
-
-  if (status.stage1_completed) {
-    step1.classList.add('completed');
-    badge1.innerHTML = '✓';
-    txt1.textContent = 'Completed';
-  }
-  if (status.stage2_completed) {
-    step2.classList.add('completed');
-    badge2.innerHTML = '✓';
-    txt2.textContent = 'Completed';
-  }
-  if (status.stage3_completed) {
-    step3.classList.add('completed');
-    badge3.innerHTML = '✓';
-    txt3.textContent = 'Completed';
+  // Prefill Form 1
+  if (currentStage === 1) {
+    const f1 = document.getElementById('form1');
+    if (f1) {
+      if (prefill.email) {
+        document.getElementById('f1-email').value = prefill.email;
+        document.getElementById('f1-email-display').value = prefill.email;
+      }
+      if (prefill.name && f1.elements['name']) f1.elements['name'].value = prefill.name;
+      if (prefill.nationality && f1.elements['nationality']) f1.elements['nationality'].value = prefill.nationality;
+      if (prefill.country && f1.elements['country']) f1.elements['country'].value = prefill.country;
+      if (prefill.university && f1.elements['university']) f1.elements['university'].value = prefill.university;
+      if (prefill.bachelor_degree && f1.elements['bachelor_degree']) f1.elements['bachelor_degree'].value = prefill.bachelor_degree;
+    }
   }
 
-  // Show user pill in header
-  if (status.email) {
-    const pill = document.getElementById('user-pill');
-    const display = document.getElementById('user-email-display');
-    if (pill && display) {
-      display.textContent = `👤 ${status.email}`;
-      pill.style.display = 'block';
+  // Prefill Form 2
+  if (currentStage === 2) {
+    const f2 = document.getElementById('form2');
+    if (f2) {
+      if (prefill.email) {
+        document.getElementById('f2-email').value = prefill.email;
+        document.getElementById('f2-email-display').value = prefill.email;
+      }
+      if (prefill.name) document.getElementById('f2-name').value = prefill.name;
+      if (prefill.nationality) document.getElementById('f2-nationality').value = prefill.nationality;
+      if (prefill.phone) document.getElementById('f2-phone').value = prefill.phone;
+      if (prefill.university && document.getElementById('f2-university')) document.getElementById('f2-university').value = prefill.university;
+      if (prefill.major && document.getElementById('f2-major')) document.getElementById('f2-major').value = prefill.major;
+    }
+  }
+
+  // Prefill Form 3
+  if (currentStage === 3) {
+    const f3 = document.getElementById('form3');
+    if (f3) {
+      if (prefill.email) {
+        document.getElementById('f3-email').value = prefill.email;
+        document.getElementById('f3-email-display').value = prefill.email;
+      }
+      if (prefill.name) document.getElementById('f3-name').value = prefill.name;
+      if (prefill.nationality && document.getElementById('f3-nationality')) document.getElementById('f3-nationality').value = prefill.nationality;
+      if (prefill.phone && document.getElementById('f3-phone')) document.getElementById('f3-phone').value = prefill.phone;
+      if (prefill.university && document.getElementById('f3-university')) document.getElementById('f3-university').value = prefill.university;
     }
   }
 }
 
-// Check Email or Phone Status
-async function checkApplicant(params) {
+// Verification Gate Action
+async function verifyAndProceed(params) {
   let url = '/api/applicant/status?';
   if (params.email) url += `email=${encodeURIComponent(params.email)}`;
   else if (params.phone) url += `phone=${encodeURIComponent(params.phone)}&name=${encodeURIComponent(params.name || '')}`;
   else return;
 
+  const btn = params.email ? document.getElementById('btn-gate-verify') : document.getElementById('btn-gate-verify-phone');
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Verifying...';
+  }
+
   try {
     const res = await fetch(url);
     const data = await res.json();
+    verifiedApplicant = data;
 
-    if (data.exists) {
-      currentApplicantEmail = data.email;
-      currentApplicantData = data;
-      updateTrackerUI(data);
-      prefillFormFields(data.prefill);
-      showToast(`Welcome back, ${data.name || data.email}! Profile loaded.`);
+    const emailUsed = data.email || params.email;
 
-      // Auto guide to next uncompleted stage
-      if (!data.stage1_completed) switchStage(1);
-      else if (!data.stage2_completed) switchStage(2);
-      else if (!data.stage3_completed) switchStage(3);
-    } else {
-      showToast('No prior record found. You can start fresh!', true);
-      if (params.email) prefillFormFields({ email: params.email });
-      if (params.phone) prefillFormFields({ phone: params.phone, name: params.name });
+    // Check if this specific stage is ALREADY COMPLETED
+    let isAlreadyDone = false;
+    if (currentStage === 1 && data.stage1_completed) isAlreadyDone = true;
+    if (currentStage === 2 && data.stage2_completed) isAlreadyDone = true;
+    if (currentStage === 3 && data.stage3_completed) isAlreadyDone = true;
+
+    if (isAlreadyDone) {
+      document.getElementById('verification-gate').style.display = 'none';
+      const doneCard = document.getElementById('already-completed-card');
+      const doneText = document.getElementById('already-completed-text');
+      if (doneText) {
+        doneText.textContent = `You have already submitted this Stage ${currentStage} form for ${emailUsed}. Your responses are saved in the system.`;
+      }
+      if (doneCard) doneCard.style.display = 'block';
+      return;
     }
+
+    // Otherwise, unlock the current stage form!
+    document.getElementById('verification-gate').style.display = 'none';
+    const formCard = document.getElementById(`form-stage-${currentStage}`);
+    if (formCard) formCard.style.display = 'block';
+
+    // Show verified pill in header
+    const pill = document.getElementById('verified-user-pill');
+    const pillText = document.getElementById('verified-email-text');
+    if (pill && pillText) {
+      pillText.textContent = `✓ ${emailUsed}`;
+      pill.style.display = 'block';
+    }
+
+    // Handle New vs Existing Applicant
+    const isNew = !data.exists;
+    const notice = document.getElementById('new-applicant-notice');
+
+    if (isNew && currentStage > 1) {
+      if (notice) notice.style.display = 'block';
+      if (currentStage === 2) document.getElementById('f2-extra-fields').style.display = 'block';
+      if (currentStage === 3) document.getElementById('f3-extra-fields').style.display = 'block';
+      prefillData({ email: emailUsed, phone: params.phone, name: params.name });
+    } else {
+      if (notice) notice.style.display = 'none';
+      prefillData(data.prefill || { email: emailUsed });
+      showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
+    }
+
   } catch (err) {
-    console.error('Error checking applicant:', err);
+    console.error('Error verifying applicant:', err);
+    showToast('Failed to verify. Please try again.', false);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = 'Verify & Continue →';
+    }
   }
 }
 
-// Setup Event Listeners & Form Submissions
+// DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
+  currentStage = detectStage();
+  setupStageHeader();
   renderFactors();
 
-  // Search mode toggle (Email vs Phone)
-  const toggleBtn = document.getElementById('toggle-search-mode');
-  const emailBox = document.getElementById('email-mode-box');
-  const phoneBox = document.getElementById('phone-mode-box');
+  // Mode Toggle (Email vs Phone)
+  const toggleBtn = document.getElementById('gate-toggle-mode');
+  const emailBox = document.getElementById('gate-email-box');
+  const phoneBox = document.getElementById('gate-phone-box');
   let isPhoneMode = false;
 
   if (toggleBtn && emailBox && phoneBox) {
@@ -224,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (isPhoneMode) {
         emailBox.style.display = 'none';
         phoneBox.style.display = 'flex';
-        toggleBtn.textContent = 'Switch back to search by Email';
+        toggleBtn.textContent = 'Switch back to Email verification';
       } else {
         emailBox.style.display = 'flex';
         phoneBox.style.display = 'none';
@@ -233,34 +287,38 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Handle URL Stage / Query params
+  // Gate Verify Buttons
+  const btnVerifyEmail = document.getElementById('btn-gate-verify');
+  if (btnVerifyEmail) {
+    btnVerifyEmail.addEventListener('click', () => {
+      const email = document.getElementById('gate-email-input').value.trim();
+      if (!email) {
+        showToast('Please enter a valid email address', false);
+        return;
+      }
+      verifyAndProceed({ email });
+    });
+  }
+
+  const btnVerifyPhone = document.getElementById('btn-gate-verify-phone');
+  if (btnVerifyPhone) {
+    btnVerifyPhone.addEventListener('click', () => {
+      const phone = document.getElementById('gate-phone-input').value.trim();
+      const name = document.getElementById('gate-name-input').value.trim();
+      if (!phone) {
+        showToast('Please enter your phone number', false);
+        return;
+      }
+      verifyAndProceed({ phone, name });
+    });
+  }
+
+  // Auto trigger if email is in URL
   const params = new URLSearchParams(window.location.search);
-  const initialStage = parseInt(params.get('stage')) || 1;
-  const initialEmail = params.get('email');
-
-  switchStage(initialStage);
-
-  if (initialEmail) {
-    document.getElementById('email-checker').value = initialEmail;
-    checkApplicant({ email: initialEmail });
-  }
-
-  // Check buttons
-  const btnCheckEmail = document.getElementById('btn-check-email');
-  if (btnCheckEmail) {
-    btnCheckEmail.addEventListener('click', () => {
-      const email = document.getElementById('email-checker').value.trim();
-      if (email) checkApplicant({ email });
-    });
-  }
-
-  const btnCheckPhone = document.getElementById('btn-check-phone');
-  if (btnCheckPhone) {
-    btnCheckPhone.addEventListener('click', () => {
-      const phone = document.getElementById('phone-checker').value.trim();
-      const name = document.getElementById('name-checker').value.trim();
-      if (phone) checkApplicant({ phone, name });
-    });
+  const urlEmail = params.get('email');
+  if (urlEmail) {
+    document.getElementById('gate-email-input').value = urlEmail;
+    verifyAndProceed({ email: urlEmail });
   }
 
   // Attend mode toggle for Open House Session
@@ -274,7 +332,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================
-  // Form 1 Submit (Stage 1: Lead / Interested)
+  // Form 1 Submit (Stage 1: Lead)
   // ==========================================
   const form1 = document.getElementById('form1');
   if (form1) {
@@ -289,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const utm = getUTMParams();
 
       const payload = {
-        email: formData.get('email'),
+        email: document.getElementById('f1-email').value,
         name: formData.get('name'),
         nationality: formData.get('nationality'),
         country: formData.get('country'),
@@ -318,9 +376,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await res.json();
 
         if (res.ok) {
-          showToast('Stage 1 submitted! Proceeding to Stage 2...');
-          await checkEmail(payload.email);
-          setTimeout(() => switchStage(2), 1200);
+          form1.style.display = 'none';
+          showToast('Stage 1 submitted successfully! Thank you.');
+          const doneCard = document.getElementById('already-completed-card');
+          const doneText = document.getElementById('already-completed-text');
+          if (doneText) doneText.textContent = "Thank you for registering your interest in CU-MEDi 2027. We have recorded your preferences.";
+          if (doneCard) doneCard.style.display = 'block';
         } else {
           showToast(result.error || 'Submission failed', false);
         }
@@ -348,15 +409,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const utm = getUTMParams();
 
       const payload = {
-        email: formData.get('email'),
+        email: document.getElementById('f2-email').value,
         name: formData.get('name'),
         nationality: formData.get('nationality'),
         phone: formData.get('phone'),
+        university: formData.get('university') || '',
+        major: formData.get('major') || '',
         recipient_group: formData.get('recipient_group'),
         education_level: formData.get('education_level'),
         year_of_study: formData.get('year_of_study'),
-        university: formData.get('university'),
-        major: formData.get('major'),
         apply_intent: formData.get('apply_intent'),
         attend_mode: formData.get('attend_mode'),
         session_choice: formData.get('session_choice'),
@@ -374,9 +435,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await res.json();
 
         if (res.ok) {
-          showToast('Open House registration successful! Proceeding to Stage 3...');
-          await checkEmail(payload.email);
-          setTimeout(() => switchStage(3), 1200);
+          form2.style.display = 'none';
+          showToast('Open House registration completed! See you at the event.');
+          const doneCard = document.getElementById('already-completed-card');
+          const doneText = document.getElementById('already-completed-text');
+          if (doneText) doneText.textContent = "Your registration for CU-MEDi Open House has been confirmed. A confirmation has been registered to your profile.";
+          if (doneCard) doneCard.style.display = 'block';
         } else {
           showToast(result.error || 'Submission failed', false);
         }
@@ -404,8 +468,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const utm = getUTMParams();
 
       const payload = {
-        email: formData.get('email'),
+        email: document.getElementById('f3-email').value,
         name: formData.get('name'),
+        nationality: formData.get('nationality') || '',
+        phone: formData.get('phone') || '',
+        university: formData.get('university') || '',
         applied_status: formData.get('applied_status'),
         gender: formData.get('gender'),
         age: formData.get('age'),
@@ -432,8 +499,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await res.json();
 
         if (res.ok) {
-          showToast('🎉 All 3 Stages Completed! Thank you for your feedback.', true);
-          await checkEmail(payload.email);
+          form3.style.display = 'none';
+          showToast('Thank you! Your survey responses have been submitted.');
+          const doneCard = document.getElementById('already-completed-card');
+          const doneText = document.getElementById('already-completed-text');
+          if (doneText) doneText.textContent = "Thank you for completing the CU-MEDi Applicant Survey. Your feedback is invaluable to our curriculum development.";
+          if (doneCard) doneCard.style.display = 'block';
         } else {
           showToast(result.error || 'Submission failed', false);
         }

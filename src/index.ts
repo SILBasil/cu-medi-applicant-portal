@@ -11,6 +11,20 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', cors());
 
+// Helper to serve index.html for SPA routes
+const serveIndex = async (c: any) => {
+  if (c.env?.ASSETS) {
+    const url = new URL('/index.html', c.req.url);
+    return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw));
+  }
+  return c.text('Not found', 404);
+};
+
+app.get('/interested', serveIndex);
+app.get('/openhouse', serveIndex);
+app.get('/survey', serveIndex);
+app.get('/portal', serveIndex);
+
 // Helper to get Neon SQL client
 const getDb = (c: any) => {
   const dbUrl = c.env?.DATABASE_URL || "postgresql://neondb_owner:npg_N0ErUm5Bnxko@ep-hidden-truth-b37brfql-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?sslmode=require";
