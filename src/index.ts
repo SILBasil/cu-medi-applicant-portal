@@ -95,7 +95,11 @@ app.get('/api/applicant/status', async (c) => {
         stage1_completed: false,
         stage2_completed: false,
         stage3_completed: false,
-        prefill: {}
+        prefill: {
+          email: email || '',
+          phone: phone || '',
+          name: name || ''
+        }
       });
     }
 

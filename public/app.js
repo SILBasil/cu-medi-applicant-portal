@@ -136,14 +136,20 @@ function setupStageHeader() {
 function prefillData(prefill) {
   if (!prefill) return;
 
+  const emailVal = prefill.email || verifiedApplicant?.email || '';
+
+  // Always bind email fields
+  ['f1', 'f2', 'f3'].forEach(fId => {
+    const hidden = document.getElementById(`${fId}-email`);
+    const display = document.getElementById(`${fId}-email-display`);
+    if (hidden && emailVal) hidden.value = emailVal;
+    if (display && emailVal) display.value = emailVal;
+  });
+
   // Prefill Form 1
   if (currentStage === 1) {
     const f1 = document.getElementById('form1');
     if (f1) {
-      if (prefill.email) {
-        document.getElementById('f1-email').value = prefill.email;
-        document.getElementById('f1-email-display').value = prefill.email;
-      }
       if (prefill.name && f1.elements['name']) f1.elements['name'].value = prefill.name;
       if (prefill.nationality && f1.elements['nationality']) f1.elements['nationality'].value = prefill.nationality;
       if (prefill.country && f1.elements['country']) f1.elements['country'].value = prefill.country;
@@ -156,10 +162,6 @@ function prefillData(prefill) {
   if (currentStage === 2) {
     const f2 = document.getElementById('form2');
     if (f2) {
-      if (prefill.email) {
-        document.getElementById('f2-email').value = prefill.email;
-        document.getElementById('f2-email-display').value = prefill.email;
-      }
       if (prefill.name) document.getElementById('f2-name').value = prefill.name;
       if (prefill.nationality) document.getElementById('f2-nationality').value = prefill.nationality;
       if (prefill.phone) document.getElementById('f2-phone').value = prefill.phone;
@@ -172,10 +174,6 @@ function prefillData(prefill) {
   if (currentStage === 3) {
     const f3 = document.getElementById('form3');
     if (f3) {
-      if (prefill.email) {
-        document.getElementById('f3-email').value = prefill.email;
-        document.getElementById('f3-email-display').value = prefill.email;
-      }
       if (prefill.name) document.getElementById('f3-name').value = prefill.name;
       if (prefill.nationality && document.getElementById('f3-nationality')) document.getElementById('f3-nationality').value = prefill.nationality;
       if (prefill.phone && document.getElementById('f3-phone')) document.getElementById('f3-phone').value = prefill.phone;
@@ -202,7 +200,7 @@ async function verifyAndProceed(params) {
     const data = await res.json();
     verifiedApplicant = data;
 
-    const emailUsed = data.email || params.email;
+    const emailUsed = data.email || params.email || '';
 
     // Check if this specific stage is ALREADY COMPLETED
     let isAlreadyDone = false;
@@ -229,10 +227,18 @@ async function verifyAndProceed(params) {
     // Show verified pill in header
     const pill = document.getElementById('verified-user-pill');
     const pillText = document.getElementById('verified-email-text');
-    if (pill && pillText) {
+    if (pill && pillText && emailUsed) {
       pillText.textContent = `✓ ${emailUsed}`;
       pill.style.display = 'block';
     }
+
+    // Explicitly populate email inputs in all forms
+    ['f1', 'f2', 'f3'].forEach(fId => {
+      const hidden = document.getElementById(`${fId}-email`);
+      const display = document.getElementById(`${fId}-email-display`);
+      if (hidden) hidden.value = emailUsed;
+      if (display) display.value = emailUsed;
+    });
 
     // Handle New vs Existing Applicant
     const isNew = !data.exists;
@@ -245,8 +251,11 @@ async function verifyAndProceed(params) {
       prefillData({ email: emailUsed, phone: params.phone, name: params.name });
     } else {
       if (notice) notice.style.display = 'none';
-      prefillData(data.prefill || { email: emailUsed });
-      showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
+      const mergedPrefill = Object.assign({ email: emailUsed }, data.prefill || {});
+      prefillData(mergedPrefill);
+      if (!isNew) {
+        showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
+      }
     }
 
   } catch (err) {
