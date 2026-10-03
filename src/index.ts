@@ -41,26 +41,39 @@ app.get('/api/applicant/status', async (c) => {
         LIMIT 1;
       `;
     } else if (phone) {
-      // Lookup by phone (and optionally name matching)
-      if (name) {
+      // Sanitize phone digits (extract numbers only, e.g. 0812345678 -> 812345678)
+      const cleanPhone = phone.replace(/\D/g, '');
+      const phoneTail = cleanPhone.length >= 8 ? cleanPhone.slice(-8) : cleanPhone;
+      const firstName = name ? name.split(' ')[0].trim() : '';
+
+      if (firstName) {
         result = await sql`
           SELECT id, email, name, nationality, phone, 
                  stage1_completed, stage2_completed, stage3_completed,
                  created_at
           FROM applicants 
-          WHERE (phone = ${phone} OR phone LIKE ${'%' + phone.slice(-8)})
-            AND (name ILIKE ${'%' + name + '%'})
+          WHERE (
+            REGEXP_REPLACE(phone, '[^0-9]', '', 'g') LIKE ${'%' + phoneTail}
+            OR phone = ${phone}
+          )
+          AND (
+            name ILIKE ${'%' + firstName + '%'}
+          )
           ORDER BY updated_at DESC
           LIMIT 1;
         `;
       }
+
       if (result.length === 0) {
         result = await sql`
           SELECT id, email, name, nationality, phone, 
                  stage1_completed, stage2_completed, stage3_completed,
                  created_at
           FROM applicants 
-          WHERE (phone = ${phone} OR phone LIKE ${'%' + phone.slice(-8)})
+          WHERE (
+            REGEXP_REPLACE(phone, '[^0-9]', '', 'g') LIKE ${'%' + phoneTail}
+            OR phone = ${phone}
+          )
           ORDER BY updated_at DESC
           LIMIT 1;
         `;
