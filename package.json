@@ -1,0 +1,16 @@
+{
+  "name": "cu-medi-applicant-portal",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@neon/config": "^1.8.3",
+    "@neon/env": "^1.5.0",
+    "@neondatabase/serverless": "^1.2.0",
+    "hono": "^4.13.12",
+    "wrangler": "^4.147.0"
+  }
+}

@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CU-MEDi Applicant Portal · Chulalongkorn University</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo-group">
+        <div class="brand-badge">CU-MEDi</div>
+        <div class="brand-text">
+          <h1>CU-MEDi Applicant Portal</h1>
+          <p>Faculty of Medicine, Chulalongkorn University</p>
+        </div>
+      </div>
+      <div id="user-pill" style="display: none; font-size: 0.85rem; background: var(--surface-subtle); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--border);">
+        <span id="user-email-display" style="font-weight: 600; color: var(--navy);"></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- Stepper Tracker & Verification Card -->
+    <div class="stepper-card">
+      <div class="stepper-header">
+        <div>
+          <h2>Applicant Journey Progress</h2>
+          <p style="font-size: 0.825rem; color: var(--text-muted);">Enter your email to verify status or switch between stages</p>
+        </div>
+        <div class="email-check-box">
+          <input type="email" id="email-checker" placeholder="Enter your email to check progress..." required>
+          <button type="button" id="btn-check-email">Check</button>
+        </div>
+      </div>
+
+      <div class="steps-row">
+        <!-- Stage 1 -->
+        <div class="step-item active" id="step-btn-1" onclick="switchStage(1)">
+          <div class="step-badge" id="badge-1">01</div>
+          <div class="step-info">
+            <h4>Interested (Lead)</h4>
+            <p id="status-text-1">Active Stage</p>
+          </div>
+        </div>
+
+        <!-- Stage 2 -->
+        <div class="step-item" id="step-btn-2" onclick="switchStage(2)">
+          <div class="step-badge" id="badge-2">02</div>
+          <div class="step-info">
+            <h4>Open House</h4>
+            <p id="status-text-2">Pre-registration</p>
+          </div>
+        </div>
+
+        <!-- Stage 3 -->
+        <div class="step-item" id="step-btn-3" onclick="switchStage(3)">
+          <div class="step-badge" id="badge-3">03</div>
+          <div class="step-info">
+            <h4>Applicant Survey</h4>
+            <p id="status-text-3">Decision Factors</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- STAGE 1: FORM 1 (INTERESTED / LEAD)           -->
+    <!-- ============================================== -->
+    <div class="form-card" id="form-stage-1">
+      <div class="form-intro">
+        <span class="form-tag">Stage 01 · Lead Capture</span>
+        <h3>The CU-MEDi Applications for 2027</h3>
+        <p>Sign up to get updates on the 2027 admission round. Learn more at <a href="https://cu-medi.md.chula.ac.th" target="_blank" style="color: var(--primary);">cu-medi.md.chula.ac.th</a>. <i>Remark: this portal is not an official application process, but a reminder to ensure requirements are complete.</i></p>
+      </div>
+
+      <form id="form1">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Email address <span class="req">*</span></label>
+            <input type="email" name="email" class="form-input" placeholder="e.g. yourname@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-input" placeholder="e.g. John Doe">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Nationality <span class="req">*</span></label>
+            <input type="text" name="nationality" class="form-input" placeholder="e.g. Thai, American, Singaporean" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Current Address (Country)</label>
+            <input type="text" name="country" class="form-input" placeholder="e.g. Thailand">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Bachelor's Degree</label>
+            <input type="text" name="bachelor_degree" class="form-input" placeholder="e.g. B.Sc. in Biomedical Sciences">
+          </div>
+          <div class="form-group">
+            <label class="form-label">University / Institution</label>
+            <input type="text" name="university" class="form-input" placeholder="e.g. Chulalongkorn University">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Will you apply for CU-MEDi 2027 admission? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Yes" required> Yes</label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="No"> No</label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Maybe"> Maybe</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">2027 Admission Requirements Readiness <span class="req">*</span></label>
+          <div style="background: var(--surface-subtle); padding: 12px; border-radius: 8px; font-size: 0.875rem;">
+            <div style="margin-bottom: 10px;">
+              <b>1. MCAT score report:</b><br>
+              <label><input type="radio" name="req_mcat" value="Done" required> Done</label> &nbsp;&nbsp;
+              <label><input type="radio" name="req_mcat" value="Tentative Date"> Tentative Date</label> &nbsp;&nbsp;
+              <label><input type="radio" name="req_mcat" value="Not Done"> Not Done</label>
+            </div>
+            <div style="margin-bottom: 10px;">
+              <b>2. English proficiency result:</b><br>
+              <label><input type="radio" name="req_eng" value="Done" required> Done</label> &nbsp;&nbsp;
+              <label><input type="radio" name="req_eng" value="Tentative Date"> Tentative Date</label> &nbsp;&nbsp;
+              <label><input type="radio" name="req_eng" value="Not Done"> Not Done</label>
+            </div>
+            <div>
+              <b>3. Bachelor's degree status:</b><br>
+              <label><input type="radio" name="req_degree" value="Done" required> Completed</label> &nbsp;&nbsp;
+              <label><input type="radio" name="req_degree" value="Tentative Date"> Expected Graduating</label> &nbsp;&nbsp;
+              <label><input type="radio" name="req_degree" value="Not Done"> Studying</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">How did you know the CU-MEDi program? <span class="req">*</span></label>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="CU-MEDi Website, Facebook, Roadshow"> CU-MEDi Website, Facebook, Roadshow</label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Faculty of Medicine sources"> Faculty of Medicine sources</label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Chulalongkorn University Open House"> Chulalongkorn University Open House</label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Social media and personal referrals"> Social media and personal referrals</label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Other"> Other</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">For other sources, please specify</label>
+          <input type="text" name="heard_other" class="form-input" placeholder="Please specify if Other">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Suggestion for the CU-MEDi application process</label>
+          <textarea name="suggestion_process" class="form-textarea" rows="2" placeholder="Any suggestions..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Suggestion for the upcoming open house</label>
+          <textarea name="suggestion_openhouse" class="form-textarea" rows="2" placeholder="Any topics you want to see in Open House..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label" style="border-color: var(--primary);">
+            <input type="checkbox" name="consent_pdpa" required checked>
+            <span>I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes. <span class="req">*</span></span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit-1">Submit Stage 1 Information</button>
+      </form>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- STAGE 2: FORM 2 (OPEN HOUSE PRE-REGISTRATION) -->
+    <!-- ============================================== -->
+    <div class="form-card" id="form-stage-2" style="display: none;">
+      <div class="form-intro">
+        <span class="form-tag">Stage 02 · Event Registration</span>
+        <h3>Pre-registration for CU-MEDi Open House</h3>
+        <p>Pre-register for the Open House · Room 1209, Fl.12 Bhumisiri Mangkhalanusorn Bldg. & Live via MDCU Facebook · <i>Limited Onsite seats.</i></p>
+      </div>
+
+      <form id="form2">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Email address <span class="req">*</span></label>
+            <input type="email" name="email" class="form-input" placeholder="e.g. yourname@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">First Name & Surname (EN) <span class="req">*</span></label>
+            <input type="text" name="name" class="form-input" placeholder="e.g. Jane Doe" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Nationality</label>
+            <input type="text" name="nationality" class="form-input" placeholder="e.g. Thai">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number <span class="req">*</span></label>
+            <input type="tel" name="phone" class="form-input" placeholder="e.g. +66 81 234 5678" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">You are: <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="recipient_group" value="Prospective Applicant" required> Prospective Applicant</label>
+            <label class="radio-label"><input type="radio" name="recipient_group" value="Parent / Guardian"> Parent / Guardian</label>
+            <label class="radio-label"><input type="radio" name="recipient_group" value="Other"> Other</label>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Level of Education</label>
+            <select name="education_level" class="form-select">
+              <option value="High School">High School</option>
+              <option value="Bachelor" selected>Bachelor's Degree</option>
+              <option value="Master">Master's Degree</option>
+              <option value="Doctoral">Doctoral Degree</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Year of Study (if Bachelor)</label>
+            <select name="year_of_study" class="form-select">
+              <option value="Year 1">Year 1</option>
+              <option value="Year 2">Year 2</option>
+              <option value="Year 3">Year 3</option>
+              <option value="Year 4" selected>Year 4 / Graduated</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">University / Institution</label>
+            <input type="text" name="university" class="form-input" placeholder="e.g. Mahidol, Chulalongkorn">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Major / Area of Study</label>
+            <input type="text" name="major" class="form-input" placeholder="e.g. Biology, Chemistry">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Do you plan to apply to CU-MEDi next year? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Yes" required> Yes</label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="No"> No</label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Unsure"> Unsure</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">How do you plan to attend? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="attend_mode" value="Onsite" id="attend-onsite" required checked> Onsite (Limited Seats at Bhumisiri Bldg.)</label>
+            <label class="radio-label"><input type="radio" name="attend_mode" value="Online" id="attend-online"> Online (via MDCU Facebook Live)</label>
+          </div>
+        </div>
+
+        <div class="form-group" id="session-select-box">
+          <label class="form-label">Select Session (for Onsite attendance)</label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="session_choice" value="Session 1" checked> Session 1 (Morning / Program Intro)</label>
+            <label class="radio-label"><input type="radio" name="session_choice" value="Session 2"> Session 2 (Afternoon / Hands-on Workshop)</label>
+            <label class="radio-label"><input type="radio" name="session_choice" value="Both"> Both Sessions</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Additional Comments / Questions</label>
+          <textarea name="comments" class="form-textarea" rows="2" placeholder="Feel free to ask any questions..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label" style="border-color: var(--primary);">
+            <input type="checkbox" name="consent_pdpa" required checked>
+            <span>I acknowledge that registration details will be used for event check-in and communication. <span class="req">*</span></span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit-2">Submit Open House Registration</button>
+      </form>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- STAGE 3: FORM 3 (APPLICANT SURVEY & 30 FACTORS)-->
+    <!-- ============================================== -->
+    <div class="form-card" id="form-stage-3" style="display: none;">
+      <div class="form-intro">
+        <span class="form-tag">Stage 03 · Research & Insight</span>
+        <h3>CU-MEDi Applicant Survey</h3>
+        <p>A questionnaire about medical school applications (~3–5 min). Participation will not affect your application status. Data will be used to enhance the curriculum and faculty.</p>
+      </div>
+
+      <form id="form3">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Email address <span class="req">*</span></label>
+            <input type="email" name="email" class="form-input" placeholder="e.g. yourname@example.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="name" class="form-input" placeholder="e.g. Jane Doe">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Have you applied to CU-MEDi? <span class="req">*</span></label>
+            <select name="applied_status" class="form-select" required>
+              <option value="Applied">Applied</option>
+              <option value="Preparing">Preparing to Apply</option>
+              <option value="Not yet">Not yet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Gender / Age</label>
+            <div style="display: flex; gap: 8px;">
+              <select name="gender" class="form-select">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Prefer not to say</option>
+              </select>
+              <input type="number" name="age" class="form-input" placeholder="Age" min="15" max="60" value="23">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Region of Citizenship</label>
+            <select name="region" class="form-select">
+              <option value="East & Southeast Asia" selected>East & Southeast Asia</option>
+              <option value="Central & South Asia">Central & South Asia</option>
+              <option value="North America">North America (US / Canada)</option>
+              <option value="Western Europe">Western Europe</option>
+              <option value="Australia & Pacific Islands">Australia & Pacific Islands</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Major Type</label>
+            <select name="major" class="form-select">
+              <option value="Science" selected>Science</option>
+              <option value="Non-science">Non-science</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Top 3 Medical Schools -->
+        <div class="form-group">
+          <label class="form-label">Top 3 Medical Schools You Wish to Apply To <span class="req">*</span></label>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <input type="text" name="school_rank1" class="form-input" placeholder="1st Rank Choice (e.g. CU-MEDi) *" required>
+            <input type="text" name="school_rank2" class="form-input" placeholder="2nd Rank Choice (e.g. NUS, Duke-NUS)">
+            <input type="text" name="school_rank3" class="form-input" placeholder="3rd Rank Choice (e.g. Sydney, Oxford)">
+          </div>
+        </div>
+
+        <!-- The 30 Decision Factors (Scale 1-5) -->
+        <div class="form-group" style="margin-top: 2rem;">
+          <label class="form-label" style="font-size: 1.1rem; color: var(--primary);">
+            30 Decision-Making Factors (Scale 1–5) <span class="req">*</span>
+          </label>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+            Rate how each factor impacts your decision on your 1st-rank medical school (1 = No effect, 5 = Very significant)
+          </p>
+
+          <!-- Group 1 -->
+          <div class="factor-box">
+            <div class="factor-group-title">Group 1 · Reputation & Academic Factors (15 Factors)</div>
+            <div id="group1-factors"></div>
+          </div>
+
+          <!-- Group 2 -->
+          <div class="factor-box">
+            <div class="factor-group-title">Group 2 · Lifestyle & Campus Environment (11 Factors)</div>
+            <div id="group2-factors"></div>
+          </div>
+
+          <!-- Group 3 -->
+          <div class="factor-box">
+            <div class="factor-group-title">Group 3 · Cost, Support & Healthcare (4 Factors)</div>
+            <div id="group3-factors"></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Did you choose CU-MEDi as your first choice? <span class="req">*</span></label>
+          <div class="radio-group">
+            <label class="radio-label"><input type="radio" name="first_choice" value="Yes" required checked> Yes</label>
+            <label class="radio-label"><input type="radio" name="first_choice" value="No"> No</label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Why did you choose to apply to CU-MEDi?</label>
+          <textarea name="why_cumedi" class="form-textarea" rows="2" placeholder="Key motivation, prestige, clinical opportunities..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label" style="border-color: var(--primary);">
+            <input type="checkbox" name="consent_pdpa" required checked>
+            <span>I consent to providing survey responses for CU-MEDi academic research. <span class="req">*</span></span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit-3">Submit Survey Responses</button>
+      </form>
+    </div>
+
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
