@@ -9,7 +9,18 @@
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
-    "not_found_handling": "single-page-application"
+    "html_handling": "none",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/interested*",
+      "/openhouse*",
+      "/survey*",
+      "/stage1*",
+      "/stage2*",
+      "/stage3*",
+      "/portal*",
+      "/api/*"
+    ]
   },
   "vars": {
     "DATABASE_URL": "postgresql://neondb_owner:npg_N0ErUm5Bnxko@ep-hidden-truth-b37brfql-pooler.c-4.ap-southeast-1.aws.neon.tech/neondb?channel_binding=require&sslmode=require"
