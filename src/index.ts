@@ -17,28 +17,61 @@ const getDb = (c: any) => {
   return neon(dbUrl);
 };
 
-// 1. Check applicant status and prefill data
+// 1. Check applicant status and prefill data (by Email OR Phone + Name)
 app.get('/api/applicant/status', async (c) => {
   const email = c.req.query('email')?.trim().toLowerCase();
-  if (!email) {
-    return c.json({ error: 'Email is required' }, 400);
+  const phone = c.req.query('phone')?.trim();
+  const name = c.req.query('name')?.trim();
+
+  if (!email && !phone) {
+    return c.json({ error: 'Either email or phone number is required' }, 400);
   }
 
   const sql = getDb(c);
   try {
-    const result = await sql`
-      SELECT id, email, name, nationality, phone, 
-             stage1_completed, stage2_completed, stage3_completed,
-             created_at
-      FROM applicants 
-      WHERE LOWER(email) = LOWER(${email})
-      LIMIT 1;
-    `;
+    let result: any[] = [];
+
+    if (email) {
+      result = await sql`
+        SELECT id, email, name, nationality, phone, 
+               stage1_completed, stage2_completed, stage3_completed,
+               created_at
+        FROM applicants 
+        WHERE LOWER(email) = LOWER(${email})
+        LIMIT 1;
+      `;
+    } else if (phone) {
+      // Lookup by phone (and optionally name matching)
+      if (name) {
+        result = await sql`
+          SELECT id, email, name, nationality, phone, 
+                 stage1_completed, stage2_completed, stage3_completed,
+                 created_at
+          FROM applicants 
+          WHERE (phone = ${phone} OR phone LIKE ${'%' + phone.slice(-8)})
+            AND (name ILIKE ${'%' + name + '%'})
+          ORDER BY updated_at DESC
+          LIMIT 1;
+        `;
+      }
+      if (result.length === 0) {
+        result = await sql`
+          SELECT id, email, name, nationality, phone, 
+                 stage1_completed, stage2_completed, stage3_completed,
+                 created_at
+          FROM applicants 
+          WHERE (phone = ${phone} OR phone LIKE ${'%' + phone.slice(-8)})
+          ORDER BY updated_at DESC
+          LIMIT 1;
+        `;
+      }
+    }
 
     if (result.length === 0) {
       return c.json({
         exists: false,
-        email,
+        email: email || '',
+        phone: phone || '',
         stage1_completed: false,
         stage2_completed: false,
         stage3_completed: false,
@@ -59,6 +92,8 @@ app.get('/api/applicant/status', async (c) => {
     return c.json({
       exists: true,
       email: appRecord.email,
+      phone: appRecord.phone,
+      name: appRecord.name,
       stage1_completed: appRecord.stage1_completed,
       stage2_completed: appRecord.stage2_completed,
       stage3_completed: appRecord.stage3_completed,

@@ -89,5 +89,8 @@ CREATE TABLE IF NOT EXISTS form3_survey (
     submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Index for fast lookup by email
+-- Index for fast lookup by email and phone/name fallback
 CREATE INDEX IF NOT EXISTS idx_applicants_email ON applicants(email);
+CREATE INDEX IF NOT EXISTS idx_applicants_phone ON applicants(phone);
+CREATE INDEX IF NOT EXISTS idx_applicants_name_phone ON applicants(name, phone);
+

@@ -32,11 +32,21 @@
       <div class="stepper-header">
         <div>
           <h2>Applicant Journey Progress</h2>
-          <p style="font-size: 0.825rem; color: var(--text-muted);">Enter your email to verify status or switch between stages</p>
+          <p style="font-size: 0.825rem; color: var(--text-muted);">Check your completion status or restore your previous profile</p>
         </div>
-        <div class="email-check-box">
-          <input type="email" id="email-checker" placeholder="Enter your email to check progress..." required>
-          <button type="button" id="btn-check-email">Check</button>
+        <div style="display: flex; flex-direction: column; gap: 6px; max-width: 440px; width: 100%;">
+          <div class="email-check-box" id="email-mode-box">
+            <input type="email" id="email-checker" placeholder="Enter your email to check progress..." required>
+            <button type="button" id="btn-check-email">Check</button>
+          </div>
+          <div class="email-check-box" id="phone-mode-box" style="display: none;">
+            <input type="tel" id="phone-checker" placeholder="Phone Number..." style="max-width: 140px;">
+            <input type="text" id="name-checker" placeholder="Full Name (optional)...">
+            <button type="button" id="btn-check-phone">Find</button>
+          </div>
+          <div style="font-size: 0.75rem; text-align: right;">
+            <a href="javascript:void(0)" id="toggle-search-mode" style="color: var(--primary); text-decoration: underline;">Forgot email? Search by Phone & Name</a>
+          </div>
         </div>
       </div>
 

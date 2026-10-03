@@ -176,13 +176,15 @@ function updateTrackerUI(status) {
   }
 }
 
-// Check Email Status
-async function checkEmail(emailToSearch) {
-  const email = emailToSearch || document.getElementById('email-checker').value.trim();
-  if (!email) return;
+// Check Email or Phone Status
+async function checkApplicant(params) {
+  let url = '/api/applicant/status?';
+  if (params.email) url += `email=${encodeURIComponent(params.email)}`;
+  else if (params.phone) url += `phone=${encodeURIComponent(params.phone)}&name=${encodeURIComponent(params.name || '')}`;
+  else return;
 
   try {
-    const res = await fetch(`/api/applicant/status?email=${encodeURIComponent(email)}`);
+    const res = await fetch(url);
     const data = await res.json();
 
     if (data.exists) {
@@ -190,7 +192,7 @@ async function checkEmail(emailToSearch) {
       currentApplicantData = data;
       updateTrackerUI(data);
       prefillFormFields(data.prefill);
-      showToast(`Welcome back! Found record for ${data.email}`);
+      showToast(`Welcome back, ${data.name || data.email}! Profile loaded.`);
 
       // Auto guide to next uncompleted stage
       if (!data.stage1_completed) switchStage(1);
@@ -198,16 +200,38 @@ async function checkEmail(emailToSearch) {
       else if (!data.stage3_completed) switchStage(3);
     } else {
       showToast('No prior record found. You can start fresh!', true);
-      prefillFormFields({ email });
+      if (params.email) prefillFormFields({ email: params.email });
+      if (params.phone) prefillFormFields({ phone: params.phone, name: params.name });
     }
   } catch (err) {
-    console.error('Error checking email:', err);
+    console.error('Error checking applicant:', err);
   }
 }
 
 // Setup Event Listeners & Form Submissions
 document.addEventListener('DOMContentLoaded', () => {
   renderFactors();
+
+  // Search mode toggle (Email vs Phone)
+  const toggleBtn = document.getElementById('toggle-search-mode');
+  const emailBox = document.getElementById('email-mode-box');
+  const phoneBox = document.getElementById('phone-mode-box');
+  let isPhoneMode = false;
+
+  if (toggleBtn && emailBox && phoneBox) {
+    toggleBtn.addEventListener('click', () => {
+      isPhoneMode = !isPhoneMode;
+      if (isPhoneMode) {
+        emailBox.style.display = 'none';
+        phoneBox.style.display = 'flex';
+        toggleBtn.textContent = 'Switch back to search by Email';
+      } else {
+        emailBox.style.display = 'flex';
+        phoneBox.style.display = 'none';
+        toggleBtn.textContent = 'Forgot email? Search by Phone & Name';
+      }
+    });
+  }
 
   // Handle URL Stage / Query params
   const params = new URLSearchParams(window.location.search);
@@ -218,13 +242,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (initialEmail) {
     document.getElementById('email-checker').value = initialEmail;
-    checkEmail(initialEmail);
+    checkApplicant({ email: initialEmail });
   }
 
-  // Check email button
-  const btnCheck = document.getElementById('btn-check-email');
-  if (btnCheck) {
-    btnCheck.addEventListener('click', () => checkEmail());
+  // Check buttons
+  const btnCheckEmail = document.getElementById('btn-check-email');
+  if (btnCheckEmail) {
+    btnCheckEmail.addEventListener('click', () => {
+      const email = document.getElementById('email-checker').value.trim();
+      if (email) checkApplicant({ email });
+    });
+  }
+
+  const btnCheckPhone = document.getElementById('btn-check-phone');
+  if (btnCheckPhone) {
+    btnCheckPhone.addEventListener('click', () => {
+      const phone = document.getElementById('phone-checker').value.trim();
+      const name = document.getElementById('name-checker').value.trim();
+      if (phone) checkApplicant({ phone, name });
+    });
   }
 
   // Attend mode toggle for Open House Session
