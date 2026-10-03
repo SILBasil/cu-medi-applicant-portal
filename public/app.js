@@ -48,9 +48,9 @@ function detectStage() {
   const params = new URLSearchParams(window.location.search);
   const qStage = parseInt(params.get('stage'));
 
-  if (path.includes('/openhouse') || qStage === 2) return 2;
-  if (path.includes('/survey') || qStage === 3) return 3;
-  return 1; // default to stage 1 (/interested or /)
+  if (path.includes('/openhouse') || path.includes('/stage2') || qStage === 2) return 2;
+  if (path.includes('/survey') || path.includes('/stage3') || qStage === 3) return 3;
+  return 1; // default to stage 1 (/interested, /stage1, or /)
 }
 
 // Get UTM Parameters
@@ -151,6 +151,7 @@ function prefillData(prefill) {
     const f1 = document.getElementById('form1');
     if (f1) {
       if (prefill.name && f1.elements['name']) f1.elements['name'].value = prefill.name;
+      if (prefill.phone && f1.elements['phone']) f1.elements['phone'].value = prefill.phone;
       if (prefill.nationality && f1.elements['nationality']) f1.elements['nationality'].value = prefill.nationality;
       if (prefill.country && f1.elements['country']) f1.elements['country'].value = prefill.country;
       if (prefill.university && f1.elements['university']) f1.elements['university'].value = prefill.university;
@@ -176,7 +177,6 @@ function prefillData(prefill) {
     if (f3) {
       if (prefill.name) document.getElementById('f3-name').value = prefill.name;
       if (prefill.nationality && document.getElementById('f3-nationality')) document.getElementById('f3-nationality').value = prefill.nationality;
-      if (prefill.phone && document.getElementById('f3-phone')) document.getElementById('f3-phone').value = prefill.phone;
       if (prefill.university && document.getElementById('f3-university')) document.getElementById('f3-university').value = prefill.university;
     }
   }
@@ -358,6 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const payload = {
         email: document.getElementById('f1-email').value,
         name: formData.get('name'),
+        phone: formData.get('phone'),
         nationality: formData.get('nationality'),
         country: formData.get('country'),
         bachelor_degree: formData.get('bachelor_degree'),

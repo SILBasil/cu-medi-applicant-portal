@@ -11,18 +11,31 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', cors());
 
-// Helper to serve index.html for SPA routes
+// Helper to serve index.html for SPA routes without triggering 307 redirect
 const serveIndex = async (c: any) => {
   if (c.env?.ASSETS) {
-    const url = new URL('/index.html', c.req.url);
-    return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw));
+    const rootUrl = new URL('/', c.req.url);
+    const assetRes = await c.env.ASSETS.fetch(new Request(rootUrl.toString(), {
+      method: 'GET',
+      headers: c.req.raw.headers
+    }));
+    return new Response(assetRes.body, {
+      status: 200,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-cache'
+      }
+    });
   }
   return c.text('Not found', 404);
 };
 
 app.get('/interested', serveIndex);
+app.get('/stage1', serveIndex);
 app.get('/openhouse', serveIndex);
+app.get('/stage2', serveIndex);
 app.get('/survey', serveIndex);
+app.get('/stage3', serveIndex);
 app.get('/portal', serveIndex);
 
 // Helper to get Neon SQL client
@@ -146,14 +159,14 @@ app.post('/api/submit/stage1', async (c) => {
   try {
     const result = await sql`
       INSERT INTO applicants (
-        email, name, nationality, country, university,
+        email, phone, name, nationality, country, university,
         stage1_completed, stage1_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s1_bachelor_degree, s1_apply_intent, s1_req_readiness,
         s1_heard_from, s1_heard_other, s1_suggestion_process, s1_suggestion_openhouse, s1_consent_pdpa,
         updated_at
       ) VALUES (
-        ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''}, ${body.university || ''},
+        ${email}, ${body.phone || ''}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''}, ${body.university || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.bachelor_degree || ''}, ${body.apply_intent || ''}, ${JSON.stringify(body.req_readiness || {})},
@@ -161,6 +174,7 @@ app.post('/api/submit/stage1', async (c) => {
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
+        phone = COALESCE(NULLIF(EXCLUDED.phone, ''), applicants.phone),
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
         nationality = COALESCE(NULLIF(EXCLUDED.nationality, ''), applicants.nationality),
         country = COALESCE(NULLIF(EXCLUDED.country, ''), applicants.country),
