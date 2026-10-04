@@ -40,6 +40,7 @@ const GROUP3_FACTORS = [
 
 let factorRatings = {};
 let currentStage = 1;
+let activeStep = 1;
 let verifiedApplicant = null;
 
 // Determine active stage from URL Path or Query parameter
@@ -132,7 +133,173 @@ function setupStageHeader() {
   }
 }
 
-// Prefill form inputs with existing data
+// Update Stepper Progress UI
+function updateStepperUI() {
+  const wrap = document.getElementById('journey-stepper-wrap');
+  if (!wrap) return;
+
+  if (currentStage === 1) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  wrap.style.display = 'block';
+
+  // Toggle Node 3 visibility if target is only stage 2
+  const node3 = document.getElementById('node-step-3');
+  if (node3) {
+    node3.style.display = currentStage === 2 ? 'none' : 'flex';
+  }
+
+  // Update progress bar fill
+  const fill = document.getElementById('stepper-progress-fill');
+  if (fill) {
+    if (currentStage === 2) {
+      fill.style.width = activeStep === 2 ? '100%' : '0%';
+    } else {
+      fill.style.width = activeStep === 1 ? '0%' : (activeStep === 2 ? '50%' : '100%');
+    }
+  }
+
+  // Update Step Nodes
+  [1, 2, 3].forEach(step => {
+    const node = document.getElementById(`node-step-${step}`);
+    const circle = document.getElementById(`node-circle-${step}`);
+    if (!node || !circle) return;
+
+    node.classList.remove('active', 'completed');
+
+    const isStepDone = 
+      (step === 1 && verifiedApplicant?.stage1_completed) ||
+      (step === 2 && verifiedApplicant?.stage2_completed) ||
+      (step === 3 && verifiedApplicant?.stage3_completed);
+
+    if (activeStep === step) {
+      node.classList.add('active');
+      circle.textContent = step;
+    } else if (isStepDone) {
+      node.classList.add('completed');
+      circle.textContent = '✓';
+    } else {
+      circle.textContent = step;
+    }
+  });
+}
+
+// Show Active Step Container
+function showActiveStep(stepNum) {
+  activeStep = stepNum;
+
+  // Hide all form containers first
+  ['form-stage-1', 'form-stage-2', 'form-stage-3'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+
+  const banner1 = document.getElementById('step1-completed-banner');
+  const banner2 = document.getElementById('step2-completed-banner');
+  const notice = document.getElementById('new-applicant-notice');
+
+  // Show completed accordion summaries for past completed stages
+  if (banner1) {
+    banner1.style.display = (verifiedApplicant?.stage1_completed && activeStep > 1) ? 'flex' : 'none';
+  }
+  if (banner2) {
+    banner2.style.display = (verifiedApplicant?.stage2_completed && activeStep > 2) ? 'flex' : 'none';
+  }
+
+  // Show active step form
+  const activeContainer = document.getElementById(`form-stage-${activeStep}`);
+  if (activeContainer) activeContainer.style.display = 'block';
+
+  // Customize Form 1 Submit Button
+  const btn1 = document.getElementById('btn-submit-1');
+  if (btn1) {
+    if (currentStage === 1) {
+      btn1.textContent = 'Submit Stage 1 Information';
+    } else if (currentStage === 2) {
+      btn1.textContent = 'Save & Continue to Open House (Step 2) →';
+    } else {
+      btn1.textContent = 'Save & Continue to Next Step →';
+    }
+  }
+
+  // Customize Form 2 Submit Button & Skip button
+  const btn2 = document.getElementById('btn-submit-2');
+  const btnSkip2 = document.getElementById('btn-skip-2');
+  if (btn2) {
+    if (currentStage === 2) {
+      btn2.textContent = 'Submit Open House Registration';
+      if (btnSkip2) btnSkip2.style.display = 'none';
+    } else if (currentStage === 3) {
+      btn2.textContent = 'Save & Continue to Survey (Step 3) →';
+      if (btnSkip2) btnSkip2.style.display = 'block';
+    }
+  }
+
+  // Prerequisite Notice Banner for new users
+  if (notice) {
+    const isNew = !verifiedApplicant?.stage1_completed;
+    if (isNew && currentStage > 1 && activeStep === 1) {
+      notice.style.display = 'block';
+      notice.innerHTML = `<b>📌 Prerequisite:</b> Please complete Step 1 (Applicant Profile & Readiness) first, then click Save & Continue to proceed to ${currentStage === 2 ? 'Open House registration' : 'the survey'}.`;
+    } else {
+      notice.style.display = 'none';
+    }
+  }
+
+  updateStepperUI();
+
+  // Smooth scroll to top of current active stage
+  const scrollTarget = document.getElementById('journey-stepper-wrap') || activeContainer;
+  if (scrollTarget) {
+    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// Accordion toggle to review or re-edit completed steps
+window.toggleReviewStep = function(stepNum) {
+  const formCard = document.getElementById(`form-stage-${stepNum}`);
+  const btnToggle = document.getElementById(`btn-toggle-step${stepNum}`);
+  if (!formCard) return;
+
+  const isVisible = formCard.style.display === 'block';
+  if (isVisible) {
+    formCard.style.display = 'none';
+    if (btnToggle) btnToggle.textContent = 'Review / Edit';
+    // Re-show active step
+    const activeCard = document.getElementById(`form-stage-${activeStep}`);
+    if (activeCard && activeStep !== stepNum) activeCard.style.display = 'block';
+  } else {
+    // Hide active step to focus on review
+    ['form-stage-1', 'form-stage-2', 'form-stage-3'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    formCard.style.display = 'block';
+    if (btnToggle) btnToggle.textContent = 'Close Review ▲';
+    formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+};
+
+window.navigateToStep = function(stepNum) {
+  if (stepNum > currentStage) return;
+  const canGo = (stepNum === 1) || 
+                (stepNum === 2 && verifiedApplicant?.stage1_completed) ||
+                (stepNum === 3 && (verifiedApplicant?.stage2_completed || verifiedApplicant?.stage1_completed));
+  if (canGo) {
+    showActiveStep(stepNum);
+  } else {
+    showToast(`Please complete Step ${stepNum - 1} first!`, false);
+  }
+};
+
+window.skipToStep3 = function() {
+  showToast('Skipped Open House. Proceeding to Survey...');
+  showActiveStep(3);
+};
+
+// Prefill form inputs across all stages with existing data
 function prefillData(prefill) {
   if (!prefill) return;
 
@@ -147,38 +314,32 @@ function prefillData(prefill) {
   });
 
   // Prefill Form 1
-  if (currentStage === 1) {
-    const f1 = document.getElementById('form1');
-    if (f1) {
-      if (prefill.name && f1.elements['name']) f1.elements['name'].value = prefill.name;
-      if (prefill.phone && f1.elements['phone']) f1.elements['phone'].value = prefill.phone;
-      if (prefill.nationality && f1.elements['nationality']) f1.elements['nationality'].value = prefill.nationality;
-      if (prefill.country && f1.elements['country']) f1.elements['country'].value = prefill.country;
-      if (prefill.university && f1.elements['university']) f1.elements['university'].value = prefill.university;
-      if (prefill.bachelor_degree && f1.elements['bachelor_degree']) f1.elements['bachelor_degree'].value = prefill.bachelor_degree;
-    }
+  const f1 = document.getElementById('form1');
+  if (f1) {
+    if (prefill.name && f1.elements['name']) f1.elements['name'].value = prefill.name;
+    if (prefill.phone && f1.elements['phone']) f1.elements['phone'].value = prefill.phone;
+    if (prefill.nationality && f1.elements['nationality']) f1.elements['nationality'].value = prefill.nationality;
+    if (prefill.country && f1.elements['country']) f1.elements['country'].value = prefill.country;
+    if (prefill.university && f1.elements['university']) f1.elements['university'].value = prefill.university;
+    if (prefill.bachelor_degree && f1.elements['bachelor_degree']) f1.elements['bachelor_degree'].value = prefill.bachelor_degree;
   }
 
   // Prefill Form 2
-  if (currentStage === 2) {
-    const f2 = document.getElementById('form2');
-    if (f2) {
-      if (prefill.name) document.getElementById('f2-name').value = prefill.name;
-      if (prefill.nationality) document.getElementById('f2-nationality').value = prefill.nationality;
-      if (prefill.phone) document.getElementById('f2-phone').value = prefill.phone;
-      if (prefill.university && document.getElementById('f2-university')) document.getElementById('f2-university').value = prefill.university;
-      if (prefill.major && document.getElementById('f2-major')) document.getElementById('f2-major').value = prefill.major;
-    }
+  const f2 = document.getElementById('form2');
+  if (f2) {
+    if (prefill.name) document.getElementById('f2-name').value = prefill.name;
+    if (prefill.nationality) document.getElementById('f2-nationality').value = prefill.nationality;
+    if (prefill.phone) document.getElementById('f2-phone').value = prefill.phone;
+    if (prefill.university && document.getElementById('f2-university')) document.getElementById('f2-university').value = prefill.university;
+    if (prefill.major && document.getElementById('f2-major')) document.getElementById('f2-major').value = prefill.major;
   }
 
   // Prefill Form 3
-  if (currentStage === 3) {
-    const f3 = document.getElementById('form3');
-    if (f3) {
-      if (prefill.name) document.getElementById('f3-name').value = prefill.name;
-      if (prefill.nationality && document.getElementById('f3-nationality')) document.getElementById('f3-nationality').value = prefill.nationality;
-      if (prefill.university && document.getElementById('f3-university')) document.getElementById('f3-university').value = prefill.university;
-    }
+  const f3 = document.getElementById('form3');
+  if (f3) {
+    if (prefill.name) document.getElementById('f3-name').value = prefill.name;
+    if (prefill.nationality && document.getElementById('f3-nationality')) document.getElementById('f3-nationality').value = prefill.nationality;
+    if (prefill.university && document.getElementById('f3-university')) document.getElementById('f3-university').value = prefill.university;
   }
 }
 
@@ -202,7 +363,7 @@ async function verifyAndProceed(params) {
 
     const emailUsed = data.email || params.email || '';
 
-    // Check if this specific stage is ALREADY COMPLETED
+    // Check if TARGET stage is ALREADY COMPLETED
     let isAlreadyDone = false;
     if (currentStage === 1 && data.stage1_completed) isAlreadyDone = true;
     if (currentStage === 2 && data.stage2_completed) isAlreadyDone = true;
@@ -213,16 +374,14 @@ async function verifyAndProceed(params) {
       const doneCard = document.getElementById('already-completed-card');
       const doneText = document.getElementById('already-completed-text');
       if (doneText) {
-        doneText.textContent = `You have already submitted this Stage ${currentStage} form for ${emailUsed}. Your responses are saved in the system.`;
+        doneText.textContent = `You have already submitted Stage ${currentStage} for ${emailUsed}. Your record is securely saved in the system.`;
       }
       if (doneCard) doneCard.style.display = 'block';
       return;
     }
 
-    // Otherwise, unlock the current stage form!
+    // Unlock form area
     document.getElementById('verification-gate').style.display = 'none';
-    const formCard = document.getElementById(`form-stage-${currentStage}`);
-    if (formCard) formCard.style.display = 'block';
 
     // Show verified pill in header
     const pill = document.getElementById('verified-user-pill');
@@ -240,23 +399,30 @@ async function verifyAndProceed(params) {
       if (display) display.value = emailUsed;
     });
 
-    // Handle New vs Existing Applicant
-    const isNew = !data.exists;
-    const notice = document.getElementById('new-applicant-notice');
+    // Prefill all inputs
+    const mergedPrefill = Object.assign({ email: emailUsed, phone: params.phone, name: params.name }, data.prefill || {});
+    prefillData(mergedPrefill);
 
-    if (isNew && currentStage > 1) {
-      if (notice) notice.style.display = 'block';
-      if (currentStage === 2) document.getElementById('f2-extra-fields').style.display = 'block';
-      if (currentStage === 3) document.getElementById('f3-extra-fields').style.display = 'block';
-      prefillData({ email: emailUsed, phone: params.phone, name: params.name });
-    } else {
-      if (notice) notice.style.display = 'none';
-      const mergedPrefill = Object.assign({ email: emailUsed }, data.prefill || {});
-      prefillData(mergedPrefill);
-      if (!isNew) {
-        showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
+    if (data.exists) {
+      showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
+    }
+
+    // Determine initial active step in the progressive journey
+    if (currentStage === 1) {
+      activeStep = 1;
+    } else if (currentStage === 2) {
+      activeStep = data.stage1_completed ? 2 : 1;
+    } else if (currentStage === 3) {
+      if (!data.stage1_completed) {
+        activeStep = 1;
+      } else if (!data.stage2_completed) {
+        activeStep = 2;
+      } else {
+        activeStep = 3;
       }
     }
+
+    showActiveStep(activeStep);
 
   } catch (err) {
     console.error('Error verifying applicant:', err);
@@ -386,12 +552,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await res.json();
 
         if (res.ok) {
-          form1.style.display = 'none';
-          showToast('Stage 1 submitted successfully! Thank you.');
-          const doneCard = document.getElementById('already-completed-card');
-          const doneText = document.getElementById('already-completed-text');
-          if (doneText) doneText.textContent = "Thank you for registering your interest in CU-MEDi 2027. We have recorded your preferences.";
-          if (doneCard) doneCard.style.display = 'block';
+          if (!verifiedApplicant) verifiedApplicant = {};
+          verifiedApplicant.stage1_completed = true;
+
+          // Propagate answers to Form 2 & Form 3 in-memory
+          const f2Name = document.getElementById('f2-name');
+          const f2Phone = document.getElementById('f2-phone');
+          const f2Nat = document.getElementById('f2-nationality');
+          const f2Uni = document.getElementById('f2-university');
+          const f3Name = document.getElementById('f3-name');
+          const f3Uni = document.getElementById('f3-university');
+
+          if (f2Name && payload.name) f2Name.value = payload.name;
+          if (f2Phone && payload.phone) f2Phone.value = payload.phone;
+          if (f2Nat && payload.nationality) f2Nat.value = payload.nationality;
+          if (f2Uni && payload.university) f2Uni.value = payload.university;
+          if (f3Name && payload.name) f3Name.value = payload.name;
+          if (f3Uni && payload.university) f3Uni.value = payload.university;
+
+          if (currentStage === 1) {
+            form1.style.display = 'none';
+            showToast('Stage 1 submitted successfully! Thank you.');
+            const doneCard = document.getElementById('already-completed-card');
+            const doneText = document.getElementById('already-completed-text');
+            if (doneText) doneText.textContent = "Thank you for registering your interest in CU-MEDi 2027. We have recorded your preferences.";
+            if (doneCard) doneCard.style.display = 'block';
+          } else if (currentStage === 2) {
+            showToast('✓ Step 1 Profile Saved! Opening Open House Registration.');
+            showActiveStep(2);
+          } else if (currentStage === 3) {
+            showToast('✓ Step 1 Profile Saved! Proceeding to Next Step.');
+            showActiveStep(2);
+          }
         } else {
           showToast(result.error || 'Submission failed', false);
         }
@@ -445,12 +637,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const result = await res.json();
 
         if (res.ok) {
-          form2.style.display = 'none';
-          showToast('Open House registration completed! See you at the event.');
-          const doneCard = document.getElementById('already-completed-card');
-          const doneText = document.getElementById('already-completed-text');
-          if (doneText) doneText.textContent = "Your registration for CU-MEDi Open House has been confirmed. A confirmation has been registered to your profile.";
-          if (doneCard) doneCard.style.display = 'block';
+          if (!verifiedApplicant) verifiedApplicant = {};
+          verifiedApplicant.stage2_completed = true;
+
+          if (currentStage === 2) {
+            form2.style.display = 'none';
+            showToast('Open House registration completed! See you at the event.');
+            const doneCard = document.getElementById('already-completed-card');
+            const doneText = document.getElementById('already-completed-text');
+            if (doneText) doneText.textContent = "Your registration for CU-MEDi Open House has been confirmed. A confirmation has been registered to your profile.";
+            if (doneCard) doneCard.style.display = 'block';
+          } else if (currentStage === 3) {
+            showToast('✓ Step 2 Saved! Proceeding to Applicant Survey (Step 3).');
+            showActiveStep(3);
+          }
         } else {
           showToast(result.error || 'Submission failed', false);
         }
