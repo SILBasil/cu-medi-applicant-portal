@@ -219,12 +219,14 @@ app.post('/api/submit/stage2', async (c) => {
       INSERT INTO applicants (
         email, name, nationality, phone, university, major,
         stage2_completed, stage2_completed_at,
+        utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s2_recipient_group, s2_education_level, s2_year_of_study, s2_apply_intent,
         s2_attend_mode, s2_session_choice, s2_comments, s2_consent_pdpa,
         updated_at
       ) VALUES (
         ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''}, ${body.university || ''}, ${body.major || ''},
         true, CURRENT_TIMESTAMP,
+        ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.recipient_group || ''}, ${body.education_level || ''}, ${body.year_of_study || ''}, ${body.apply_intent || ''},
         ${body.attend_mode || ''}, ${body.session_choice || ''}, ${body.comments || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
@@ -235,6 +237,11 @@ app.post('/api/submit/stage2', async (c) => {
         phone = COALESCE(NULLIF(EXCLUDED.phone, ''), applicants.phone),
         university = COALESCE(NULLIF(EXCLUDED.university, ''), applicants.university),
         major = COALESCE(NULLIF(EXCLUDED.major, ''), applicants.major),
+        utm_source = COALESCE(NULLIF(EXCLUDED.utm_source, ''), applicants.utm_source),
+        utm_medium = COALESCE(NULLIF(EXCLUDED.utm_medium, ''), applicants.utm_medium),
+        utm_campaign = COALESCE(NULLIF(EXCLUDED.utm_campaign, ''), applicants.utm_campaign),
+        utm_content = COALESCE(NULLIF(EXCLUDED.utm_content, ''), applicants.utm_content),
+        landing_page = COALESCE(NULLIF(EXCLUDED.landing_page, ''), applicants.landing_page),
         stage2_completed = true,
         stage2_completed_at = COALESCE(applicants.stage2_completed_at, CURRENT_TIMESTAMP),
         s2_recipient_group = EXCLUDED.s2_recipient_group,
@@ -275,6 +282,7 @@ app.post('/api/submit/stage3', async (c) => {
       INSERT INTO applicants (
         email, name,
         stage3_completed, stage3_completed_at,
+        utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s3_applied_status, s3_gender, s3_age, s3_region,
         s3_schools_rank, s3_destination_rank, s3_future_location, s3_postgrad_plan,
         s3_decision_factors_30, s3_first_choice, s3_why_cumedi, s3_consent_pdpa,
@@ -282,6 +290,7 @@ app.post('/api/submit/stage3', async (c) => {
       ) VALUES (
         ${email}, ${body.name || ''},
         true, CURRENT_TIMESTAMP,
+        ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.applied_status || ''}, ${body.gender || ''}, ${body.age ? parseInt(body.age) : null}, ${body.region || ''},
         ${JSON.stringify(body.schools_rank || {})}, ${JSON.stringify(body.destination_rank || {})}, ${body.future_location || ''}, ${body.postgrad_plan || ''},
         ${JSON.stringify(body.decision_factors_30 || {})}, ${body.first_choice || ''}, ${body.why_cumedi || ''}, ${body.consent_pdpa !== false},
@@ -289,6 +298,11 @@ app.post('/api/submit/stage3', async (c) => {
       )
       ON CONFLICT (email) DO UPDATE SET
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
+        utm_source = COALESCE(NULLIF(EXCLUDED.utm_source, ''), applicants.utm_source),
+        utm_medium = COALESCE(NULLIF(EXCLUDED.utm_medium, ''), applicants.utm_medium),
+        utm_campaign = COALESCE(NULLIF(EXCLUDED.utm_campaign, ''), applicants.utm_campaign),
+        utm_content = COALESCE(NULLIF(EXCLUDED.utm_content, ''), applicants.utm_content),
+        landing_page = COALESCE(NULLIF(EXCLUDED.landing_page, ''), applicants.landing_page),
         stage3_completed = true,
         stage3_completed_at = COALESCE(applicants.stage3_completed_at, CURRENT_TIMESTAMP),
         s3_applied_status = EXCLUDED.s3_applied_status,

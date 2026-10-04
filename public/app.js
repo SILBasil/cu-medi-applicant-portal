@@ -625,7 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
         session_choice: formData.get('session_choice'),
         comments: formData.get('comments'),
         consent_pdpa: formData.get('consent_pdpa') === 'on',
-        utm_data: utm
+        ...utm
       };
 
       try {
@@ -697,7 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
         first_choice: formData.get('first_choice'),
         why_cumedi: formData.get('why_cumedi'),
         consent_pdpa: formData.get('consent_pdpa') === 'on',
-        utm_data: utm
+        ...utm
       };
 
       try {
