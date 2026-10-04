@@ -54,11 +54,12 @@ function detectStage() {
   return 1; // default to stage 1 (/interested, /stage1, or /)
 }
 
-// Get UTM Parameters
+// Get Source Tracking Parameters (Simple & Flexible)
 function getUTMParams() {
   const params = new URLSearchParams(window.location.search);
+  const src = params.get('utm_source') || params.get('source') || params.get('utm') || params.get('from') || '';
   return {
-    utm_source: params.get('utm_source') || params.get('source') || '',
+    utm_source: src,
     utm_medium: params.get('utm_medium') || '',
     utm_campaign: params.get('utm_campaign') || params.get('campaign') || '',
     utm_content: params.get('utm_content') || '',
