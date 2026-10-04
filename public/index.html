@@ -18,8 +18,20 @@
           <p>Faculty of Medicine, Chulalongkorn University</p>
         </div>
       </div>
-      <div id="verified-user-pill" style="display: none; font-size: 0.825rem; background: var(--success-bg); color: var(--success); padding: 6px 14px; border-radius: 999px; border: 1px solid #a7f3d0; font-weight: 600;">
-        <span id="verified-email-text"></span>
+      <div class="header-actions">
+        <div id="verified-user-pill" style="display: none; font-size: 0.825rem; background: var(--success-bg); color: var(--success); padding: 6px 14px; border-radius: 999px; border: 1px solid #a7f3d0; font-weight: 600;">
+          <span id="verified-email-text"></span>
+        </div>
+
+        <!-- Language Switcher Button -->
+        <div class="lang-switch-group">
+          <button type="button" class="lang-btn active" id="btn-lang-en" onclick="setLanguage('en')">
+            <span>🇬🇧</span> EN
+          </button>
+          <button type="button" class="lang-btn" id="btn-lang-th" onclick="setLanguage('th')">
+            <span>🇹🇭</span> TH
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -139,9 +151,9 @@
     <!-- ============================================== -->
     <div class="form-card form-stage-container" id="form-stage-1" style="display: none;">
       <div class="form-intro">
-        <span class="form-tag">Stage 01 · Lead Capture</span>
-        <h3>The CU-MEDi Applications for 2027</h3>
-        <p>Sign up to get updates on the 2027 admission round. Learn more at <a href="https://cu-medi.md.chula.ac.th" target="_blank" style="color: var(--primary);">cu-medi.md.chula.ac.th</a>. <i>Remark: this portal is not an official application process, but a reminder to ensure requirements are complete.</i></p>
+        <span class="form-tag" id="f1-tag">Stage 01 · Lead Capture</span>
+        <h3 id="f1-title">The CU-MEDi Applications for 2027</h3>
+        <p id="f1-desc">Sign up to get updates on the 2027 admission round. Learn more at <a href="https://cu-medi.md.chula.ac.th" target="_blank" style="color: var(--primary);">cu-medi.md.chula.ac.th</a>. <i>Remark: this portal is not an official application process, but a reminder to ensure requirements are complete.</i></p>
       </div>
 
       <form id="form1">
@@ -149,107 +161,155 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Email address <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f1-email">Email address <span class="req">*</span></label>
             <input type="email" id="f1-email-display" class="form-input" disabled style="background: #f1f5f9; color: var(--navy); font-weight: 600;">
           </div>
           <div class="form-group">
-            <label class="form-label">Full Name <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f1-name">Full Name <span class="req">*</span></label>
             <input type="text" name="name" id="f1-name" class="form-input" placeholder="e.g. John Doe" required>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Phone Number <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f1-phone">Phone Number <span class="req">*</span></label>
             <input type="tel" name="phone" id="f1-phone" class="form-input" placeholder="e.g. 081 234 5678" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Nationality <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f1-nat">Nationality <span class="req">*</span></label>
             <input type="text" name="nationality" id="f1-nationality" class="form-input" placeholder="e.g. Thai, American, Singaporean" required>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Current Address (Country)</label>
+            <label class="form-label" id="lbl-f1-country">Current Address (Country)</label>
             <input type="text" name="country" id="f1-country" class="form-input" placeholder="e.g. Thailand">
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Bachelor's Degree</label>
+            <label class="form-label" id="lbl-f1-degree">Bachelor's Degree</label>
             <input type="text" name="bachelor_degree" class="form-input" placeholder="e.g. B.Sc. in Biomedical Sciences">
           </div>
           <div class="form-group">
-            <label class="form-label">University / Institution</label>
+            <label class="form-label" id="lbl-f1-uni">University / Institution</label>
             <input type="text" name="university" class="form-input" placeholder="e.g. Chulalongkorn University">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Will you apply for CU-MEDi 2027 admission? <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f1-apply">Will you apply for CU-MEDi 2027 admission? <span class="req">*</span></label>
           <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="apply_intent" value="Yes" required> Yes</label>
-            <label class="radio-label"><input type="radio" name="apply_intent" value="No"> No</label>
-            <label class="radio-label"><input type="radio" name="apply_intent" value="Maybe"> Maybe</label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Yes" required> <span id="opt-apply-yes">Yes</span></label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="No"> <span id="opt-apply-no">No</span></label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Maybe"> <span id="opt-apply-maybe">Maybe</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">2027 Admission Requirements Readiness <span class="req">*</span></label>
-          <div style="background: var(--surface-subtle); padding: 12px; border-radius: 8px; font-size: 0.875rem;">
-            <div style="margin-bottom: 10px;">
-              <b>1. MCAT score report:</b><br>
-              <label><input type="radio" name="req_mcat" value="Done" required> Done</label> &nbsp;&nbsp;
-              <label><input type="radio" name="req_mcat" value="Tentative Date"> Tentative Date</label> &nbsp;&nbsp;
-              <label><input type="radio" name="req_mcat" value="Not Done"> Not Done</label>
-            </div>
-            <div style="margin-bottom: 10px;">
-              <b>2. English proficiency result:</b><br>
-              <label><input type="radio" name="req_eng" value="Done" required> Done</label> &nbsp;&nbsp;
-              <label><input type="radio" name="req_eng" value="Tentative Date"> Tentative Date</label> &nbsp;&nbsp;
-              <label><input type="radio" name="req_eng" value="Not Done"> Not Done</label>
-            </div>
-            <div>
-              <b>3. Bachelor's degree status:</b><br>
-              <label><input type="radio" name="req_degree" value="Done" required> Completed</label> &nbsp;&nbsp;
-              <label><input type="radio" name="req_degree" value="Tentative Date"> Expected Graduating</label> &nbsp;&nbsp;
-              <label><input type="radio" name="req_degree" value="Not Done"> Studying</label>
-            </div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
+            <label class="form-label" style="margin-bottom: 0;">
+              <span id="lbl-req-readiness">2027 Admission Requirements Readiness</span> <span class="req">*</span>
+              <span class="grid-badge">grid</span>
+            </label>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;" id="lbl-req-readiness-sub">
+            self-report only — no actual scores or documents collected at this stage
+          </p>
+
+          <div class="req-grid-container">
+            <table class="req-grid-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;" id="th-req-item">Requirements</th>
+                  <th style="text-align: center; width: 110px;" id="th-req-done">Done</th>
+                  <th style="text-align: center; width: 140px;" id="th-req-tentative">Tentative Date</th>
+                  <th style="text-align: center; width: 110px;" id="th-req-notdone">Not Done</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div style="font-weight: 600; color: var(--navy);" id="txt-mcat-title">MCAT</div>
+                    <div style="font-size: 0.775rem; color: var(--text-muted);" id="txt-mcat-sub">MCAT score report</div>
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_mcat" value="Done" required class="grid-radio">
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_mcat" value="Tentative Date" class="grid-radio">
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_mcat" value="Not Done" class="grid-radio">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-weight: 600; color: var(--navy);" id="txt-eng-title">English (TOEFL/IELTS)</div>
+                    <div style="font-size: 0.775rem; color: var(--text-muted);" id="txt-eng-sub">English proficiency test result</div>
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_eng" value="Done" required class="grid-radio">
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_eng" value="Tentative Date" class="grid-radio">
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_eng" value="Not Done" class="grid-radio">
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div style="font-weight: 600; color: var(--navy);" id="txt-degree-title">Bachelor's degree</div>
+                    <div style="font-size: 0.775rem; color: var(--text-muted);" id="txt-degree-sub">Graduation status / Transcript</div>
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_degree" value="Done" required class="grid-radio">
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_degree" value="Tentative Date" class="grid-radio">
+                  </td>
+                  <td style="text-align: center;">
+                    <input type="radio" name="req_degree" value="Not Done" class="grid-radio">
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">How did you know the CU-MEDi program? <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f1-heard">How did you know the CU-MEDi program? <span class="req">*</span></label>
           <div class="checkbox-group">
-            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="CU-MEDi Website, Facebook, Roadshow"> CU-MEDi Website, Facebook, Roadshow</label>
-            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Faculty of Medicine sources"> Faculty of Medicine sources</label>
-            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Chulalongkorn University Open House"> Chulalongkorn University Open House</label>
-            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Social media and personal referrals"> Social media and personal referrals</label>
-            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Other"> Other</label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="CU-MEDi Website, Facebook, Roadshow"> <span id="opt-hf-1">CU-MEDi Website, Facebook, Roadshow</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Faculty of Medicine sources"> <span id="opt-hf-2">Faculty of Medicine sources</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Chulalongkorn University Open House"> <span id="opt-hf-3">Chulalongkorn University Open House</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Social media and personal referrals"> <span id="opt-hf-4">Social media and personal referrals</span></label>
+            <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Other"> <span id="opt-hf-5">Other</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">For other sources, please specify</label>
+          <label class="form-label" id="lbl-f1-other">For other sources, please specify</label>
           <input type="text" name="heard_other" class="form-input" placeholder="Please specify if Other">
         </div>
 
         <div class="form-group">
-          <label class="form-label">Suggestion for the CU-MEDi application process</label>
+          <label class="form-label" id="lbl-f1-sugg-p">Suggestion for the CU-MEDi application process</label>
           <textarea name="suggestion_process" class="form-textarea" rows="2" placeholder="Any suggestions..."></textarea>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Suggestion for the upcoming open house</label>
+          <label class="form-label" id="lbl-f1-sugg-oh">Suggestion for the upcoming open house</label>
           <textarea name="suggestion_openhouse" class="form-textarea" rows="2" placeholder="Any topics you want to see in Open House..."></textarea>
         </div>
 
         <div class="form-group">
           <label class="checkbox-label" style="border-color: var(--primary);">
             <input type="checkbox" name="consent_pdpa" required checked>
-            <span>I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes. <span class="req">*</span></span>
+            <span id="lbl-f1-pdpa">I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes. <span class="req">*</span></span>
           </label>
         </div>
 
@@ -262,9 +322,9 @@
     <!-- ============================================== -->
     <div class="form-card form-stage-container" id="form-stage-2" style="display: none;">
       <div class="form-intro">
-        <span class="form-tag">Stage 02 · Event Registration</span>
-        <h3>Pre-registration for CU-MEDi Open House</h3>
-        <p>Pre-register for the Open House · Room 1209, Fl.12 Bhumisiri Mangkhalanusorn Bldg. & Live via MDCU Facebook · <i>Limited Onsite seats.</i></p>
+        <span class="form-tag" id="f2-tag">Stage 02 · Event Registration</span>
+        <h3 id="f2-title">Pre-registration for CU-MEDi Open House</h3>
+        <p id="f2-desc">Pre-register for the Open House · Room 1209, Fl.12 Bhumisiri Mangkhalanusorn Bldg. & Live via MDCU Facebook · <i>Limited Onsite seats.</i></p>
       </div>
 
       <form id="form2">
@@ -272,50 +332,50 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Email address <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f2-email">Email address <span class="req">*</span></label>
             <input type="email" id="f2-email-display" class="form-input" disabled style="background: #f1f5f9; color: var(--navy); font-weight: 600;">
           </div>
           <div class="form-group">
-            <label class="form-label">First Name & Surname (EN) <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f2-name">First Name & Surname (EN) <span class="req">*</span></label>
             <input type="text" name="name" id="f2-name" class="form-input" placeholder="e.g. Jane Doe" required>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Nationality</label>
+            <label class="form-label" id="lbl-f2-nat">Nationality</label>
             <input type="text" name="nationality" id="f2-nationality" class="form-input" placeholder="e.g. Thai">
           </div>
           <div class="form-group">
-            <label class="form-label">Phone Number <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f2-phone">Phone Number <span class="req">*</span></label>
             <input type="tel" name="phone" id="f2-phone" class="form-input" placeholder="e.g. 081 234 5678" required>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">University / Institution</label>
+            <label class="form-label" id="lbl-f2-uni">University / Institution</label>
             <input type="text" name="university" id="f2-university" class="form-input" placeholder="e.g. Chulalongkorn University">
           </div>
           <div class="form-group">
-            <label class="form-label">Major / Area of Study</label>
+            <label class="form-label" id="lbl-f2-major">Major / Area of Study</label>
             <input type="text" name="major" id="f2-major" class="form-input" placeholder="e.g. Biomedical Science">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">You are: <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f2-recipient">You are: <span class="req">*</span></label>
           <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="recipient_group" value="Prospective Applicant" required checked> Prospective Applicant</label>
-            <label class="radio-label"><input type="radio" name="recipient_group" value="Parent / Guardian"> Parent / Guardian</label>
-            <label class="radio-label"><input type="radio" name="recipient_group" value="Other"> Other</label>
+            <label class="radio-label"><input type="radio" name="recipient_group" value="Prospective Applicant" required checked> <span id="opt-rc-1">Prospective Applicant</span></label>
+            <label class="radio-label"><input type="radio" name="recipient_group" value="Parent / Guardian"> <span id="opt-rc-2">Parent / Guardian</span></label>
+            <label class="radio-label"><input type="radio" name="recipient_group" value="Other"> <span id="opt-rc-3">Other</span></label>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Level of Education</label>
-            <select name="education_level" class="form-select">
+            <label class="form-label" id="lbl-f2-edu">Level of Education</label>
+            <select name="education_level" class="form-select" id="sel-f2-edu">
               <option value="High School">High School</option>
               <option value="Bachelor" selected>Bachelor's Degree</option>
               <option value="Master">Master's Degree</option>
@@ -324,8 +384,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Year of Study (if Bachelor)</label>
-            <select name="year_of_study" class="form-select">
+            <label class="form-label" id="lbl-f2-year">Year of Study (if Bachelor)</label>
+            <select name="year_of_study" class="form-select" id="sel-f2-year">
               <option value="Year 1">Year 1</option>
               <option value="Year 2">Year 2</option>
               <option value="Year 3">Year 3</option>
@@ -335,40 +395,40 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Do you plan to apply to CU-MEDi next year? <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f2-apply">Do you plan to apply to CU-MEDi next year? <span class="req">*</span></label>
           <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="apply_intent" value="Yes" required checked> Yes</label>
-            <label class="radio-label"><input type="radio" name="apply_intent" value="No"> No</label>
-            <label class="radio-label"><input type="radio" name="apply_intent" value="Unsure"> Unsure</label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Yes" required checked> <span id="opt-f2-apply-yes">Yes</span></label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="No"> <span id="opt-f2-apply-no">No</span></label>
+            <label class="radio-label"><input type="radio" name="apply_intent" value="Unsure"> <span id="opt-f2-apply-unsure">Unsure</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">How do you plan to attend? <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f2-attend">How do you plan to attend? <span class="req">*</span></label>
           <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="attend_mode" value="Onsite" id="attend-onsite" required checked> Onsite (Limited Seats at Bhumisiri Bldg.)</label>
-            <label class="radio-label"><input type="radio" name="attend_mode" value="Online" id="attend-online"> Online (via MDCU Facebook Live)</label>
+            <label class="radio-label"><input type="radio" name="attend_mode" value="Onsite" id="attend-onsite" required checked> <span id="opt-attend-onsite">Onsite (Limited Seats at Bhumisiri Bldg.)</span></label>
+            <label class="radio-label"><input type="radio" name="attend_mode" value="Online" id="attend-online"> <span id="opt-attend-online">Online (via MDCU Facebook Live)</span></label>
           </div>
         </div>
 
         <div class="form-group" id="session-select-box">
-          <label class="form-label">Select Session (for Onsite attendance)</label>
+          <label class="form-label" id="lbl-f2-session">Select Session (for Onsite attendance)</label>
           <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="session_choice" value="Session 1" checked> Session 1 (Morning / Program Intro)</label>
-            <label class="radio-label"><input type="radio" name="session_choice" value="Session 2"> Session 2 (Afternoon / Hands-on Workshop)</label>
-            <label class="radio-label"><input type="radio" name="session_choice" value="Both"> Both Sessions</label>
+            <label class="radio-label"><input type="radio" name="session_choice" value="Session 1" checked> <span id="opt-sess-1">Session 1 (Morning / Program Intro)</span></label>
+            <label class="radio-label"><input type="radio" name="session_choice" value="Session 2"> <span id="opt-sess-2">Session 2 (Afternoon / Hands-on Workshop)</span></label>
+            <label class="radio-label"><input type="radio" name="session_choice" value="Both"> <span id="opt-sess-both">Both Sessions</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Additional Comments / Questions</label>
+          <label class="form-label" id="lbl-f2-comments">Additional Comments / Questions</label>
           <textarea name="comments" class="form-textarea" rows="2" placeholder="Feel free to ask any questions..."></textarea>
         </div>
 
         <div class="form-group">
           <label class="checkbox-label" style="border-color: var(--primary);">
             <input type="checkbox" name="consent_pdpa" required checked>
-            <span>I acknowledge that registration details will be used for event check-in and communication. <span class="req">*</span></span>
+            <span id="lbl-f2-pdpa">I acknowledge that registration details will be used for event check-in and communication. <span class="req">*</span></span>
           </label>
         </div>
 
@@ -386,9 +446,9 @@
     <!-- ============================================== -->
     <div class="form-card form-stage-container" id="form-stage-3" style="display: none;">
       <div class="form-intro">
-        <span class="form-tag">Stage 03 · Research & Insight</span>
-        <h3>CU-MEDi Applicant Survey</h3>
-        <p>A questionnaire about medical school applications (~3–5 min). Participation will not affect your application status. Data will be used to enhance the curriculum and faculty.</p>
+        <span class="form-tag" id="f3-tag">Stage 03 · Research & Insight</span>
+        <h3 id="f3-title">CU-MEDi Applicant Survey</h3>
+        <p id="f3-desc">A questionnaire about medical school applications (~3–5 min). Participation will not affect your application status. Data will be used to enhance the curriculum and faculty.</p>
       </div>
 
       <form id="form3">
@@ -396,28 +456,28 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Email address <span class="req">*</span></label>
+            <label class="form-label" id="lbl-f3-email">Email address <span class="req">*</span></label>
             <input type="email" id="f3-email-display" class="form-input" disabled style="background: #f1f5f9; color: var(--navy); font-weight: 600;">
           </div>
           <div class="form-group">
-            <label class="form-label">Full Name</label>
+            <label class="form-label" id="lbl-f3-name">Full Name</label>
             <input type="text" name="name" id="f3-name" class="form-input" placeholder="e.g. Jane Doe">
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Have you applied to CU-MEDi? <span class="req">*</span></label>
-            <select name="applied_status" class="form-select" required>
+            <label class="form-label" id="lbl-f3-status">Have you applied to CU-MEDi? <span class="req">*</span></label>
+            <select name="applied_status" class="form-select" id="sel-f3-status" required>
               <option value="Applied">Applied</option>
               <option value="Preparing">Preparing to Apply</option>
               <option value="Not yet">Not yet</option>
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Gender / Age</label>
+            <label class="form-label" id="lbl-f3-gender">Gender / Age</label>
             <div style="display: flex; gap: 8px;">
-              <select name="gender" class="form-select">
+              <select name="gender" class="form-select" id="sel-f3-gender">
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Other">Prefer not to say</option>
@@ -429,8 +489,8 @@
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Region of Citizenship</label>
-            <select name="region" class="form-select">
+            <label class="form-label" id="lbl-f3-region">Region of Citizenship</label>
+            <select name="region" class="form-select" id="sel-f3-region">
               <option value="East & Southeast Asia" selected>East & Southeast Asia</option>
               <option value="Central & South Asia">Central & South Asia</option>
               <option value="North America">North America (US / Canada)</option>
@@ -440,8 +500,8 @@
             </select>
           </div>
           <div class="form-group">
-            <label class="form-label">Major Type</label>
-            <select name="major" class="form-select">
+            <label class="form-label" id="lbl-f3-major">Major Type</label>
+            <select name="major" class="form-select" id="sel-f3-major">
               <option value="Science" selected>Science</option>
               <option value="Non-science">Non-science</option>
             </select>
@@ -450,7 +510,7 @@
 
         <!-- Top 3 Medical Schools -->
         <div class="form-group">
-          <label class="form-label">Top 3 Medical Schools You Wish to Apply To <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f3-schools">Top 3 Medical Schools You Wish to Apply To <span class="req">*</span></label>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             <input type="text" name="school_rank1" class="form-input" placeholder="1st Rank Choice (e.g. CU-MEDi) *" required>
             <input type="text" name="school_rank2" class="form-input" placeholder="2nd Rank Choice (e.g. NUS, Duke-NUS)">
@@ -461,45 +521,45 @@
         <!-- The 30 Decision Factors (Scale 1-5) -->
         <div class="form-group" style="margin-top: 2rem;">
           <label class="form-label" style="font-size: 1.1rem; color: var(--primary);">
-            30 Decision-Making Factors (Scale 1–5) <span class="req">*</span>
+            <span id="lbl-f3-factors-title">30 Decision-Making Factors (Scale 1–5)</span> <span class="req">*</span>
           </label>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;" id="lbl-f3-factors-desc">
             Rate how each factor impacts your decision on your 1st-rank medical school (1 = No effect, 5 = Very significant)
           </p>
 
           <div class="factor-box">
-            <div class="factor-group-title">Group 1 · Reputation & Academic Factors (15 Factors)</div>
+            <div class="factor-group-title" id="title-group1">Group 1 · Reputation & Academic Factors (15 Factors)</div>
             <div id="group1-factors"></div>
           </div>
 
           <div class="factor-box">
-            <div class="factor-group-title">Group 2 · Lifestyle & Campus Environment (11 Factors)</div>
+            <div class="factor-group-title" id="title-group2">Group 2 · Lifestyle & Campus Environment (11 Factors)</div>
             <div id="group2-factors"></div>
           </div>
 
           <div class="factor-box">
-            <div class="factor-group-title">Group 3 · Cost, Support & Healthcare (4 Factors)</div>
+            <div class="factor-group-title" id="title-group3">Group 3 · Cost, Support & Healthcare (4 Factors)</div>
             <div id="group3-factors"></div>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Did you choose CU-MEDi as your first choice? <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f3-firstchoice">Did you choose CU-MEDi as your first choice? <span class="req">*</span></label>
           <div class="radio-group">
-            <label class="radio-label"><input type="radio" name="first_choice" value="Yes" required checked> Yes</label>
-            <label class="radio-label"><input type="radio" name="first_choice" value="No"> No</label>
+            <label class="radio-label"><input type="radio" name="first_choice" value="Yes" required checked> <span id="opt-f3-fc-yes">Yes</span></label>
+            <label class="radio-label"><input type="radio" name="first_choice" value="No"> <span id="opt-f3-fc-no">No</span></label>
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label">Why did you choose to apply to CU-MEDi?</label>
+          <label class="form-label" id="lbl-f3-whycumedi">Why did you choose to apply to CU-MEDi?</label>
           <textarea name="why_cumedi" class="form-textarea" rows="2" placeholder="Key motivation, prestige, clinical opportunities..."></textarea>
         </div>
 
         <div class="form-group">
           <label class="checkbox-label" style="border-color: var(--primary);">
             <input type="checkbox" name="consent_pdpa" required checked>
-            <span>I consent to providing survey responses for CU-MEDi academic research. <span class="req">*</span></span>
+            <span id="lbl-f3-pdpa">I consent to providing survey responses for CU-MEDi academic research. <span class="req">*</span></span>
           </label>
         </div>
 
