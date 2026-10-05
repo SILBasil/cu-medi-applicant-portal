@@ -19,6 +19,8 @@
       "/stage2*",
       "/stage3*",
       "/portal*",
+      "/dashboard*",
+      "/intelligence*",
       "/api/*"
     ]
   },
