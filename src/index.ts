@@ -30,6 +30,25 @@ const serveIndex = async (c: any) => {
   return c.text('Not found', 404);
 };
 
+// Helper to serve dashboard.html
+const serveDashboard = async (c: any) => {
+  if (c.env?.ASSETS) {
+    const dashUrl = new URL('/dashboard.html', c.req.url);
+    const assetRes = await c.env.ASSETS.fetch(new Request(dashUrl.toString(), {
+      method: 'GET',
+      headers: c.req.raw.headers
+    }));
+    return new Response(assetRes.body, {
+      status: 200,
+      headers: {
+        'content-type': 'text/html; charset=utf-8',
+        'cache-control': 'no-cache'
+      }
+    });
+  }
+  return c.text('Dashboard not found', 404);
+};
+
 app.get('/interested', serveIndex);
 app.get('/stage1', serveIndex);
 app.get('/openhouse', serveIndex);
@@ -37,6 +56,8 @@ app.get('/stage2', serveIndex);
 app.get('/survey', serveIndex);
 app.get('/stage3', serveIndex);
 app.get('/portal', serveIndex);
+app.get('/dashboard', serveDashboard);
+app.get('/intelligence', serveDashboard);
 
 // Helper to get Neon SQL client
 const getDb = (c: any) => {
@@ -332,7 +353,7 @@ app.post('/api/submit/stage3', async (c) => {
   }
 });
 
-// 5. Admin Stats & Summary (from single table)
+// 5. Admin Stats & Summary (from single master table)
 app.get('/api/stats', async (c) => {
   const sql = getDb(c);
   try {
@@ -340,11 +361,40 @@ app.get('/api/stats', async (c) => {
     const stage1Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage1_completed = true;`;
     const stage2Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage2_completed = true;`;
     const stage3Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage3_completed = true;`;
+    const stage2Attended = await sql`SELECT COUNT(*) as count FROM applicants WHERE s2_attended = true;`;
+    const intent2027 = await sql`SELECT COUNT(*) as count FROM applicants WHERE s1_apply_intent ILIKE '%2027%';`;
+    const firstChoice = await sql`SELECT COUNT(*) as count FROM applicants WHERE s3_first_choice = 'first';`;
+
+    const attendModes = await sql`
+      SELECT COALESCE(s2_attend_mode, 'Unspecified') as mode, COUNT(*) as count 
+      FROM applicants 
+      WHERE stage2_completed = true 
+      GROUP BY s2_attend_mode;
+    `;
+
+    const utmSources = await sql`
+      SELECT COALESCE(utm_source, 'Direct') as source, COUNT(*) as count 
+      FROM applicants 
+      WHERE utm_source IS NOT NULL AND utm_source != ''
+      GROUP BY utm_source 
+      ORDER BY count DESC 
+      LIMIT 8;
+    `;
+
+    const topUniversities = await sql`
+      SELECT COALESCE(university, 'Other') as university, COUNT(*) as count 
+      FROM applicants 
+      WHERE university IS NOT NULL AND university != ''
+      GROUP BY university 
+      ORDER BY count DESC 
+      LIMIT 8;
+    `;
+
     const recent = await sql`
-      SELECT id, email, name, phone, stage1_completed, stage2_completed, stage3_completed, updated_at 
+      SELECT id, email, name, phone, university, major, stage1_completed, stage2_completed, stage3_completed, s2_attend_mode, s2_attended, s1_apply_intent, updated_at 
       FROM applicants 
       ORDER BY updated_at DESC 
-      LIMIT 10;
+      LIMIT 15;
     `;
 
     return c.json({
@@ -352,11 +402,45 @@ app.get('/api/stats', async (c) => {
       stage1_count: parseInt(stage1Count[0].count),
       stage2_count: parseInt(stage2Count[0].count),
       stage3_count: parseInt(stage3Count[0].count),
+      stage2_attended_count: parseInt(stage2Attended[0].count),
+      intent_2027_count: parseInt(intent2027[0].count),
+      first_choice_count: parseInt(firstChoice[0].count),
+      attend_modes: attendModes,
+      utm_sources: utmSources,
+      top_universities: topUniversities,
       recent
     });
   } catch (err: any) {
+    console.error('Error fetching stats:', err);
     return c.json({ error: 'Failed to get stats', details: err.message }, 500);
   }
 });
 
+// 6. Full Applicants List (for master table & CSV Export)
+app.get('/api/applicants', async (c) => {
+  const sql = getDb(c);
+  try {
+    const list = await sql`
+      SELECT 
+        id, email, name, phone, nationality, country, university, major,
+        stage1_completed, stage2_completed, stage3_completed,
+        s1_apply_intent, s1_req_readiness, utm_source,
+        s2_attend_mode, s2_session_choice, s2_attended,
+        s3_applied_status, s3_first_choice, s3_why_cumedi,
+        created_at, updated_at
+      FROM applicants
+      ORDER BY id ASC;
+    `;
+
+    return c.json({
+      total: list.length,
+      applicants: list
+    });
+  } catch (err: any) {
+    console.error('Error fetching applicants list:', err);
+    return c.json({ error: 'Failed to get applicants', details: err.message }, 500);
+  }
+});
+
 export default app;
+

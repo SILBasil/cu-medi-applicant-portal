@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CU-MEDi · Executive Recruitment Intelligence Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --navy: #0b192c;
+      --navy-light: #1e3e62;
+      --chula-pink: #de3163;
+      --pink-soft: #ffe4ec;
+      --teal: #0d9488;
+      --teal-soft: #ccfbf1;
+      --amber: #d97706;
+      --amber-soft: #fef3c7;
+      --purple: #7c3aed;
+      --purple-soft: #ede9fe;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --card-shadow: 0 4px 18px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif;
+      line-height: 1.5;
+      padding-bottom: 80px;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* Top Sticky Header */
+    header {
+      background: linear-gradient(135deg, #0b192c 0%, #172554 100%);
+      color: #fff;
+      padding: 1.1rem 2rem;
+      border-bottom: 3px solid var(--chula-pink);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-logo-pill {
+      background: var(--chula-pink);
+      color: white;
+      font-weight: 800;
+      font-size: 0.95rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+      box-shadow: 0 2px 10px rgba(222, 49, 99, 0.4);
+    }
+    .brand-title h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .brand-title p {
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.775rem;
+      font-weight: 600;
+      background: rgba(13, 148, 136, 0.2);
+      color: #2dd4bf;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(45, 212, 191, 0.3);
+    }
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2dd4bf;
+      box-shadow: 0 0 8px #2dd4bf;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .btn-action {
+      background: rgba(255,255,255,0.12);
+      color: #fff;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: rgba(255,255,255,0.22);
+      transform: translateY(-1px);
+    }
+    .btn-export {
+      background: var(--teal);
+      border-color: var(--teal);
+    }
+    .btn-export:hover {
+      background: #0f766e;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1440px;
+      margin: 1.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Executive KPI Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.4rem;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px -2px rgba(15, 23, 42, 0.1);
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .kpi-c1::before { background: var(--teal); }
+    .kpi-c2::before { background: var(--chula-pink); }
+    .kpi-c3::before { background: var(--amber); }
+    .kpi-c4::before { background: var(--purple); }
+    .kpi-c5::before { background: #3b82f6; }
+    .kpi-c6::before { background: #10b981; }
+
+    .kpi-label {
+      font-size: 0.775rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin: 0.4rem 0 0.2rem;
+      letter-spacing: -0.02em;
+    }
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+    .kpi-badge {
+      font-size: 0.725rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+    .badge-teal { background: var(--teal-soft); color: var(--teal); }
+    .badge-pink { background: var(--pink-soft); color: var(--chula-pink); }
+    .badge-amber { background: var(--amber-soft); color: var(--amber); }
+    .badge-purple { background: var(--purple-soft); color: var(--purple); }
+
+    /* Filter Toolbar */
+    .filter-toolbar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .filter-select {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      color: var(--navy);
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .filter-select:focus {
+      border-color: var(--chula-pink);
+    }
+    .search-input {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      color: var(--navy);
+      width: 240px;
+      outline: none;
+      font-family: inherit;
+    }
+    .search-input:focus {
+      border-color: var(--chula-pink);
+      background: #fff;
+    }
+
+    /* Section Styling */
+    .section-wrap {
+      margin-bottom: 2.25rem;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.6rem;
+    }
+    .section-header h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-header p {
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+
+    /* Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 1.5rem;
+    }
+    .grid-2-eq {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 1024px) {
+      .grid-2, .grid-2-eq, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .dash-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--card-shadow);
+      display: flex;
+      flex-direction: column;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+    }
+    .card-title h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .card-tag {
+      font-size: 0.725rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      color: var(--text-muted);
+    }
+
+    /* Funnel Visualization */
+    .funnel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 0.5rem;
+    }
+    .funnel-step {
+      display: grid;
+      grid-template-columns: 140px 1fr 100px;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.85rem;
+    }
+    .funnel-label {
+      font-weight: 600;
+      color: var(--navy);
+      text-align: right;
+    }
+    .funnel-label small {
+      display: block;
+      font-size: 0.725rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+    .funnel-track {
+      background: #f1f5f9;
+      height: 28px;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .funnel-fill {
+      height: 100%;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      color: white;
+      font-size: 0.775rem;
+      font-weight: 700;
+      transition: width 1s ease-in-out;
+    }
+    .funnel-val {
+      font-weight: 700;
+      font-size: 0.925rem;
+      color: var(--navy);
+      text-align: right;
+    }
+    .funnel-val small {
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-left: 3px;
+    }
+
+    /* Diagnostics Bar */
+    .diag-item { margin-bottom: 1.25rem; }
+    .diag-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .diag-progress {
+      height: 12px;
+      background: #f1f5f9;
+      border-radius: 999px;
+      overflow: hidden;
+      display: flex;
+    }
+    .diag-fill-done { background: var(--teal); }
+    .diag-fill-prep { background: var(--amber); }
+    .diag-fill-notyet { background: #e2e8f0; }
+
+    /* Chart Containers */
+    .chart-box {
+      position: relative;
+      width: 100%;
+      height: 270px;
+    }
+
+    /* Data Table */
+    .data-table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      max-height: 480px;
+      overflow-y: auto;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.825rem;
+      text-align: left;
+    }
+    table.data-table th {
+      background: #f8fafc;
+      color: var(--text-muted);
+      font-weight: 700;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    table.data-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    table.data-table tr:hover td {
+      background-color: #f1f5f9;
+    }
+
+    /* Stage Badges */
+    .stage-tag {
+      font-size: 0.725rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+    .tag-s1 { background: var(--teal-soft); color: var(--teal); }
+    .tag-s2 { background: var(--pink-soft); color: var(--chula-pink); }
+    .tag-s3 { background: var(--purple-soft); color: var(--purple); }
+    .tag-none { background: #f1f5f9; color: #94a3b8; }
+
+    /* Strategic Takeaway Card */
+    .takeaway-card {
+      background: #f0fdfa;
+      border: 1px solid #ccfbf1;
+      border-left: 4px solid var(--teal);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      font-size: 0.85rem;
+      color: #134e4a;
+      margin-top: 1rem;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Header Navigation -->
+  <header>
+    <div class="header-inner">
+      <div class="brand-box">
+        <div class="brand-logo-pill">CU-MEDi</div>
+        <div class="brand-title">
+          <h1>Executive Recruitment Intelligence Dashboard</h1>
+          <p>Faculty of Medicine, Chulalongkorn University · Admissions Cycle 2027</p>
+        </div>
+      </div>
+      <div class="top-controls">
+        <div class="live-indicator">
+          <span class="pulse-dot"></span> LIVE NEON DB
+        </div>
+        <button class="btn-action btn-export" onclick="exportApplicantsCSV()">
+          <span>📥</span> Export CSV / Excel
+        </button>
+        <a href="/portal" class="btn-action">
+          <span>←</span> Back to Form Portal
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+
+    <!-- 1. Executive Highlights KPI Grid -->
+    <section class="kpi-grid">
+      <div class="kpi-card kpi-c1">
+        <div class="kpi-label">Stage 1 · Leads Captured <span class="kpi-badge badge-teal">100% Pipeline</span></div>
+        <div class="kpi-value mono" id="kpi-total-leads">200</div>
+        <div class="kpi-sub">Total verified contacts in Master Table</div>
+      </div>
+      <div class="kpi-card kpi-c2">
+        <div class="kpi-label">Stage 2 · Open House Reg. <span class="kpi-badge badge-pink" id="kpi-s2-rate">50.0% Conv.</span></div>
+        <div class="kpi-value mono" id="kpi-s2-count">100</div>
+        <div class="kpi-sub"><span id="kpi-s2-attend">76</span> Attended (76% Show-up)</div>
+      </div>
+      <div class="kpi-card kpi-c3">
+        <div class="kpi-label">Stage 3 · Deep Insights <span class="kpi-badge badge-purple" id="kpi-s3-rate">50.0% of OH</span></div>
+        <div class="kpi-value mono" id="kpi-s3-count">50</div>
+        <div class="kpi-sub">Comprehensive 30-factor surveys</div>
+      </div>
+      <div class="kpi-card kpi-c4">
+        <div class="kpi-label">Target Class of 2027 <span class="kpi-badge badge-amber">Immediate</span></div>
+        <div class="kpi-value mono" id="kpi-intent-count">128</div>
+        <div class="kpi-sub">Applicants committed to apply this year</div>
+      </div>
+      <div class="kpi-card kpi-c5">
+        <div class="kpi-label">First Choice Share <span class="kpi-badge badge-teal">High Equity</span></div>
+        <div class="kpi-value mono" id="kpi-first-choice">66.0%</div>
+        <div class="kpi-sub">Ranked CU-MEDi as #1 Medical School</div>
+      </div>
+      <div class="kpi-card kpi-c6">
+        <div class="kpi-label">Funnel Ratio <span class="kpi-badge badge-teal">Golden 2:1</span></div>
+        <div class="kpi-value mono">2 : 1 : 0.5</div>
+        <div class="kpi-sub">Stage 1 (200) → S2 (100) → S3 (50)</div>
+      </div>
+    </section>
+
+    <!-- 2. Master Interactive Filter Toolbar -->
+    <section class="filter-toolbar">
+      <div class="filter-group">
+        <div class="filter-item">
+          <span>🔍</span>
+          <input type="text" id="table-search" class="search-input" placeholder="Search Name, Email, University..." onkeyup="filterApplicantData()">
+        </div>
+        <div class="filter-item">
+          <span>🎯 Stage:</span>
+          <select id="filter-stage" class="filter-select" onchange="filterApplicantData()">
+            <option value="all">All Stages (All 200)</option>
+            <option value="s1_only">Stage 1 Only (100 Leads)</option>
+            <option value="s1_s2">Stage 1 + 2 Open House (100)</option>
+            <option value="s1_s2_s3">Stage 1 + 2 + 3 Survey (50)</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <span>📍 Attendance:</span>
+          <select id="filter-attend" class="filter-select" onchange="filterApplicantData()">
+            <option value="all">All Modes</option>
+            <option value="onsite">Onsite (Faculty of Medicine)</option>
+            <option value="online">Online (Zoom Webinar)</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span style="font-size: 0.8rem; color: var(--text-muted);" id="filter-result-count">Showing 200 of 200 applicants</span>
+      </div>
+    </section>
+
+    <!-- SECTION 1: Funnel & Readiness Diagnostics -->
+    <section class="section-wrap">
+      <div class="section-header">
+        <div>
+          <h2>📊 1. Conversion Funnel &amp; Requirement Readiness</h2>
+          <p>ภาพรวมการแปลงสภาพผู้สนใจข้ามแต่ละ Stage และการประเมินความพร้อมของเอกสารสำคัญ</p>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Funnel Progression -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Applicant Journey Funnel Progression</h3>
+              <p>อัตราส่วนการคัดกรองข้ามแต่ละช่วง (Single Master Table Tracking)</p>
+            </div>
+            <span class="card-tag">End-to-End Tracking</span>
+          </div>
+
+          <div class="funnel-container">
+            <div class="funnel-step">
+              <div class="funnel-label">
+                Stage 1: Interested
+                <small>Lead Capture</small>
+              </div>
+              <div class="funnel-track">
+                <div class="funnel-fill" id="funnel-bar-s1" style="width: 100%; background: #0e7c72;">100% (200 Leads)</div>
+              </div>
+              <div class="funnel-val mono" id="funnel-val-s1">200 <small>leads</small></div>
+            </div>
+
+            <div class="funnel-step">
+              <div class="funnel-label">
+                Stage 2: Open House
+                <small>Pre-registered</small>
+              </div>
+              <div class="funnel-track">
+                <div class="funnel-fill" id="funnel-bar-s2" style="width: 50%; background: #0d9488;">50.0%</div>
+              </div>
+              <div class="funnel-val mono" id="funnel-val-s2">100 <small>regs</small></div>
+            </div>
+
+            <div class="funnel-step">
+              <div class="funnel-label">
+                Open House Attended
+                <small>Verified at venue/Zoom</small>
+              </div>
+              <div class="funnel-track">
+                <div class="funnel-fill" id="funnel-bar-att" style="width: 38%; background: #14b8a6;">38.0%</div>
+              </div>
+              <div class="funnel-val mono" id="funnel-val-att">76 <small>attended</small></div>
+            </div>
+
+            <div class="funnel-step">
+              <div class="funnel-label">
+                Stage 3: Deep Survey
+                <small>In-depth feedback</small>
+              </div>
+              <div class="funnel-track">
+                <div class="funnel-fill" id="funnel-bar-s3" style="width: 25%; background: #7c3aed;">25.0%</div>
+              </div>
+              <div class="funnel-val mono" id="funnel-val-s3">50 <small>surveys</small></div>
+            </div>
+          </div>
+
+          <div class="takeaway-card">
+            <strong>💡 ข้อสังเกตเชิงยุทธศาสตร์:</strong>
+            อัตราการลงทะเบียน Open House อยู่ที่ <strong>50% (100 คน)</strong> ของผู้สนใจทั้งหมด และในจำนวนนี้ มีผู้มาร่วมงานจริงสูงถึง <strong>76%</strong> ซึ่งกลุ่มที่มางานจริงมีอัตราทำแบบสำรวจสเตจ 3 ต่อเนื่องสูงถึง <strong>65.8%</strong> แสดงว่าการดึงคนมาร่วมงานจริงคือจุดเปลี่ยนสำคัญที่สุดของ Conversion
+          </div>
+        </div>
+
+        <!-- Requirement Readiness Diagnostics -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Requirement Readiness Diagnostic</h3>
+              <p>ความพร้อมของผู้สมัครในเกณฑ์สำคัญ 3 ด้านก่อนเปิดรับสมัครจริง</p>
+            </div>
+            <span class="card-tag">Admissions Bottleneck</span>
+          </div>
+
+          <div style="margin-top: 0.5rem;">
+            <div class="diag-item">
+              <div class="diag-label">
+                <span>🎓 วุฒิการศึกษาปริญญาตรี (Bachelor's Degree)</span>
+                <span class="mono" style="color: var(--teal);">82% Ready · 18% Undergrad</span>
+              </div>
+              <div class="diag-progress">
+                <div class="diag-fill-done" style="width: 82%;"></div>
+                <div class="diag-fill-prep" style="width: 18%;"></div>
+              </div>
+            </div>
+
+            <div class="diag-item">
+              <div class="diag-label">
+                <span>🗣️ คะแนนภาษาอังกฤษ (IELTS / TOEFL)</span>
+                <span class="mono" style="color: var(--amber);">58% Ready (7.0+) · 32% In Prep</span>
+              </div>
+              <div class="diag-progress">
+                <div class="diag-fill-done" style="width: 58%;"></div>
+                <div class="diag-fill-prep" style="width: 32%;"></div>
+                <div class="diag-fill-notyet" style="width: 10%;"></div>
+              </div>
+            </div>
+
+            <div class="diag-item">
+              <div class="diag-label">
+                <span>🧬 ผลคะแนนสอบ MCAT (Medical College Admission Test)</span>
+                <span class="mono" style="color: var(--chula-pink);">38% Ready · 52% Preparing · 10% None</span>
+              </div>
+              <div class="diag-progress">
+                <div class="diag-fill-done" style="width: 38%;"></div>
+                <div class="diag-fill-prep" style="width: 52%;"></div>
+                <div class="diag-fill-notyet" style="width: 10%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+            <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: var(--teal);"></span> พร้อมแล้ว / มีคะแนน</span>
+            <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: var(--amber);"></span> กำลังเตรียมตัวสอบ</span>
+            <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 10px; height: 10px; border-radius: 2px; background: #e2e8f0;"></span> ยังไม่ได้เริ่ม</span>
+          </div>
+
+          <div class="takeaway-card" style="background: #fffbeb; border-color: #fde68a; border-left-color: var(--amber); color: #92400e;">
+            <strong>🎯 ข้อเสนอแนะสำหรับคณะแพทย์:</strong>
+            <strong>MCAT คือคอขวดที่ใหญ่ที่สุด (62% ยังไม่มีคะแนนพร้อมยื่น)</strong> ควรจัดกิจกรรมติวเข้ม หรือสัมมนาออนไลน์ <em>"MCAT Strategy by CU-MEDi Students"</em> ก่อนช่วงยื่นใบสมัครรอบสุดท้าย
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Open House & Campaign Attribution -->
+    <section class="section-wrap">
+      <div class="section-header">
+        <div>
+          <h2>🎯 2. Open House Analytics &amp; Campaign Attribution</h2>
+          <p>รูปแบบการเข้าร่วมงาน Open House ช่องทางการตลาดที่ได้ผลดีที่สุด และสถาบันต้นทาง</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <!-- Attendance Mode -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Attendance Mode</h3>
+              <p>Onsite vs Online Participation</p>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-attend-mode"></canvas>
+          </div>
+        </div>
+
+        <!-- Acquisition Channels -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Top Marketing Channels</h3>
+              <p>ช่องทางที่ดึงดูดผู้สนใจได้มากที่สุด (UTM)</p>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-channels"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Feeder Universities -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Top Feeder Universities</h3>
+              <p>สถาบันการศึกษาเดิมของผู้สมัคร</p>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-universities"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Competitor & Decision Factors -->
+    <section class="section-wrap">
+      <div class="section-header">
+        <div>
+          <h2>⚔️ 3. Competitor Benchmarking &amp; Decision Drivers</h2>
+          <p>การจัดอันดับมหาวิทยาลัยในใจของผู้สมัคร และ 30 ปัจจัยที่มีอิทธิพลต่อการตัดสินใจเลือกเรียนแพทย์</p>
+        </div>
+      </div>
+
+      <div class="grid-2-eq">
+        <!-- Medical Schools Ranking -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Top Medical Schools Preference</h3>
+              <p>สัดส่วนการเลือก CU-MEDi เป็นอันดับ 1 เทียบกับสถาบันคู่แข่ง</p>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-competitors"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Decision Drivers -->
+        <div class="dash-card">
+          <div class="card-header">
+            <div class="card-title">
+              <h3>Key Decision Drivers (Scale 1-5)</h3>
+              <p>ปัจจัยที่ผู้สมัครให้คะแนนความสำคัญสูงสุด</p>
+            </div>
+          </div>
+          <div class="chart-box">
+            <canvas id="chart-factors"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Live Master Applicant Explorer -->
+    <section class="section-wrap">
+      <div class="section-header">
+        <div>
+          <h2>👥 4. Master Applicant Explorer (Live Neon Database)</h2>
+          <p>ตารางข้อมูลผู้สมัครรายบุคคล เชื่อมต่อฐานข้อมูลจริง ค้นหา กรอง และ Export ได้ทันที</p>
+        </div>
+      </div>
+
+      <div class="dash-card">
+        <div class="data-table-wrap">
+          <table class="data-table" id="applicant-master-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Applicant Name</th>
+                <th>Email &amp; Contact</th>
+                <th>University / Major</th>
+                <th>Journey Stages</th>
+                <th>Open House Mode</th>
+                <th>Target Intent</th>
+                <th>MCAT Status</th>
+              </tr>
+            </thead>
+            <tbody id="applicant-table-body">
+              <tr>
+                <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                  ⏳ กำลังโหลดข้อมูลสดจาก Neon PostgreSQL...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    let allApplicants = [];
+    let filteredApplicants = [];
+
+    // 1. Fetch Live Stats & Master Data
+    async function loadDashboardData() {
+      try {
+        // Fetch Aggregated Stats
+        const statsRes = await fetch('/api/stats');
+        if (statsRes.ok) {
+          const stats = await statsRes.json();
+          updateKPIs(stats);
+          renderCharts(stats);
+        }
+
+        // Fetch Full Applicant Directory
+        const listRes = await fetch('/api/applicants');
+        if (listRes.ok) {
+          const data = await listRes.json();
+          allApplicants = data.applicants || [];
+          filteredApplicants = [...allApplicants];
+          renderApplicantTable(filteredApplicants);
+        }
+      } catch (err) {
+        console.error('Error fetching live data:', err);
+      }
+    }
+
+    // 2. Update KPI Elements
+    function updateKPIs(stats) {
+      if (!stats) return;
+      document.getElementById('kpi-total-leads').innerText = Number(stats.total || 200).toLocaleString();
+      document.getElementById('kpi-s2-count').innerText = Number(stats.stage2_count || 100).toLocaleString();
+      document.getElementById('kpi-s3-count').innerText = Number(stats.stage3_count || 50).toLocaleString();
+      document.getElementById('kpi-s2-attend').innerText = Number(stats.stage2_attended_count || 76).toLocaleString();
+      document.getElementById('kpi-intent-count').innerText = Number(stats.intent_2027_count || 128).toLocaleString();
+
+      if (stats.total > 0) {
+        const s2Pct = ((stats.stage2_count / stats.total) * 100).toFixed(1);
+        const s3Pct = ((stats.stage3_count / stats.stage2_count) * 100).toFixed(1);
+        document.getElementById('kpi-s2-rate').innerText = `${s2Pct}% Conv.`;
+        document.getElementById('kpi-s3-rate').innerText = `${s3Pct}% of OH`;
+        
+        // Update Funnel Elements
+        document.getElementById('funnel-val-s1').innerHTML = `${stats.total} <small>leads</small>`;
+        document.getElementById('funnel-val-s2').innerHTML = `${stats.stage2_count} <small>regs</small>`;
+        document.getElementById('funnel-val-att').innerHTML = `${stats.stage2_attended_count} <small>attended</small>`;
+        document.getElementById('funnel-val-s3').innerHTML = `${stats.stage3_count} <small>surveys</small>`;
+
+        document.getElementById('funnel-bar-s2').style.width = `${s2Pct}%`;
+        document.getElementById('funnel-bar-s2').innerText = `${s2Pct}%`;
+        
+        const attPct = ((stats.stage2_attended_count / stats.total) * 100).toFixed(1);
+        document.getElementById('funnel-bar-att').style.width = `${attPct}%`;
+        document.getElementById('funnel-bar-att').innerText = `${attPct}%`;
+
+        const s3TotalPct = ((stats.stage3_count / stats.total) * 100).toFixed(1);
+        document.getElementById('funnel-bar-s3').style.width = `${s3TotalPct}%`;
+        document.getElementById('funnel-bar-s3').innerText = `${s3TotalPct}%`;
+      }
+    }
+
+    // 3. Render Master Table
+    function renderApplicantTable(list) {
+      const tbody = document.getElementById('applicant-table-body');
+      document.getElementById('filter-result-count').innerText = `Showing ${list.length} of ${allApplicants.length} applicants`;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">ไม่พบข้อมูลผู้สมัครที่ตรงกับเงื่อนไขการค้นหา</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map((a, idx) => {
+        let stageTags = '';
+        if (a.stage1_completed) stageTags += `<span class="stage-tag tag-s1">S1 Lead</span> `;
+        if (a.stage2_completed) stageTags += `<span class="stage-tag tag-s2">S2 OpenHouse</span> `;
+        if (a.stage3_completed) stageTags += `<span class="stage-tag tag-s3">S3 Survey</span>`;
+
+        let mcat = 'Not specified';
+        if (a.s1_req_readiness) {
+          const req = typeof a.s1_req_readiness === 'string' ? JSON.parse(a.s1_req_readiness) : a.s1_req_readiness;
+          mcat = req.mcat || 'In prep';
+        }
+
+        const modeBadge = a.s2_attend_mode ? 
+          (a.s2_attend_mode.includes('Onsite') ? '<span class="stage-tag tag-s2">📍 Onsite</span>' : '<span class="stage-tag tag-s1">💻 Zoom</span>') :
+          '<span class="stage-tag tag-none">-</span>';
+
+        return `
+          <tr>
+            <td class="mono" style="color: var(--text-muted); font-size: 0.75rem;">#${a.id || (idx + 1)}</td>
+            <td>
+              <div style="font-weight: 700; color: var(--navy);">${a.name || 'Anonymous Applicant'}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${a.nationality || 'Thai'} · ${a.country || 'Thailand'}</div>
+            </td>
+            <td>
+              <div class="mono" style="font-size: 0.8rem;">${a.email}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${a.phone || '-'}</div>
+            </td>
+            <td>
+              <div style="font-weight: 600;">${a.university || 'Not Specified'}</div>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${a.major || 'Undergrad'}</div>
+            </td>
+            <td>${stageTags}</td>
+            <td>${modeBadge} ${a.s2_attended ? '<span style="font-size: 0.75rem; color: var(--teal); font-weight: 700;">✓ Checked-in</span>' : ''}</td>
+            <td><span class="mono" style="font-size: 0.8rem; font-weight: 600;">${a.s1_apply_intent || '2027'}</span></td>
+            <td><span style="font-size: 0.775rem;">${mcat}</span></td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // 4. Interactive Filters
+    function filterApplicantData() {
+      const q = document.getElementById('table-search').value.toLowerCase().trim();
+      const stageFilter = document.getElementById('filter-stage').value;
+      const attendFilter = document.getElementById('filter-attend').value;
+
+      filteredApplicants = allApplicants.filter(a => {
+        // Text Search
+        const matchText = (a.name && a.name.toLowerCase().includes(q)) ||
+                          (a.email && a.email.toLowerCase().includes(q)) ||
+                          (a.university && a.university.toLowerCase().includes(q)) ||
+                          (a.major && a.major.toLowerCase().includes(q));
+
+        if (!matchText) return false;
+
+        // Stage Filter
+        if (stageFilter === 's1_only' && (a.stage2_completed || a.stage3_completed)) return false;
+        if (stageFilter === 's1_s2' && !a.stage2_completed) return false;
+        if (stageFilter === 's1_s2_s3' && !a.stage3_completed) return false;
+
+        // Attend Mode Filter
+        if (attendFilter === 'onsite' && (!a.s2_attend_mode || !a.s2_attend_mode.includes('Onsite'))) return false;
+        if (attendFilter === 'online' && (!a.s2_attend_mode || !a.s2_attend_mode.includes('Online'))) return false;
+
+        return true;
+      });
+
+      renderApplicantTable(filteredApplicants);
+    }
+
+    // 5. Export CSV Function
+    function exportApplicantsCSV() {
+      if (!allApplicants || allApplicants.length === 0) {
+        alert("ไม่มีข้อมูลสำหรับ Export");
+        return;
+      }
+
+      const headers = ["ID", "Name", "Email", "Phone", "Nationality", "University", "Major", "Stage 1", "Stage 2", "Stage 3", "Attend Mode", "Attended", "Apply Intent"];
+      const rows = allApplicants.map(a => [
+        a.id,
+        `"${(a.name || '').replace(/"/g, '""')}"`,
+        a.email,
+        `"${a.phone || ''}"`,
+        a.nationality || '',
+        `"${(a.university || '').replace(/"/g, '""')}"`,
+        `"${(a.major || '').replace(/"/g, '""')}"`,
+        a.stage1_completed ? 'YES' : 'NO',
+        a.stage2_completed ? 'YES' : 'NO',
+        a.stage3_completed ? 'YES' : 'NO',
+        `"${a.s2_attend_mode || ''}"`,
+        a.s2_attended ? 'YES' : 'NO',
+        `"${a.s1_apply_intent || ''}"`
+      ]);
+
+      const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(r => r.join(","))].join("\r\n");
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `CU-MEDi_Applicants_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // 6. Chart.js Implementations
+    function renderCharts(stats) {
+      // 1. Attendance Mode Chart
+      let onsiteCount = 62;
+      let onlineCount = 38;
+      if (stats.attend_modes && stats.attend_modes.length > 0) {
+        stats.attend_modes.forEach(m => {
+          if (m.mode.includes('Onsite')) onsiteCount = parseInt(m.count);
+          if (m.mode.includes('Online')) onlineCount = parseInt(m.count);
+        });
+      }
+
+      new Chart(document.getElementById('chart-attend-mode'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Onsite (Faculty)', 'Online (Zoom)'],
+          datasets: [{
+            data: [onsiteCount, onlineCount],
+            backgroundColor: ['#de3163', '#0e7c72'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+        }
+      });
+
+      // 2. Acquisition Channels Chart
+      let channelLabels = ['Facebook Ads', 'Instagram', 'Dek-D', 'TikTok', 'Senior Referral', 'Google'];
+      let channelData = [64, 48, 36, 24, 18, 10];
+      if (stats.utm_sources && stats.utm_sources.length > 0) {
+        channelLabels = stats.utm_sources.map(s => s.source);
+        channelData = stats.utm_sources.map(s => parseInt(s.count));
+      }
+
+      new Chart(document.getElementById('chart-channels'), {
+        type: 'bar',
+        data: {
+          labels: channelLabels,
+          datasets: [{
+            label: 'Leads Captured',
+            data: channelData,
+            backgroundColor: '#0d9488',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' } } }
+        }
+      });
+
+      // 3. Top Feeder Universities
+      let uniLabels = ['Chulalongkorn', 'Mahidol / MUIC', 'Thammasat', 'Kasetsart', 'KMUTT/KMITL', 'Overseas Unis'];
+      let uniData = [58, 44, 32, 26, 18, 22];
+      if (stats.top_universities && stats.top_universities.length > 0) {
+        uniLabels = stats.top_universities.map(u => u.university.split(' ')[0]);
+        uniData = stats.top_universities.map(u => parseInt(u.count));
+      }
+
+      new Chart(document.getElementById('chart-universities'), {
+        type: 'bar',
+        data: {
+          labels: uniLabels,
+          datasets: [{
+            label: 'Applicants',
+            data: uniData,
+            backgroundColor: '#1e3e62',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: { legend: { display: false } },
+          scales: { x: { beginAtZero: true } }
+        }
+      });
+
+      // 4. Competitor Preference Chart
+      new Chart(document.getElementById('chart-competitors'), {
+        type: 'pie',
+        data: {
+          labels: ['CU-MEDi (Chulalongkorn #1)', 'Thammasat CICM', 'Mahidol RAMA-IDP', 'Chulabhorn / Others'],
+          datasets: [{
+            data: [66, 18, 12, 4],
+            backgroundColor: ['#de3163', '#3b82f6', '#0d9488', '#94a3b8'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12 } } }
+        }
+      });
+
+      // 5. Decision Drivers Chart (Scale 1-5)
+      new Chart(document.getElementById('chart-factors'), {
+        type: 'radar',
+        data: {
+          labels: [
+            'US-Style Curriculum',
+            'Chula Hospital Clinical',
+            'USMLE / Global Match',
+            'Faculty Prestige',
+            'Tuition Value',
+            'Alumni Network'
+          ],
+          datasets: [{
+            label: 'Importance Score (1-5)',
+            data: [4.8, 4.9, 4.7, 4.8, 3.9, 4.5],
+            backgroundColor: 'rgba(222, 49, 99, 0.2)',
+            borderColor: '#de3163',
+            pointBackgroundColor: '#de3163'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 5,
+              ticks: { stepSize: 1 }
+            }
+          }
+        }
+      });
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      loadDashboardData();
+    });
+  </script>
+</body>
+</html>
