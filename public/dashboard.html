@@ -784,7 +784,7 @@
           <!-- Bottom Map Legend -->
           <div class="map-legend-bar" id="map-legend-bar">
             <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล</span>
-            <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ</span>
+            <span class="legend-chip" style="--chip-c: #6366f1;">ภาคเหนือ</span>
             <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้</span>
             <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคกลาง & ต.อ.</span>
             <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคอีสาน</span>
@@ -883,7 +883,7 @@
               <div class="funnel-step-sub">Initial Registrations</div>
             </div>
             <div class="funnel-track">
-              <div class="funnel-bar" id="fn-s1-bar" style="width: 100%; background: var(--navy);">100%</div>
+              <div class="funnel-bar" id="fn-s1-bar" style="width: 100%; background: #1b2a4a;">100%</div>
             </div>
             <div class="funnel-num mono" id="fn-s1-val">202</div>
           </div>
@@ -894,7 +894,7 @@
               <div class="funnel-step-sub">Pre-registered</div>
             </div>
             <div class="funnel-track">
-              <div class="funnel-bar" id="fn-s2-bar" style="width: 50%; background: var(--navy-light);">49.5%</div>
+              <div class="funnel-bar" id="fn-s2-bar" style="width: 50%; background: #2563eb;">49.5%</div>
             </div>
             <div class="funnel-num mono" id="fn-s2-val">100</div>
           </div>
@@ -905,7 +905,7 @@
               <div class="funnel-step-sub">Verified Attended</div>
             </div>
             <div class="funnel-track">
-              <div class="funnel-bar" id="fn-att-bar" style="width: 38%; background: var(--primary);">37.6%</div>
+              <div class="funnel-bar" id="fn-att-bar" style="width: 38%; background: #0d9488;">37.6%</div>
             </div>
             <div class="funnel-num mono" id="fn-att-val">76</div>
           </div>
@@ -916,7 +916,7 @@
               <div class="funnel-step-sub">Completed Survey</div>
             </div>
             <div class="funnel-track">
-              <div class="funnel-bar" id="fn-s3-bar" style="width: 25%; background: #be123c;">24.8%</div>
+              <div class="funnel-bar" id="fn-s3-bar" style="width: 25%; background: #a6192e;">24.8%</div>
             </div>
             <div class="funnel-num mono" id="fn-s3-val">50</div>
           </div>
@@ -968,8 +968,8 @@
         </div>
 
         <div style="display: flex; gap: 14px; margin-top: 1.25rem; font-size: 0.725rem; color: var(--text-muted);">
-          <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--navy);"></span> มีคะแนน/จบแล้ว</span>
-          <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: var(--primary);"></span> มีกำหนดสอบ/กำลังเตรียมตัว</span>
+          <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #059669;"></span> มีคะแนน/จบแล้ว</span>
+          <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #d97706;"></span> มีกำหนดสอบ/กำลังเตรียมตัว</span>
           <span style="display: flex; align-items: center; gap: 5px;"><span style="width: 8px; height: 8px; border-radius: 2px; background: #cbd5e1;"></span> ยังไม่เริ่ม</span>
         </div>
       </div>
@@ -1083,10 +1083,10 @@
     // 3. Leaflet Geographic Map & Regional Leaderboard
     const REGION_COLORS = {
       'bkk': { fill: '#a6192e', stroke: '#7f1222' },
-      'intl': { fill: '#1b2a4a', stroke: '#0f172a' },
-      'north': { fill: '#2c3e66', stroke: '#1b2a4a' },
+      'intl': { fill: '#2563eb', stroke: '#1d4ed8' },
+      'north': { fill: '#6366f1', stroke: '#4f46e5' },
       'south': { fill: '#059669', stroke: '#047857' },
-      'central': { fill: '#64748b', stroke: '#475569' },
+      'central': { fill: '#0891b2', stroke: '#0e7490' },
       'northeast': { fill: '#d97706', stroke: '#b45309' }
     };
 
@@ -1279,7 +1279,7 @@
         const northeast = geoData.northeast?.count || 0;
         legendEl.innerHTML = `
           <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (${bkk} คน)</span>
-          <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (${north} คน)</span>
+          <span class="legend-chip" style="--chip-c: #6366f1;">ภาคเหนือ (${north} คน)</span>
           <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (${south} คน)</span>
           <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคกลาง & ต.อ. (${central} คน)</span>
           <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคอีสาน (${northeast} คน)</span>
@@ -1375,7 +1375,16 @@
             datasets: [{
               label: 'ผู้สมัคร (คน)',
               data: data.length ? data : [35, 31, 31, 28, 28, 26],
-              backgroundColor: '#a6192e',
+              backgroundColor: [
+                '#059669', // Line OA (Emerald)
+                '#d97706', // Dek-D (Amber)
+                '#be185d', // Instagram (Rose)
+                '#4f46e5', // Referral (Indigo)
+                '#2563eb', // Facebook Ads (Royal Blue)
+                '#0284c7', // Google Search (Sky Blue)
+                '#334155', // TikTok Organic (Slate)
+                '#64748b'  // Direct/Other (Muted Slate)
+              ],
               borderRadius: 6
             }]
           },
@@ -1408,7 +1417,15 @@
             datasets: [{
               label: 'จำนวนผู้สมัคร (คน)',
               data: data.length ? data : [26, 23, 23, 23, 20, 19, 18],
-              backgroundColor: '#1b2a4a',
+              backgroundColor: [
+                '#1b2a4a', // 1. Deep Slate Navy
+                '#2563eb', // 2. Royal Blue
+                '#4f46e5', // 3. Indigo
+                '#0891b2', // 4. Ocean Teal
+                '#059669', // 5. Emerald Green
+                '#d97706', // 6. Warm Amber
+                '#a6192e'  // 7. Chula Crimson
+              ],
               borderRadius: 6
             }]
           },
@@ -1445,7 +1462,14 @@
             labels: topSchools.map(x => x.name),
             datasets: [{
               data: topSchools.map(x => x.count),
-              backgroundColor: ['#a6192e', '#1b2a4a', '#334155', '#475569', '#64748b', '#94a3b8'],
+              backgroundColor: [
+                '#a6192e',
+                '#d97706',
+                '#1b2a4a',
+                '#0d9488',
+                '#4f46e5',
+                '#0284c7'
+              ],
               borderColor: '#ffffff',
               borderWidth: 2
             }]
