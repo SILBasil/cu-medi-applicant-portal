@@ -462,6 +462,169 @@ function setupStageHeader() {
   }
 }
 
+// Dropdown Options Multilingual Mapping
+const DROPDOWN_OPTIONS = {
+  'sel-f2-edu': {
+    en: [
+      { value: "", text: "-- Select Level --" },
+      { value: "High School", text: "High School" },
+      { value: "Bachelor", text: "Bachelor's Degree" },
+      { value: "Master", text: "Master's Degree" },
+      { value: "Doctoral", text: "Doctoral Degree" },
+      { value: "Other", text: "Other" }
+    ],
+    th: [
+      { value: "", text: "-- เลือกระดับการศึกษา --" },
+      { value: "High School", text: "มัธยมศึกษาตอนปลาย (High School)" },
+      { value: "Bachelor", text: "ปริญญาตรี (Bachelor's Degree)" },
+      { value: "Master", text: "ปริญญาโท (Master's Degree)" },
+      { value: "Doctoral", text: "ปริญญาเอก (Doctoral Degree)" },
+      { value: "Other", text: "อื่นๆ (Other)" }
+    ]
+  },
+  'sel-f2-year': {
+    en: [
+      { value: "", text: "-- Select Year --" },
+      { value: "Year 1", text: "Year 1" },
+      { value: "Year 2", text: "Year 2" },
+      { value: "Year 3", text: "Year 3" },
+      { value: "Year 4", text: "Year 4 / Graduated" }
+    ],
+    th: [
+      { value: "", text: "-- เลือกชั้นปี --" },
+      { value: "Year 1", text: "ปี 1 (Year 1)" },
+      { value: "Year 2", text: "ปี 2 (Year 2)" },
+      { value: "Year 3", text: "ปี 3 (Year 3)" },
+      { value: "Year 4", text: "ปี 4 / สำเร็จการศึกษาแล้ว (Year 4 / Graduated)" }
+    ]
+  },
+  'sel-f3-status': {
+    en: [
+      { value: "", text: "-- Select Status --" },
+      { value: "Applied", text: "Applied" },
+      { value: "Preparing", text: "Preparing to Apply" },
+      { value: "Not yet", text: "Not yet" },
+      { value: "Decided not to apply", text: "Decided not to apply" }
+    ],
+    th: [
+      { value: "", text: "-- สถานะการสมัคร --" },
+      { value: "Applied", text: "ยื่นใบสมัครเรียบร้อยแล้ว (Applied)" },
+      { value: "Preparing", text: "กำลังเตรียมตัวสมัคร (Preparing to Apply)" },
+      { value: "Not yet", text: "ยังไม่ได้สมัคร (Not yet)" },
+      { value: "Decided not to apply", text: "ตัดสินใจไม่สมัคร (Decided not to apply)" }
+    ]
+  },
+  'sel-f3-intake': {
+    en: [
+      { value: "", text: "-- Select Round --" },
+      { value: "Direct Admission 2027", text: "Direct Admission 2027" },
+      { value: "International 2027", text: "International 2027" }
+    ],
+    th: [
+      { value: "", text: "-- เลือกรอบการรับสมัคร --" },
+      { value: "Direct Admission 2027", text: "รอบรับตรง 2027 (Direct Admission 2027)" },
+      { value: "International 2027", text: "รอบนานาชาติ 2027 (International 2027)" }
+    ]
+  },
+  'sel-f3-gender': {
+    en: [
+      { value: "", text: "-- Gender --" },
+      { value: "Male", text: "Male" },
+      { value: "Female", text: "Female" },
+      { value: "Other", text: "Prefer not to say" }
+    ],
+    th: [
+      { value: "", text: "-- ระบุเพศ --" },
+      { value: "Male", text: "ชาย (Male)" },
+      { value: "Female", text: "หญิง (Female)" },
+      { value: "Other", text: "ไม่ประสงค์ระบุ (Prefer not to say)" }
+    ]
+  },
+  'sel-f3-region': {
+    en: [
+      { value: "", text: "-- Select Region --" },
+      { value: "East & Southeast Asia", text: "East & Southeast Asia" },
+      { value: "Central & South Asia", text: "Central & South Asia" },
+      { value: "North America", text: "North America (US / Canada)" },
+      { value: "Western Europe", text: "Western Europe" },
+      { value: "Australia & Pacific Islands", text: "Australia & Pacific Islands" },
+      { value: "Other", text: "Other" }
+    ],
+    th: [
+      { value: "", text: "-- เลือกภูมิภาค --" },
+      { value: "East & Southeast Asia", text: "เอเชียตะวันออกและเอเชียตะวันออกเฉียงใต้" },
+      { value: "Central & South Asia", text: "เอเชียกลางและเอเชียใต้" },
+      { value: "North America", text: "อเมริกาเหนือ (สหรัฐฯ / แคนาดา)" },
+      { value: "Western Europe", text: "ยุโรปตะวันตก" },
+      { value: "Australia & Pacific Islands", text: "ออสเตรเลียและหมู่เกาะแปซิฟิก" },
+      { value: "Other", text: "อื่นๆ (Other)" }
+    ]
+  },
+  'sel-f3-major': {
+    en: [
+      { value: "", text: "-- Select Major Type --" },
+      { value: "Science", text: "Science" },
+      { value: "Non-science", text: "Non-science" }
+    ],
+    th: [
+      { value: "", text: "-- เลือกสายการศึกษา --" },
+      { value: "Science", text: "สายวิทยาศาสตร์ (Science)" },
+      { value: "Non-science", text: "สายนอกวิทยาศาสตร์ / ศิลป์ (Non-science)" }
+    ]
+  },
+  'f3-dest-rank': {
+    en: [
+      { value: "", text: "-- Choose --" },
+      { value: "Asia (outside Thailand)", text: "Asia (outside Thailand)" },
+      { value: "Europe", text: "Europe" },
+      { value: "Australia / New Zealand", text: "Australia / New Zealand" },
+      { value: "North America", text: "North America" },
+      { value: "South America", text: "South America" },
+      { value: "Africa", text: "Africa" }
+    ],
+    th: [
+      { value: "", text: "-- เลือกภูมิภาค/ทวีป --" },
+      { value: "Asia (outside Thailand)", text: "เอเชีย (นอกประเทศไทย)" },
+      { value: "Europe", text: "ยุโรป (Europe)" },
+      { value: "Australia / New Zealand", text: "ออสเตรเลีย / นิวซีแลนด์" },
+      { value: "North America", text: "อเมริกาเหนือ (North America)" },
+      { value: "South America", text: "อเมริกาใต้ (South America)" },
+      { value: "Africa", text: "แอฟริกา (Africa)" }
+    ]
+  }
+};
+
+function updateDropdownTranslations(lang) {
+  const currentLangCode = lang === 'th' ? 'th' : 'en';
+
+  const updateSelect = (selectId, optionsList) => {
+    const sel = document.getElementById(selectId);
+    if (!sel || !optionsList) return;
+    const currentVal = sel.value;
+
+    sel.innerHTML = optionsList.map(opt => {
+      const isPlaceholder = opt.value === "";
+      return `<option value="${opt.value}" ${isPlaceholder ? 'disabled' : ''} ${opt.value === currentVal ? 'selected' : ''}>${opt.text}</option>`;
+    }).join('');
+
+    if (currentVal !== undefined && currentVal !== "") {
+      sel.value = currentVal;
+    }
+  };
+
+  updateSelect('sel-f2-edu', DROPDOWN_OPTIONS['sel-f2-edu'][currentLangCode]);
+  updateSelect('sel-f2-year', DROPDOWN_OPTIONS['sel-f2-year'][currentLangCode]);
+  updateSelect('sel-f3-status', DROPDOWN_OPTIONS['sel-f3-status'][currentLangCode]);
+  updateSelect('sel-f3-intake', DROPDOWN_OPTIONS['sel-f3-intake'][currentLangCode]);
+  updateSelect('sel-f3-gender', DROPDOWN_OPTIONS['sel-f3-gender'][currentLangCode]);
+  updateSelect('sel-f3-region', DROPDOWN_OPTIONS['sel-f3-region'][currentLangCode]);
+  updateSelect('sel-f3-major', DROPDOWN_OPTIONS['sel-f3-major'][currentLangCode]);
+
+  ['f3-dest-r1', 'f3-dest-r2', 'f3-dest-r3'].forEach(id => {
+    updateSelect(id, DROPDOWN_OPTIONS['f3-dest-rank'][currentLangCode]);
+  });
+}
+
 // Language Switcher Function
 function setLanguage(lang) {
   currentLang = lang;
@@ -635,6 +798,53 @@ function setLanguage(lang) {
   setText('lbl-f3-roadshow', t.lbl_f3_roadshow);
   setHtml('lbl-f3-pdpa', t.lbl_f3_pdpa + ' <span class="req">*</span>');
   setText('btn-submit-3', t.btn_submit_s3);
+
+  // Update dropdown options in selected language
+  updateDropdownTranslations(lang);
+
+  // Update input placeholders
+  const setPlaceholder = (id, ph) => {
+    const el = document.getElementById(id);
+    if (el && ph) el.setAttribute('placeholder', ph);
+  };
+
+  if (lang === 'th') {
+    setPlaceholder('f1-name', 'เช่น สมชาย ใจดี');
+    setPlaceholder('f1-phone', 'เช่น 081 234 5678');
+    setPlaceholder('f1-nationality', 'เช่น ไทย, อเมริกัน, สิงคโปร์');
+    setPlaceholder('f1-country', 'เช่น ประเทศไทย');
+    setPlaceholder('f1-degree', 'เช่น วท.บ. ชีววิทยาศาสตร์');
+    setPlaceholder('f1-uni', 'เช่น จุฬาลงกรณ์มหาวิทยาลัย');
+    setPlaceholder('f1-heard-other', 'โปรดระบุช่องทางอื่น');
+    setPlaceholder('f1-info-other', 'โปรดระบุข้อมูลที่ต้องการเพิ่มเติม');
+    setPlaceholder('f2-name', 'เช่น สมหญิง รักเรียน');
+    setPlaceholder('f2-phone', 'เช่น 081 234 5678');
+    setPlaceholder('f2-nationality', 'เช่น ไทย');
+    setPlaceholder('f2-university', 'เช่น จุฬาลงกรณ์มหาวิทยาลัย');
+    setPlaceholder('f2-major', 'เช่น วิทยาศาสตร์ชีวการแพทย์');
+    setPlaceholder('f2-heard-other', 'โปรดระบุช่องทางอื่น');
+    setPlaceholder('f3-name', 'เช่น สมหญิง รักเรียน');
+    setPlaceholder('f3-future-loc-other', 'โปรดระบุประเทศที่สนใจ');
+    setPlaceholder('f3-postgrad-other', 'โปรดระบุแผนการศึกษาหลังจบ');
+  } else {
+    setPlaceholder('f1-name', 'e.g. John Doe');
+    setPlaceholder('f1-phone', 'e.g. 081 234 5678');
+    setPlaceholder('f1-nationality', 'e.g. Thai, American, Singaporean');
+    setPlaceholder('f1-country', 'e.g. Thailand');
+    setPlaceholder('f1-degree', 'e.g. B.Sc. in Biomedical Sciences');
+    setPlaceholder('f1-uni', 'e.g. Chulalongkorn University');
+    setPlaceholder('f1-heard-other', 'Please specify if Other');
+    setPlaceholder('f1-info-other', 'Please specify if Other');
+    setPlaceholder('f2-name', 'e.g. Jane Doe');
+    setPlaceholder('f2-phone', 'e.g. 081 234 5678');
+    setPlaceholder('f2-nationality', 'e.g. Thai');
+    setPlaceholder('f2-university', 'e.g. Chulalongkorn University');
+    setPlaceholder('f2-major', 'e.g. Biomedical Science');
+    setPlaceholder('f2-heard-other', 'Please specify if Other');
+    setPlaceholder('f3-name', 'e.g. Jane Doe');
+    setPlaceholder('f3-future-loc-other', 'Specify other country if selected');
+    setPlaceholder('f3-postgrad-other', 'Specify if Other');
+  }
 
   // Re-render components with translated content
   renderFactors();
