@@ -141,6 +141,14 @@ const I18N = {
     opt_hf_4: "Social media and personal referrals",
     opt_hf_5: "Other",
     lbl_heard_other: "For other sources, please specify",
+    lbl_f1_info_wanted: "What information do you want to receive? *",
+    lbl_f1_info_other: "For other information wanted, please specify",
+    lbl_f1_interest_reason: "What made you interested in CU-MEDi?",
+    opt_iw_1: "Curriculum & Academics",
+    opt_iw_2: "Scholarships / Expenses",
+    opt_iw_3: "Admission Steps & Criteria",
+    opt_iw_4: "Activities / Open House",
+    opt_iw_5: "Other",
     lbl_sugg_process: "Suggestion for the CU-MEDi application process",
     lbl_sugg_openhouse: "Suggestion for the upcoming open house",
     lbl_consent_pdpa: "I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes.",
@@ -167,6 +175,14 @@ const I18N = {
     opt_sess_2: "Session 2 (Afternoon / Hands-on Workshop)",
     opt_sess_both: "Both Sessions",
     lbl_comments: "Additional Comments / Questions",
+    lbl_f2_heard: "How did you hear about our Open House? *",
+    opt_f2_hf_1: "CU-MEDi Website",
+    opt_f2_hf_2: "CU-MEDi Facebook",
+    opt_f2_hf_3: "MDCU Facebook",
+    opt_f2_hf_4: "Email Newsletter",
+    opt_f2_hf_5: "Word of Mouth",
+    opt_f2_hf_6: "Other",
+    lbl_f2_heard_other: "For other sources, please specify",
     lbl_f2_pdpa: "I acknowledge that registration details will be used for event check-in and communication.",
     btn_submit_s2: "Submit Open House Registration",
     btn_s2_to_s3: "Save & Continue to Survey (Step 3) →",
@@ -180,6 +196,21 @@ const I18N = {
     lbl_region: "Region of Citizenship",
     lbl_major_type: "Major Type",
     lbl_top_schools: "Top 3 Medical Schools You Wish to Apply To *",
+    lbl_f3_dest_rank: "Apart from Thailand, where do you wish to apply for medical school? (rank 1–3) *",
+    lbl_f3_dest_r1: "First rank *",
+    lbl_f3_dest_r2: "Second rank",
+    lbl_f3_dest_r3: "Third rank",
+    lbl_f3_future_loc: "Where do you see yourself after graduating medical school? (Location) *",
+    opt_fl_th: "Thailand",
+    opt_fl_other: "Other (specify)",
+    lbl_f3_postgrad: "Postgraduation plans *",
+    opt_pg_1: "Medical specialization",
+    opt_pg_2: "Medical research",
+    opt_pg_3: "Medical teaching",
+    opt_pg_4: "Healthcare management",
+    opt_pg_5: "Medical writing",
+    opt_pg_6: "Insurance, law, or public health",
+    opt_pg_7: "Other",
     factors_title: "30 Decision-Making Factors (Scale 1–5)",
     factors_instruction: "Rate how each factor impacts your decision on your 1st-rank medical school (1 = No effect, 5 = Very significant)",
     group1_title: "Group 1 · Reputation & Academic Factors (15 Factors)",
@@ -248,6 +279,14 @@ const I18N = {
     opt_hf_4: "โซเชียลมีเดียและคำแนะนำจากคนรู้จัก",
     opt_hf_5: "อื่นๆ",
     lbl_heard_other: "หากเลือกช่องทางอื่นๆ โปรดระบุ",
+    lbl_f1_info_wanted: "อยากได้ข้อมูลเรื่องไหน *",
+    lbl_f1_info_other: "หากต้องการข้อมูลเรื่องอื่นๆ โปรดระบุ",
+    lbl_f1_interest_reason: "อะไรทำให้เริ่มสนใจ CU-MEDi",
+    opt_iw_1: "หลักสูตร & การเรียน",
+    opt_iw_2: "ทุน / ค่าใช้จ่าย",
+    opt_iw_3: "ขั้นตอน & เกณฑ์การสมัคร",
+    opt_iw_4: "กิจกรรม / Open House",
+    opt_iw_5: "อื่น ๆ",
     lbl_sugg_process: "ข้อเสนอแนะเกี่ยวกับขั้นตอนการรับสมัคร CU-MEDi",
     lbl_sugg_openhouse: "ข้อเสนอแนะสำหรับกิจกรรม Open House ที่กำลังจะมาถึง",
     lbl_consent_pdpa: "ข้าพเจ้ายินยอมให้เก็บ รวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) เพื่อประโยชน์ในการรับสมัคร CU-MEDi",
@@ -274,6 +313,14 @@ const I18N = {
     opt_sess_2: "รอบที่ 2 (ช่วงบ่าย / เวิร์กช็อป Hands-on)",
     opt_sess_both: "ทั้งสองรอบ",
     lbl_comments: "คำถามเพิ่มเติม / ข้อเสนอแนะ",
+    lbl_f2_heard: "รู้จัก Open House จากไหน *",
+    opt_f2_hf_1: "เว็บไซต์ CU-MEDi",
+    opt_f2_hf_2: "Facebook CU-MEDi",
+    opt_f2_hf_3: "Facebook MDCU",
+    opt_f2_hf_4: "จดหมายข่าวทางอีเมล",
+    opt_f2_hf_5: "คนรู้จัก / ปากต่อปาก",
+    opt_f2_hf_6: "อื่นๆ",
+    lbl_f2_heard_other: "หากทราบจากช่องทางอื่น โปรดระบุ",
     lbl_f2_pdpa: "ข้าพเจ้ารับทราบว่าข้อมูลการลงทะเบียนจะนำไปใช้สำหรับเช็คอินเข้างานและติดต่อสื่อสาร",
     btn_submit_s2: "ยืนยันการลงทะเบียน Open House",
     btn_s2_to_s3: "บันทึกและไปทำแบบสำรวจ (ขั้นตอนที่ 3) →",
@@ -287,6 +334,21 @@ const I18N = {
     lbl_region: "ภูมิภาคของสัญชาติ",
     lbl_major_type: "กลุ่มสาขาวิชาที่สำเร็จการศึกษา",
     lbl_top_schools: "โรงเรียนแพทย์ 3 อันดับแรกที่ท่านต้องการสมัคร *",
+    lbl_f3_dest_rank: "ประเทศนอกไทยที่อยากสมัคร (อันดับ 1–3) *",
+    lbl_f3_dest_r1: "อันดับที่ 1 *",
+    lbl_f3_dest_r2: "อันดับที่ 2",
+    lbl_f3_dest_r3: "อันดับที่ 3",
+    lbl_f3_future_loc: "หลังจบอยากอยู่ที่ไหน (สถานที่) *",
+    opt_fl_th: "ประเทศไทย (Thailand)",
+    opt_fl_other: "ประเทศอื่น (ระบุ)",
+    lbl_f3_postgrad: "แผนหลังจบ *",
+    opt_pg_1: "แพทย์เฉพาะทาง (Medical specialization)",
+    opt_pg_2: "งานวิจัยทางการแพทย์ (Medical research)",
+    opt_pg_3: "อาจารย์แพทย์ (Medical teaching)",
+    opt_pg_4: "บริหารจัดการระบบสาธารณสุข (Healthcare management)",
+    opt_pg_5: "งานเขียนทางการแพทย์ (Medical writing)",
+    opt_pg_6: "ประกันภัย, กฎหมาย หรือสาธารณสุขศาสตร์",
+    opt_pg_7: "อื่นๆ",
     factors_title: "30 ปัจจัยที่มีอิทธิพลต่อการตัดสินใจเลือกโรงเรียนแพทย์",
     factors_instruction: "โปรดให้คะแนนระดับอิทธิพลต่อการตัดสินใจของท่าน ตั้งแต่ 1 (ไม่มีผลเลย) ถึง 5 (มีผลอย่างยิ่ง)",
     group1_title: "กลุ่มที่ 1 · ปัจจัยด้านวิชาการและสถาบัน (15 ปัจจัย)",
@@ -484,6 +546,14 @@ function setLanguage(lang) {
   setText('opt-hf-4', t.opt_hf_4);
   setText('opt-hf-5', t.opt_hf_5);
   setText('lbl-f1-other', t.lbl_heard_other);
+  setText('lbl-f1-info-wanted', t.lbl_f1_info_wanted);
+  setText('lbl-f1-info-other', t.lbl_f1_info_other);
+  setText('lbl-f1-interest-reason', t.lbl_f1_interest_reason);
+  setText('opt-iw-1', t.opt_iw_1);
+  setText('opt-iw-2', t.opt_iw_2);
+  setText('opt-iw-3', t.opt_iw_3);
+  setText('opt-iw-4', t.opt_iw_4);
+  setText('opt-iw-5', t.opt_iw_5);
   setText('lbl-f1-sugg-p', t.lbl_sugg_process);
   setText('lbl-f1-sugg-oh', t.lbl_sugg_openhouse);
   setHtml('lbl-f1-pdpa', t.lbl_consent_pdpa + ' <span class="req">*</span>');
@@ -516,6 +586,14 @@ function setLanguage(lang) {
   setText('opt-sess-2', t.opt_sess_2);
   setText('opt-sess-both', t.opt_sess_both);
   setText('lbl-f2-comments', t.lbl_comments);
+  setText('lbl-f2-heard', t.lbl_f2_heard);
+  setText('opt-f2-hf-1', t.opt_f2_hf_1);
+  setText('opt-f2-hf-2', t.opt_f2_hf_2);
+  setText('opt-f2-hf-3', t.opt_f2_hf_3);
+  setText('opt-f2-hf-4', t.opt_f2_hf_4);
+  setText('opt-f2-hf-5', t.opt_f2_hf_5);
+  setText('opt-f2-hf-6', t.opt_f2_hf_6);
+  setText('lbl-f2-heard-other', t.lbl_f2_heard_other);
   setHtml('lbl-f2-pdpa', t.lbl_f2_pdpa + ' <span class="req">*</span>');
   setText('btn-skip-2', t.btn_skip_s2);
 
@@ -530,6 +608,21 @@ function setLanguage(lang) {
   setText('lbl-f3-region', t.lbl_region);
   setText('lbl-f3-major', t.lbl_major_type);
   setText('lbl-f3-schools', t.lbl_top_schools);
+  setText('lbl-f3-dest-rank', t.lbl_f3_dest_rank);
+  setText('lbl-f3-dest-r1', t.lbl_f3_dest_r1);
+  setText('lbl-f3-dest-r2', t.lbl_f3_dest_r2);
+  setText('lbl-f3-dest-r3', t.lbl_f3_dest_r3);
+  setText('lbl-f3-future-loc', t.lbl_f3_future_loc);
+  setText('opt-fl-th', t.opt_fl_th);
+  setText('opt-fl-other', t.opt_fl_other);
+  setText('lbl-f3-postgrad', t.lbl_f3_postgrad);
+  setText('opt-pg-1', t.opt_pg_1);
+  setText('opt-pg-2', t.opt_pg_2);
+  setText('opt-pg-3', t.opt_pg_3);
+  setText('opt-pg-4', t.opt_pg_4);
+  setText('opt-pg-5', t.opt_pg_5);
+  setText('opt-pg-6', t.opt_pg_6);
+  setText('opt-pg-7', t.opt_pg_7);
   setText('lbl-f3-factors-title', t.factors_title);
   setText('lbl-f3-factors-desc', t.factors_instruction);
   setText('title-group1', t.group1_title);
@@ -538,7 +631,9 @@ function setLanguage(lang) {
   setText('lbl-f3-firstchoice', t.lbl_first_choice + ' *');
   setText('opt-f3-fc-yes', t.opt_yes);
   setText('opt-f3-fc-no', t.opt_no);
+  setText('lbl-f3-intake', t.lbl_f3_intake);
   setText('lbl-f3-whycumedi', t.lbl_why_cumedi);
+  setText('lbl-f3-roadshow', t.lbl_f3_roadshow);
   setHtml('lbl-f3-pdpa', t.lbl_f3_pdpa + ' <span class="req">*</span>');
   setText('btn-submit-3', t.btn_submit_s3);
 
@@ -547,60 +642,13 @@ function setLanguage(lang) {
 }
 window.setLanguage = setLanguage;
 
-// Update Stepper Progress UI
+// Update Stepper Progress UI (hidden for standalone form mode)
 function updateStepperUI() {
   const wrap = document.getElementById('journey-stepper-wrap');
-  if (!wrap) return;
-
-  if (currentStage === 1) {
-    wrap.style.display = 'none';
-    return;
-  }
-
-  wrap.style.display = 'block';
-
-  // Toggle Node 3 visibility if target is only stage 2
-  const node3 = document.getElementById('node-step-3');
-  if (node3) {
-    node3.style.display = currentStage === 2 ? 'none' : 'flex';
-  }
-
-  // Update progress bar fill
-  const fill = document.getElementById('stepper-progress-fill');
-  if (fill) {
-    if (currentStage === 2) {
-      fill.style.width = activeStep === 2 ? '100%' : '0%';
-    } else {
-      fill.style.width = activeStep === 1 ? '0%' : (activeStep === 2 ? '50%' : '100%');
-    }
-  }
-
-  // Update Step Nodes
-  [1, 2, 3].forEach(step => {
-    const node = document.getElementById(`node-step-${step}`);
-    const circle = document.getElementById(`node-circle-${step}`);
-    if (!node || !circle) return;
-
-    node.classList.remove('active', 'completed');
-
-    const isStepDone = 
-      (step === 1 && verifiedApplicant?.stage1_completed) ||
-      (step === 2 && verifiedApplicant?.stage2_completed) ||
-      (step === 3 && verifiedApplicant?.stage3_completed);
-
-    if (activeStep === step) {
-      node.classList.add('active');
-      circle.textContent = step;
-    } else if (isStepDone) {
-      node.classList.add('completed');
-      circle.textContent = '✓';
-    } else {
-      circle.textContent = step;
-    }
-  });
+  if (wrap) wrap.style.display = 'none';
 }
 
-// Show Active Step Container
+// Show Active Step Container (Standalone Form)
 function showActiveStep(stepNum) {
   activeStep = stepNum;
 
@@ -613,69 +661,35 @@ function showActiveStep(stepNum) {
   const banner1 = document.getElementById('step1-completed-banner');
   const banner2 = document.getElementById('step2-completed-banner');
   const notice = document.getElementById('new-applicant-notice');
+  const wrap = document.getElementById('journey-stepper-wrap');
 
-  // Show completed accordion summaries for past completed stages
-  if (banner1) {
-    banner1.style.display = (verifiedApplicant?.stage1_completed && activeStep > 1) ? 'flex' : 'none';
-  }
-  if (banner2) {
-    banner2.style.display = (verifiedApplicant?.stage2_completed && activeStep > 2) ? 'flex' : 'none';
-  }
+  if (banner1) banner1.style.display = 'none';
+  if (banner2) banner2.style.display = 'none';
+  if (notice) notice.style.display = 'none';
+  if (wrap) wrap.style.display = 'none';
 
-  // Show active step form
+  // Show target active step form directly
   const activeContainer = document.getElementById(`form-stage-${activeStep}`);
   if (activeContainer) activeContainer.style.display = 'block';
 
   const t = I18N[currentLang] || I18N.en;
 
-  // Customize Form 1 Submit Button
+  // Customize Submit Buttons
   const btn1 = document.getElementById('btn-submit-1');
-  if (btn1) {
-    if (currentStage === 1) {
-      btn1.textContent = t.btn_submit_s1;
-    } else if (currentStage === 2) {
-      btn1.textContent = t.btn_s1_to_s2;
-    } else {
-      btn1.textContent = t.btn_s1_to_s3;
-    }
-  }
+  if (btn1) btn1.textContent = t.btn_submit_s1;
 
-  // Customize Form 2 Submit Button & Skip button
   const btn2 = document.getElementById('btn-submit-2');
+  if (btn2) btn2.textContent = t.btn_submit_s2;
+
   const btnSkip2 = document.getElementById('btn-skip-2');
-  if (btn2) {
-    if (currentStage === 2) {
-      btn2.textContent = t.btn_submit_s2;
-      if (btnSkip2) btnSkip2.style.display = 'none';
-    } else if (currentStage === 3) {
-      btn2.textContent = t.btn_s2_to_s3;
-      if (btnSkip2) {
-        btnSkip2.textContent = t.btn_skip_s2;
-        btnSkip2.style.display = 'block';
-      }
-    }
-  }
+  if (btnSkip2) btnSkip2.style.display = 'none';
 
-  // Prerequisite Notice Banner for new users
-  if (notice) {
-    const isNew = !verifiedApplicant?.stage1_completed;
-    if (isNew && currentStage > 1 && activeStep === 1) {
-      notice.style.display = 'block';
-      const targetName = currentStage === 2 ? (currentLang === 'th' ? 'การลงทะเบียน Open House' : 'Open House registration') : (currentLang === 'th' ? 'แบบสำรวจความคิดเห็น' : 'the survey');
-      notice.innerHTML = currentLang === 'th'
-        ? `<b>📌 คำแนะนำ:</b> สำหรับผู้สนใจครั้งแรก โปรดกรอกข้อมูลขั้นตอนที่ 1 (ประวัติผู้สมัครและความพร้อม) ก่อน จากนั้นกด "บันทึกและไปต่อ" เพื่อไปยัง ${targetName}`
-        : `<b>📌 Prerequisite:</b> Please complete Step 1 (Applicant Profile & Readiness) first, then click Save & Continue to proceed to ${targetName}.`;
-    } else {
-      notice.style.display = 'none';
-    }
-  }
+  const btn3 = document.getElementById('btn-submit-3');
+  if (btn3) btn3.textContent = t.btn_submit_s3;
 
-  updateStepperUI();
-
-  // Smooth scroll to top of current active stage
-  const scrollTarget = document.getElementById('journey-stepper-wrap') || activeContainer;
-  if (scrollTarget) {
-    scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Smooth scroll to top of current form
+  if (activeContainer) {
+    activeContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
@@ -727,12 +741,10 @@ function prefillData(prefill) {
 
   const emailVal = prefill.email || verifiedApplicant?.email || '';
 
-  // Always bind email fields
+  // Always fill email fields (now editable inputs, not hidden)
   ['f1', 'f2', 'f3'].forEach(fId => {
-    const hidden = document.getElementById(`${fId}-email`);
-    const display = document.getElementById(`${fId}-email-display`);
-    if (hidden && emailVal) hidden.value = emailVal;
-    if (display && emailVal) display.value = emailVal;
+    const emailInput = document.getElementById(`${fId}-email`);
+    if (emailInput && emailVal) emailInput.value = emailVal;
   });
 
   // Prefill Form 1
@@ -769,9 +781,9 @@ function prefillData(prefill) {
   // Prefill Form 2
   const f2 = document.getElementById('form2');
   if (f2) {
-    if (prefill.name) document.getElementById('f2-name').value = prefill.name;
-    if (prefill.nationality) document.getElementById('f2-nationality').value = prefill.nationality;
-    if (prefill.phone) document.getElementById('f2-phone').value = prefill.phone;
+    if (prefill.name && document.getElementById('f2-name')) document.getElementById('f2-name').value = prefill.name;
+    if (prefill.nationality && document.getElementById('f2-nationality')) document.getElementById('f2-nationality').value = prefill.nationality;
+    if (prefill.phone && document.getElementById('f2-phone')) document.getElementById('f2-phone').value = prefill.phone;
     if (prefill.university && document.getElementById('f2-university')) document.getElementById('f2-university').value = prefill.university;
     if (prefill.major && document.getElementById('f2-major')) document.getElementById('f2-major').value = prefill.major;
   }
@@ -779,9 +791,7 @@ function prefillData(prefill) {
   // Prefill Form 3
   const f3 = document.getElementById('form3');
   if (f3) {
-    if (prefill.name) document.getElementById('f3-name').value = prefill.name;
-    if (prefill.nationality && document.getElementById('f3-nationality')) document.getElementById('f3-nationality').value = prefill.nationality;
-    if (prefill.university && document.getElementById('f3-university')) document.getElementById('f3-university').value = prefill.university;
+    if (prefill.name && document.getElementById('f3-name')) document.getElementById('f3-name').value = prefill.name;
   }
 }
 
@@ -833,15 +843,7 @@ async function verifyAndProceed(params) {
       pill.style.display = 'block';
     }
 
-    // Explicitly populate email inputs in all forms
-    ['f1', 'f2', 'f3'].forEach(fId => {
-      const hidden = document.getElementById(`${fId}-email`);
-      const display = document.getElementById(`${fId}-email-display`);
-      if (hidden) hidden.value = emailUsed;
-      if (display) display.value = emailUsed;
-    });
-
-    // Prefill all inputs
+    // Prefill all inputs (email + profile data)
     const mergedPrefill = Object.assign({ email: emailUsed, phone: params.phone, name: params.name }, data.prefill || {});
     prefillData(mergedPrefill);
 
@@ -849,21 +851,8 @@ async function verifyAndProceed(params) {
       showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
     }
 
-    // Determine initial active step in the progressive journey
-    if (currentStage === 1) {
-      activeStep = 1;
-    } else if (currentStage === 2) {
-      activeStep = data.stage1_completed ? 2 : 1;
-    } else if (currentStage === 3) {
-      if (!data.stage1_completed) {
-        activeStep = 1;
-      } else if (!data.stage2_completed) {
-        activeStep = 2;
-      } else {
-        activeStep = 3;
-      }
-    }
-
+    // Standalone stage: directly show target stage form
+    activeStep = currentStage;
     showActiveStep(activeStep);
 
   } catch (err) {
@@ -960,6 +949,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const formData = new FormData(form1);
       const heardFrom = formData.getAll('heard_from');
+      const infoWanted = formData.getAll('info_wanted');
       const utm = getUTMParams();
 
       const payload = {
@@ -978,6 +968,9 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         heard_from: heardFrom,
         heard_other: formData.get('heard_other'),
+        info_wanted: infoWanted,
+        info_other: formData.get('info_other'),
+        interest_reason: formData.get('interest_reason'),
         suggestion_process: formData.get('suggestion_process'),
         suggestion_openhouse: formData.get('suggestion_openhouse'),
         consent_pdpa: formData.get('consent_pdpa') === 'on',
@@ -1002,29 +995,27 @@ document.addEventListener('DOMContentLoaded', () => {
           const f2Nat = document.getElementById('f2-nationality');
           const f2Uni = document.getElementById('f2-university');
           const f3Name = document.getElementById('f3-name');
-          const f3Uni = document.getElementById('f3-university');
 
           if (f2Name && payload.name) f2Name.value = payload.name;
           if (f2Phone && payload.phone) f2Phone.value = payload.phone;
           if (f2Nat && payload.nationality) f2Nat.value = payload.nationality;
           if (f2Uni && payload.university) f2Uni.value = payload.university;
           if (f3Name && payload.name) f3Name.value = payload.name;
-          if (f3Uni && payload.university) f3Uni.value = payload.university;
 
-          if (currentStage === 1) {
-            form1.style.display = 'none';
-            showToast('Stage 1 submitted successfully! Thank you.');
-            const doneCard = document.getElementById('already-completed-card');
-            const doneText = document.getElementById('already-completed-text');
-            if (doneText) doneText.textContent = "Thank you for registering your interest in CU-MEDi 2027. We have recorded your preferences.";
-            if (doneCard) doneCard.style.display = 'block';
-          } else if (currentStage === 2) {
-            showToast('✓ Step 1 Profile Saved! Opening Open House Registration.');
-            showActiveStep(2);
-          } else if (currentStage === 3) {
-            showToast('✓ Step 1 Profile Saved! Proceeding to Next Step.');
-            showActiveStep(2);
+          // Show verified pill
+          const pill = document.getElementById('verified-user-pill');
+          const pillText = document.getElementById('verified-email-text');
+          if (pill && pillText && payload.email) {
+            pillText.textContent = `✓ ${payload.email}`;
+            pill.style.display = 'block';
           }
+
+          form1.style.display = 'none';
+          showToast(currentLang === 'th' ? 'บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณครับ!' : 'Stage 1 submitted successfully! Thank you.');
+          const doneCard = document.getElementById('already-completed-card');
+          const doneText = document.getElementById('already-completed-text');
+          if (doneText) doneText.textContent = currentLang === 'th' ? "ขอบคุณสำหรับการลงทะเบียนความสนใจ CU-MEDi ระบบได้บันทึกข้อมูลเรียบร้อยแล้ว" : "Thank you for registering your interest in CU-MEDi 2027. We have recorded your preferences.";
+          if (doneCard) doneCard.style.display = 'block';
         } else {
           showToast(result.error || 'Submission failed', false);
         }
@@ -1049,6 +1040,7 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.textContent = 'Submitting...';
 
       const formData = new FormData(form2);
+      const heardFrom = formData.getAll('heard_from');
       const utm = getUTMParams();
 
       const payload = {
@@ -1064,6 +1056,8 @@ document.addEventListener('DOMContentLoaded', () => {
         apply_intent: formData.get('apply_intent'),
         attend_mode: formData.get('attend_mode'),
         session_choice: formData.get('session_choice'),
+        heard_from: heardFrom,
+        heard_other: formData.get('heard_other'),
         comments: formData.get('comments'),
         consent_pdpa: formData.get('consent_pdpa') === 'on',
         ...utm
@@ -1081,17 +1075,12 @@ document.addEventListener('DOMContentLoaded', () => {
           if (!verifiedApplicant) verifiedApplicant = {};
           verifiedApplicant.stage2_completed = true;
 
-          if (currentStage === 2) {
-            form2.style.display = 'none';
-            showToast('Open House registration completed! See you at the event.');
-            const doneCard = document.getElementById('already-completed-card');
-            const doneText = document.getElementById('already-completed-text');
-            if (doneText) doneText.textContent = "Your registration for CU-MEDi Open House has been confirmed. A confirmation has been registered to your profile.";
-            if (doneCard) doneCard.style.display = 'block';
-          } else if (currentStage === 3) {
-            showToast('✓ Step 2 Saved! Proceeding to Applicant Survey (Step 3).');
-            showActiveStep(3);
-          }
+          form2.style.display = 'none';
+          showToast(currentLang === 'th' ? 'ลงทะเบียนเข้าร่วม Open House เรียบร้อยแล้ว!' : 'Open House registration completed! See you at the event.');
+          const doneCard = document.getElementById('already-completed-card');
+          const doneText = document.getElementById('already-completed-text');
+          if (doneText) doneText.textContent = currentLang === 'th' ? "การลงทะเบียน CU-MEDi Open House ของคุณเสร็จสมบูรณ์แล้ว ระบบได้บันทึกข้อมูลและส่งการยืนยันเรียบร้อยแล้ว" : "Your registration for CU-MEDi Open House has been confirmed. A confirmation has been registered to your profile.";
+          if (doneCard) doneCard.style.display = 'block';
         } else {
           showToast(result.error || 'Submission failed', false);
         }
@@ -1118,13 +1107,32 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(form3);
       const utm = getUTMParams();
 
+      // Build destination_rank object
+      const destRank = {
+        rank1: formData.get('dest_rank1') || '',
+        rank2: formData.get('dest_rank2') || '',
+        rank3: formData.get('dest_rank3') || ''
+      };
+
+      // Handle future_location with other field
+      let futureLocation = formData.get('future_location') || 'Thailand';
+      if (futureLocation === 'Other') {
+        const otherVal = formData.get('future_location_other')?.trim();
+        if (otherVal) futureLocation = otherVal;
+      }
+
+      // Handle postgrad_plan with other field
+      let postgradPlan = formData.get('postgrad_plan') || '';
+      if (postgradPlan === 'Other') {
+        const otherVal = formData.get('postgrad_plan_other')?.trim();
+        if (otherVal) postgradPlan = otherVal;
+      }
+
       const payload = {
         email: document.getElementById('f3-email').value,
         name: formData.get('name'),
-        nationality: formData.get('nationality') || '',
-        phone: formData.get('phone') || '',
-        university: formData.get('university') || '',
         applied_status: formData.get('applied_status'),
+        intake_round: formData.get('intake_round'),
         gender: formData.get('gender'),
         age: formData.get('age'),
         region: formData.get('region'),
@@ -1134,9 +1142,13 @@ document.addEventListener('DOMContentLoaded', () => {
           rank2: formData.get('school_rank2'),
           rank3: formData.get('school_rank3')
         },
+        destination_rank: destRank,
+        future_location: futureLocation,
+        postgrad_plan: postgradPlan,
         decision_factors_30: factorRatings,
         first_choice: formData.get('first_choice'),
         why_cumedi: formData.get('why_cumedi'),
+        roadshow_want: formData.get('roadshow_want'),
         consent_pdpa: formData.get('consent_pdpa') === 'on',
         ...utm
       };
@@ -1151,10 +1163,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (res.ok) {
           form3.style.display = 'none';
-          showToast('Thank you! Your survey responses have been submitted.');
+          showToast(currentLang === 'th' ? 'ส่งแบบสอบถามเรียบร้อยแล้ว ขอบคุณมากครับ!' : 'Thank you! Your survey responses have been submitted.');
           const doneCard = document.getElementById('already-completed-card');
           const doneText = document.getElementById('already-completed-text');
-          if (doneText) doneText.textContent = "Thank you for completing the CU-MEDi Applicant Survey. Your feedback is invaluable to our curriculum development.";
+          if (doneText) doneText.textContent = currentLang === 'th' ? "ขอบคุณสำหรับการให้ข้อมูลแบบสอบถาม CU-MEDi ข้อมูลของท่านจะเป็นประโยชน์อย่างยิ่งต่อการพัฒนาหลักสูตรต่อไป" : "Thank you for completing the CU-MEDi Applicant Survey. Your feedback is invaluable to our curriculum development.";
           if (doneCard) doneCard.style.display = 'block';
         } else {
           showToast(result.error || 'Submission failed', false);

@@ -184,14 +184,16 @@ app.post('/api/submit/stage1', async (c) => {
         stage1_completed, stage1_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s1_bachelor_degree, s1_apply_intent, s1_req_readiness,
-        s1_heard_from, s1_heard_other, s1_suggestion_process, s1_suggestion_openhouse, s1_consent_pdpa,
+        s1_heard_from, s1_heard_other, s1_info_wanted, s1_info_other,
+        s1_interest_reason, s1_suggestion_process, s1_suggestion_openhouse, s1_consent_pdpa,
         updated_at
       ) VALUES (
         ${email}, ${body.phone || ''}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''}, ${body.university || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.bachelor_degree || ''}, ${body.apply_intent || ''}, ${JSON.stringify(body.req_readiness || {})},
-        ${JSON.stringify(body.heard_from || [])}, ${body.heard_other || ''}, ${body.suggestion_process || ''}, ${body.suggestion_openhouse || ''}, ${body.consent_pdpa !== false},
+        ${JSON.stringify(body.heard_from || [])}, ${body.heard_other || ''}, ${JSON.stringify(body.info_wanted || [])}, ${body.info_other || ''},
+        ${body.interest_reason || ''}, ${body.suggestion_process || ''}, ${body.suggestion_openhouse || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
@@ -207,6 +209,9 @@ app.post('/api/submit/stage1', async (c) => {
         s1_req_readiness = EXCLUDED.s1_req_readiness,
         s1_heard_from = EXCLUDED.s1_heard_from,
         s1_heard_other = EXCLUDED.s1_heard_other,
+        s1_info_wanted = EXCLUDED.s1_info_wanted,
+        s1_info_other = EXCLUDED.s1_info_other,
+        s1_interest_reason = EXCLUDED.s1_interest_reason,
         s1_suggestion_process = EXCLUDED.s1_suggestion_process,
         s1_suggestion_openhouse = EXCLUDED.s1_suggestion_openhouse,
         s1_consent_pdpa = EXCLUDED.s1_consent_pdpa,
@@ -242,14 +247,14 @@ app.post('/api/submit/stage2', async (c) => {
         stage2_completed, stage2_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s2_recipient_group, s2_education_level, s2_year_of_study, s2_apply_intent,
-        s2_attend_mode, s2_session_choice, s2_comments, s2_consent_pdpa,
+        s2_attend_mode, s2_session_choice, s2_heard_from, s2_heard_other, s2_comments, s2_consent_pdpa,
         updated_at
       ) VALUES (
         ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''}, ${body.university || ''}, ${body.major || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.recipient_group || ''}, ${body.education_level || ''}, ${body.year_of_study || ''}, ${body.apply_intent || ''},
-        ${body.attend_mode || ''}, ${body.session_choice || ''}, ${body.comments || ''}, ${body.consent_pdpa !== false},
+        ${body.attend_mode || ''}, ${body.session_choice || ''}, ${JSON.stringify(body.heard_from || [])}, ${body.heard_other || ''}, ${body.comments || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
@@ -271,6 +276,8 @@ app.post('/api/submit/stage2', async (c) => {
         s2_apply_intent = EXCLUDED.s2_apply_intent,
         s2_attend_mode = EXCLUDED.s2_attend_mode,
         s2_session_choice = EXCLUDED.s2_session_choice,
+        s2_heard_from = EXCLUDED.s2_heard_from,
+        s2_heard_other = EXCLUDED.s2_heard_other,
         s2_comments = EXCLUDED.s2_comments,
         s2_consent_pdpa = EXCLUDED.s2_consent_pdpa,
         updated_at = CURRENT_TIMESTAMP
@@ -304,17 +311,17 @@ app.post('/api/submit/stage3', async (c) => {
         email, name,
         stage3_completed, stage3_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
-        s3_applied_status, s3_gender, s3_age, s3_region,
+        s3_applied_status, s3_intake_round, s3_gender, s3_age, s3_region,
         s3_schools_rank, s3_destination_rank, s3_future_location, s3_postgrad_plan,
-        s3_decision_factors_30, s3_first_choice, s3_why_cumedi, s3_consent_pdpa,
+        s3_decision_factors_30, s3_first_choice, s3_why_cumedi, s3_roadshow_want, s3_consent_pdpa,
         updated_at
       ) VALUES (
         ${email}, ${body.name || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
-        ${body.applied_status || ''}, ${body.gender || ''}, ${body.age ? parseInt(body.age) : null}, ${body.region || ''},
+        ${body.applied_status || ''}, ${body.intake_round || ''}, ${body.gender || ''}, ${body.age ? parseInt(body.age) : null}, ${body.region || ''},
         ${JSON.stringify(body.schools_rank || {})}, ${JSON.stringify(body.destination_rank || {})}, ${body.future_location || ''}, ${body.postgrad_plan || ''},
-        ${JSON.stringify(body.decision_factors_30 || {})}, ${body.first_choice || ''}, ${body.why_cumedi || ''}, ${body.consent_pdpa !== false},
+        ${JSON.stringify(body.decision_factors_30 || {})}, ${body.first_choice || ''}, ${body.why_cumedi || ''}, ${body.roadshow_want || ''}, ${body.consent_pdpa !== false},
         CURRENT_TIMESTAMP
       )
       ON CONFLICT (email) DO UPDATE SET
@@ -327,6 +334,7 @@ app.post('/api/submit/stage3', async (c) => {
         stage3_completed = true,
         stage3_completed_at = COALESCE(applicants.stage3_completed_at, CURRENT_TIMESTAMP),
         s3_applied_status = EXCLUDED.s3_applied_status,
+        s3_intake_round = EXCLUDED.s3_intake_round,
         s3_gender = EXCLUDED.s3_gender,
         s3_age = EXCLUDED.s3_age,
         s3_region = EXCLUDED.s3_region,
@@ -337,6 +345,7 @@ app.post('/api/submit/stage3', async (c) => {
         s3_decision_factors_30 = EXCLUDED.s3_decision_factors_30,
         s3_first_choice = EXCLUDED.s3_first_choice,
         s3_why_cumedi = EXCLUDED.s3_why_cumedi,
+        s3_roadshow_want = EXCLUDED.s3_roadshow_want,
         s3_consent_pdpa = EXCLUDED.s3_consent_pdpa,
         updated_at = CURRENT_TIMESTAMP
       RETURNING *;

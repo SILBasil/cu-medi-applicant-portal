@@ -34,6 +34,9 @@ CREATE TABLE IF NOT EXISTS applicants (
     s1_req_readiness JSONB,           -- MCAT / English / Degree readiness
     s1_heard_from JSONB,              -- ช่องทางที่รู้จัก CU-MEDi
     s1_heard_other TEXT,
+    s1_info_wanted JSONB,             -- ข้อมูลที่ต้องการเพิ่มเติม
+    s1_info_other TEXT,
+    s1_interest_reason TEXT,          -- เหตุผลที่สนใจ
     s1_suggestion_process TEXT,
     s1_suggestion_openhouse TEXT,
     s1_consent_pdpa BOOLEAN DEFAULT TRUE,
@@ -45,12 +48,15 @@ CREATE TABLE IF NOT EXISTS applicants (
     s2_apply_intent VARCHAR(50),
     s2_attend_mode VARCHAR(50),        -- Online / Onsite
     s2_session_choice VARCHAR(50),     -- Session 1 / 2 / Both
+    s2_heard_from JSONB,
+    s2_heard_other TEXT,
     s2_comments TEXT,
     s2_attended BOOLEAN DEFAULT FALSE, -- เจ้าหน้าที่เช็คชื่อวันงานจริง
     s2_consent_pdpa BOOLEAN DEFAULT TRUE,
 
     -- STAGE 3: ข้อมูลแบบสำรวจ (Applicant Survey & 30 Factors)
     s3_applied_status VARCHAR(50),
+    s3_intake_round VARCHAR(50),
     s3_gender VARCHAR(50),
     s3_age INT,
     s3_region VARCHAR(100),
@@ -61,6 +67,7 @@ CREATE TABLE IF NOT EXISTS applicants (
     s3_decision_factors_30 JSONB,      -- คะแนน 30 ปัจจัย (Scale 1-5)
     s3_first_choice VARCHAR(50),
     s3_why_cumedi TEXT,
+    s3_roadshow_want VARCHAR(50),
     s3_consent_pdpa BOOLEAN DEFAULT TRUE,
 
     -- Timestamps
