@@ -1083,8 +1083,14 @@ function syncConditionalDisplay() {
   }
 
   const f2HfOther = document.querySelector('#form2 input[name="heard_from"][value="Other"]');
-  const f2HfGroup = document.getElementById('f2-heard-other-group');
-  if (f2HfGroup) f2HfGroup.style.display = (f2HfOther && f2HfOther.checked) ? 'block' : 'none';
+  const f2HfInput = document.getElementById('f2-heard-other');
+  if (f2HfInput) {
+    const isChecked = Boolean(f2HfOther && f2HfOther.checked);
+    f2HfInput.style.display = isChecked ? 'inline-block' : 'none';
+    if (isChecked && document.activeElement !== f2HfInput && !f2HfInput.value) {
+      setTimeout(() => f2HfInput.focus(), 50);
+    }
+  }
 
   const f3FlOther = document.querySelector('#form3 input[name="future_location"]:checked')?.value === 'Other';
   const f3FlGroup = document.getElementById('f3-fl-other-group');
