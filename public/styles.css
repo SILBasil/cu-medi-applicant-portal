@@ -150,28 +150,40 @@ header {
 
 .inline-other-input {
   flex: 1;
-  min-width: 140px;
-  height: 34px;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 0.9rem;
-  background: #ffffff;
+  min-width: 160px;
+  height: 36px;
+  padding: 4px 8px;
+  border: none;
+  border-bottom: 2px solid var(--primary);
+  border-radius: 0;
+  font-size: 0.95rem;
+  background: transparent;
   color: var(--text-main);
   outline: none;
   transition: all 0.2s ease;
-  margin-left: 8px;
+  margin-left: 14px;
 }
 
 .inline-other-input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px rgba(166, 25, 46, 0.15);
+  border-bottom: 2px solid #7f1222;
+  background: rgba(166, 25, 46, 0.03);
+}
+
+.inline-other-input::placeholder {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-style: italic;
 }
 
 .checkbox-label-other {
-  padding-top: 4px !important;
-  padding-bottom: 4px !important;
   align-items: center;
+  transition: all 0.2s ease;
+}
+
+.checkbox-label-other:has(input[type="checkbox"]:checked) {
+  background: #fdf8f8;
+  border-color: var(--primary);
+  min-height: 48px;
 }
 
 /* Main Wrapper */
