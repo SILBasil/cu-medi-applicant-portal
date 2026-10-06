@@ -291,9 +291,9 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="f1-heard-other-group" style="display: none;">
             <label class="form-label" id="lbl-f1-other">For other sources, please specify</label>
-            <input type="text" name="heard_other" class="form-input" placeholder="Please specify if Other">
+            <input type="text" name="heard_other" id="f1-heard-other" class="form-input" placeholder="Please specify if Other">
           </div>
 
           <div class="form-group">
@@ -313,9 +313,9 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="f1-info-other-group" style="display: none;">
             <label class="form-label" id="lbl-f1-info-other">For other information wanted, please specify</label>
-            <input type="text" name="info_other" class="form-input" placeholder="Please specify if Other">
+            <input type="text" name="info_other" id="f1-info-other" class="form-input" placeholder="Please specify if Other">
           </div>
 
           <div class="form-group">
@@ -466,7 +466,7 @@
             </div>
           </div>
 
-          <div class="form-group" id="session-select-box">
+          <div class="form-group" id="session-select-box" style="display: none;">
             <label class="form-label" id="lbl-f2-session">Select Session (for Onsite attendance)</label>
             <div class="radio-group">
               <label class="radio-label"><input type="radio" name="session_choice" value="Session 1"> <span
@@ -498,7 +498,7 @@
             </div>
           </div>
 
-          <div class="form-group">
+          <div class="form-group" id="f2-heard-other-group" style="display: none;">
             <label class="form-label" id="lbl-f2-heard-other">For other sources, please specify</label>
             <input type="text" name="heard_other" id="f2-heard-other" class="form-input"
               placeholder="Please specify if Other">
@@ -692,7 +692,7 @@
               <label class="radio-label"><input type="radio" name="future_location" value="Other"> <span
                   id="opt-fl-other">Other (specify)</span></label>
             </div>
-            <div style="margin-top: 8px;">
+            <div style="margin-top: 8px; display: none;" id="f3-fl-other-group">
               <input type="text" name="future_location_other" id="f3-future-loc-other" class="form-input"
                 placeholder="Specify other country if selected">
             </div>
@@ -718,7 +718,7 @@
               <label class="radio-label"><input type="radio" name="postgrad_plan" value="Other"> <span
                   id="opt-pg-7">Other</span></label>
             </div>
-            <div style="margin-top: 8px;">
+            <div style="margin-top: 8px; display: none;" id="f3-pg-other-group">
               <input type="text" name="postgrad_plan_other" id="f3-postgrad-other" class="form-input"
                 placeholder="Specify if Other">
             </div>

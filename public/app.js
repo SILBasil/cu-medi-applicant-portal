@@ -822,6 +822,70 @@ function prefillData(prefill) {
       document.getElementById('sel-f3-region').value = prefill.region;
     }
   }
+
+  syncConditionalDisplay();
+}
+
+// Synchronize visibility of "Other" text fields and conditional blocks
+function syncConditionalDisplay() {
+  const f1HfOther = document.querySelector('#form1 input[name="heard_from"][value="Other"]');
+  const f1HfGroup = document.getElementById('f1-heard-other-group');
+  if (f1HfGroup) f1HfGroup.style.display = (f1HfOther && f1HfOther.checked) ? 'block' : 'none';
+
+  const f1IwOther = document.querySelector('#form1 input[name="info_wanted"][value="Other"]');
+  const f1IwGroup = document.getElementById('f1-info-other-group');
+  if (f1IwGroup) f1IwGroup.style.display = (f1IwOther && f1IwOther.checked) ? 'block' : 'none';
+
+  const f2HfOther = document.querySelector('#form2 input[name="heard_from"][value="Other"]');
+  const f2HfGroup = document.getElementById('f2-heard-other-group');
+  if (f2HfGroup) f2HfGroup.style.display = (f2HfOther && f2HfOther.checked) ? 'block' : 'none';
+
+  const f3FlOther = document.querySelector('#form3 input[name="future_location"]:checked')?.value === 'Other';
+  const f3FlGroup = document.getElementById('f3-fl-other-group');
+  if (f3FlGroup) f3FlGroup.style.display = f3FlOther ? 'block' : 'none';
+
+  const f3PgOther = document.querySelector('#form3 input[name="postgrad_plan"]:checked')?.value === 'Other';
+  const f3PgGroup = document.getElementById('f3-pg-other-group');
+  if (f3PgGroup) f3PgGroup.style.display = f3PgOther ? 'block' : 'none';
+
+  const attendOnsite = document.getElementById('attend-onsite');
+  const sessionBox = document.getElementById('session-select-box');
+  if (sessionBox) sessionBox.style.display = (attendOnsite && attendOnsite.checked) ? 'block' : 'none';
+}
+
+function setupConditionalFields() {
+  const f1 = document.getElementById('form1');
+  if (f1) {
+    f1.querySelectorAll('input[name="heard_from"]').forEach(cb => {
+      cb.addEventListener('change', syncConditionalDisplay);
+    });
+    f1.querySelectorAll('input[name="info_wanted"]').forEach(cb => {
+      cb.addEventListener('change', syncConditionalDisplay);
+    });
+  }
+
+  const f2 = document.getElementById('form2');
+  if (f2) {
+    f2.querySelectorAll('input[name="heard_from"]').forEach(cb => {
+      cb.addEventListener('change', syncConditionalDisplay);
+    });
+    const attendOnsite = document.getElementById('attend-onsite');
+    const attendOnline = document.getElementById('attend-online');
+    if (attendOnsite) attendOnsite.addEventListener('change', syncConditionalDisplay);
+    if (attendOnline) attendOnline.addEventListener('change', syncConditionalDisplay);
+  }
+
+  const f3 = document.getElementById('form3');
+  if (f3) {
+    f3.querySelectorAll('input[name="future_location"]').forEach(rb => {
+      rb.addEventListener('change', syncConditionalDisplay);
+    });
+    f3.querySelectorAll('input[name="postgrad_plan"]').forEach(rb => {
+      rb.addEventListener('change', syncConditionalDisplay);
+    });
+  }
+
+  syncConditionalDisplay();
 }
 
 // Check form email, lookup existing records, prefill, and unlock the form
@@ -979,15 +1043,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Attend mode toggle for Open House Session
-  const attendOnsite = document.getElementById('attend-onsite');
-  const attendOnline = document.getElementById('attend-online');
-  const sessionBox = document.getElementById('session-select-box');
-
-  if (attendOnsite && attendOnline && sessionBox) {
-    attendOnsite.addEventListener('change', () => { sessionBox.style.display = 'block'; });
-    attendOnline.addEventListener('change', () => { sessionBox.style.display = 'none'; });
-  }
+  // Setup conditional visibility for "Other" fields and session choice
+  setupConditionalFields();
 
   // ==========================================
   // Form 1 Submit (Stage 1: Lead)
