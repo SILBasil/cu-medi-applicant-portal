@@ -57,6 +57,7 @@ app.get('/survey', serveIndex);
 app.get('/stage3', serveIndex);
 app.get('/portal', serveIndex);
 app.get('/dashboard', serveDashboard);
+app.get('/dashboard.html', serveDashboard);
 app.get('/intelligence', serveDashboard);
 
 // Helper to get Neon SQL client
