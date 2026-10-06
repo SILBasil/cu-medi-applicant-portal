@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Leaflet.js interactive mapping library -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <style>
     :root {
       --primary: #a6192e;       /* Chula Crimson */
@@ -346,68 +349,95 @@
       color: var(--navy);
     }
 
-    /* Thailand Geo Map Section */
+    /* Thailand Geo Map Section (Leaflet Interactive Map) */
     .map-wrapper {
       position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 440px;
-      background: radial-gradient(circle at center, #ffffff 0%, #f8fafc 100%);
+      min-height: 540px;
+      height: 540px;
+      background: #f8fafc;
       border-radius: var(--radius-sm);
-      padding: 1rem;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.03);
     }
-    .thailand-svg {
+    #thailand-map {
       width: 100%;
-      max-width: 360px;
-      height: 420px;
-      filter: drop-shadow(0 6px 12px rgba(27, 42, 74, 0.08));
+      height: 100%;
+      background: #f8fafc;
+      z-index: 1;
     }
-    .map-region-path {
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      stroke: #ffffff;
-      stroke-width: 1.5;
+    .leaflet-container {
+      font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif !important;
+      background: #f8fafc !important;
     }
-    .map-region-path:hover, .map-region-path.active {
-      filter: brightness(1.15) drop-shadow(0 4px 8px rgba(166, 25, 46, 0.4));
-      stroke: #ffffff;
-      stroke-width: 2.5;
-      transform-origin: center;
-    }
-    .map-tooltip {
-      position: absolute;
-      background: rgba(15, 23, 42, 0.95);
-      color: white;
-      padding: 10px 14px;
-      border-radius: 8px;
-      font-size: 0.775rem;
+    .leaflet-tooltip.custom-geo-tooltip {
+      background: rgba(15, 23, 42, 0.95) !important;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.25) !important;
+      color: #ffffff !important;
+      border-radius: 8px !important;
+      padding: 9px 13px !important;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35) !important;
+      font-size: 0.775rem !important;
+      line-height: 1.4 !important;
       pointer-events: none;
-      display: none;
-      z-index: 100;
-      box-shadow: var(--shadow-lg);
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      max-width: 240px;
-      line-height: 1.4;
     }
-    .map-tooltip .title {
-      font-weight: 700;
-      color: #38bdf8;
-      font-size: 0.85rem;
-      margin-bottom: 2px;
+    .leaflet-tooltip-top:before,
+    .leaflet-tooltip-bottom:before,
+    .leaflet-tooltip-left:before,
+    .leaflet-tooltip-right:before {
+      border-top-color: rgba(15, 23, 42, 0.95) !important;
     }
-    .map-tooltip .count {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: #ffffff;
+    .map-intl-floating-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 500;
+      background: rgba(27, 42, 74, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      color: white;
+      border-radius: 10px;
+      padding: 9px 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
-    .map-tooltip .unis {
-      font-size: 0.725rem;
-      color: #cbd5e1;
-      margin-top: 4px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      padding-top: 4px;
+    .map-intl-floating-badge:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.35);
+      border-color: #38bdf8;
+    }
+    .map-legend-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      z-index: 500;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--navy);
+    }
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-chip::before {
+      content: '';
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: var(--chip-c, #94a3b8);
     }
 
     /* Region Leaderboard Table */
@@ -718,81 +748,29 @@
       </div>
 
       <div class="grid-map-split">
-        <!-- SVG Map Container -->
+        <!-- Leaflet Real Thailand Geographic Map -->
         <div class="map-wrapper">
-          <svg class="thailand-svg" viewBox="0 0 360 480" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <!-- Regional Gradients based on candidate density -->
-              <linearGradient id="grad-bkk" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#a6192e" />
-                <stop offset="100%" stop-color="#7f1222" />
-              </linearGradient>
-              <linearGradient id="grad-north" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#2c3e66" />
-                <stop offset="100%" stop-color="#1b2a4a" />
-              </linearGradient>
-              <linearGradient id="grad-south" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#059669" />
-                <stop offset="100%" stop-color="#047857" />
-              </linearGradient>
-              <linearGradient id="grad-northeast" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#d97706" />
-                <stop offset="100%" stop-color="#b45309" />
-              </linearGradient>
-              <linearGradient id="grad-central" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#64748b" />
-                <stop offset="100%" stop-color="#475569" />
-              </linearGradient>
-            </defs>
+          <div id="thailand-map"></div>
 
-            <!-- Northern Thailand Region Path -->
-            <path id="path-north" class="map-region-path" fill="url(#grad-north)" 
-                  d="M130,40 L195,45 L225,85 L205,150 L160,180 L120,165 L105,110 Z"
-                  onmouseenter="showRegionTooltip(event, 'north')" onmouseleave="hideRegionTooltip()" onclick="selectRegion('north')" />
-            <text x="155" y="105" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">ภาคเหนือ</text>
-            <text x="155" y="120" fill="#cbd5e1" font-size="9" font-weight="600" text-anchor="middle" pointer-events="none" id="map-lbl-north">23 คน (11%)</text>
+          <!-- Floating International / Overseas Card -->
+          <div class="map-intl-floating-badge" id="map-badge-intl" onclick="selectRegion('intl')" title="คลิกเพื่อดูรายละเอียดกลุ่มจบจากต่างประเทศ">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.25rem;">🌏</span>
+              <div>
+                <div style="font-size: 0.7rem; color: #38bdf8; font-weight: 700; text-transform: uppercase;">International / Overseas</div>
+                <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff;" id="map-lbl-intl">60 คน (29.7%)</div>
+                <div style="font-size: 0.675rem; color: #cbd5e1;">Univ of Melbourne, UBC, UCLA</div>
+              </div>
+            </div>
+          </div>
 
-            <!-- Northeastern Thailand (Isan) Path -->
-            <path id="path-northeast" class="map-region-path" fill="url(#grad-northeast)" 
-                  d="M205,150 L225,85 L285,100 L325,160 L310,230 L235,235 L205,195 Z"
-                  onmouseenter="showRegionTooltip(event, 'northeast')" onmouseleave="hideRegionTooltip()" onclick="selectRegion('northeast')" />
-            <text x="265" y="165" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">ภาคอีสาน</text>
-            <text x="265" y="180" fill="#fef3c7" font-size="9" font-weight="600" text-anchor="middle" pointer-events="none" id="map-lbl-northeast">14 คน (7%)</text>
-
-            <!-- Central & Eastern Region Path -->
-            <path id="path-central" class="map-region-path" fill="url(#grad-central)" 
-                  d="M160,180 L205,195 L235,235 L285,250 L260,300 L205,295 L165,245 Z"
-                  onmouseenter="showRegionTooltip(event, 'central')" onmouseleave="hideRegionTooltip()" onclick="selectRegion('central')" />
-            <text x="200" y="240" fill="#ffffff" font-size="10" font-weight="700" text-anchor="middle" pointer-events="none">ภาคกลาง/ต.อ.</text>
-            <text x="200" y="253" fill="#e2e8f0" font-size="8.5" font-weight="600" text-anchor="middle" pointer-events="none" id="map-lbl-central">16 คน (8%)</text>
-
-            <!-- Bangkok & Metropolitan Region (Hub with highest concentration) -->
-            <circle id="path-bkk" class="map-region-path" cx="178" cy="275" r="28" fill="url(#grad-bkk)" 
-                    onmouseenter="showRegionTooltip(event, 'bkk')" onmouseleave="hideRegionTooltip()" onclick="selectRegion('bkk')" />
-            <text x="178" y="272" fill="#ffffff" font-size="10" font-weight="800" text-anchor="middle" pointer-events="none">กทม. &amp; ปริมณฑล</text>
-            <text x="178" y="285" fill="#fecdd3" font-size="9" font-weight="700" text-anchor="middle" pointer-events="none" id="map-lbl-bkk">66 คน (33%)</text>
-
-            <!-- Southern Thailand Region Path -->
-            <path id="path-south" class="map-region-path" fill="url(#grad-south)" 
-                  d="M160,300 L185,300 L175,360 L200,420 L185,465 L150,445 L135,370 L150,330 Z"
-                  onmouseenter="showRegionTooltip(event, 'south')" onmouseleave="hideRegionTooltip()" onclick="selectRegion('south')" />
-            <text x="170" y="380" fill="#ffffff" font-size="11" font-weight="700" text-anchor="middle" pointer-events="none">ภาคใต้</text>
-            <text x="170" y="395" fill="#d1fae5" font-size="9" font-weight="600" text-anchor="middle" pointer-events="none" id="map-lbl-south">23 คน (11%)</text>
-
-            <!-- Overseas Global Badge on Map -->
-            <g id="path-intl" class="map-region-path" transform="translate(20, 20)" 
-               onmouseenter="showRegionTooltip(event, 'intl')" onmouseleave="hideRegionTooltip()" onclick="selectRegion('intl')">
-              <rect x="0" y="0" width="105" height="48" rx="8" fill="#1b2a4a" stroke="#38bdf8" stroke-width="1.2" />
-              <text x="52" y="20" fill="#38bdf8" font-size="9.5" font-weight="700" text-anchor="middle">🌏 ต่างประเทศ (Int'l)</text>
-              <text x="52" y="36" fill="#ffffff" font-size="11" font-weight="800" text-anchor="middle" id="map-lbl-intl">60 คน (30%)</text>
-            </g>
-          </svg>
-
-          <!-- Floating Interactive Tooltip -->
-          <div id="map-tooltip" class="map-tooltip">
-            <div class="title" id="tt-title">กรุงเทพฯ และปริมณฑล</div>
-            <div class="count" id="tt-count">66 คน (32.7%)</div>
-            <div class="unis" id="tt-unis">มหาวิทยาลัยต้นทาง: จุฬาฯ, เกษตรศาสตร์, มหิดล, ธรรมศาสตร์</div>
+          <!-- Bottom Map Legend -->
+          <div class="map-legend-bar">
+            <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (33%)</span>
+            <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (11%)</span>
+            <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (11%)</span>
+            <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ. (8%)</span>
+            <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน (7%)</span>
           </div>
         </div>
 
@@ -1003,6 +981,7 @@
 
         renderExecutiveKPIs(stats);
         renderGeoLeaderboard(stats.geo_distribution, stats.total);
+        initLeafletMap();
         renderDecisionFactors(stats.top_factors);
         renderReadiness(stats.readiness);
         renderCharts(stats);
@@ -1053,15 +1032,148 @@
       document.getElementById('fn-s3-bar').innerText = `${s3Pct}%`;
     }
 
-    // 3. Render Geographic Heatmap Leaderboard
+    // 3. Leaflet Geographic Map & Regional Leaderboard
     const REGION_COLORS = {
-      'bkk': '#a6192e',
-      'intl': '#1b2a4a',
-      'north': '#2c3e66',
-      'south': '#059669',
-      'central': '#475569',
-      'northeast': '#d97706'
+      'bkk': { fill: '#a6192e', stroke: '#7f1222' },
+      'intl': { fill: '#1b2a4a', stroke: '#0f172a' },
+      'north': { fill: '#2c3e66', stroke: '#1b2a4a' },
+      'south': { fill: '#059669', stroke: '#047857' },
+      'central': { fill: '#64748b', stroke: '#475569' },
+      'northeast': { fill: '#d97706', stroke: '#b45309' }
     };
+
+    const PROVINCE_TO_REGION = {
+      'Bangkok Metropolis': 'bkk', 'Nonthaburi': 'bkk', 'Pathum Thani': 'bkk', 'Samut Prakan': 'bkk', 'Samut Sakhon': 'bkk', 'Nakhon Pathom': 'bkk',
+      'Chiang Mai': 'north', 'Chiang Rai': 'north', 'Lampang': 'north', 'Lamphun': 'north', 'Mae Hong Son': 'north', 'Nan': 'north', 'Phayao': 'north', 'Phrae': 'north', 'Uttaradit': 'north', 'Tak': 'north', 'Sukhothai': 'north', 'Phitsanulok': 'north', 'Phichit': 'north', 'Kamphaeng Phet': 'north', 'Phetchabun': 'north', 'Nakhon Sawan': 'north', 'Uthai Thani': 'north',
+      'Nakhon Ratchasima': 'northeast', 'Khon Kaen': 'northeast', 'Udon Thani': 'northeast', 'Ubon Ratchathani': 'northeast', 'Buri Ram': 'northeast', 'Surin': 'northeast', 'Si Sa Ket': 'northeast', 'Roi Et': 'northeast', 'Chaiyaphum': 'northeast', 'Sakon Nakhon': 'northeast', 'Kalasin': 'northeast', 'Maha Sarakham': 'northeast', 'Nong Khai': 'northeast', 'Loei': 'northeast', 'Yasothon': 'northeast', 'Mukdahan': 'northeast', 'Bueng Kan': 'northeast', 'Amnat Charoen': 'northeast', 'Nong Bua Lam Phu': 'northeast', 'Nakhon Phanom': 'northeast',
+      'Phra Nakhon Si Ayutthaya': 'central', 'Saraburi': 'central', 'Lop Buri': 'central', 'Sing Buri': 'central', 'Chai Nat': 'central', 'Ang Thong': 'central', 'Suphan Buri': 'central', 'Kanchanaburi': 'central', 'Ratchaburi': 'central', 'Samut Songkhram': 'central', 'Phetchaburi': 'central', 'Prachuap Khiri Khan': 'central', 'Nakhon Nayok': 'central', 'Prachin Buri': 'central', 'Sa Kaeo': 'central', 'Chachoengsao': 'central', 'Chon Buri': 'central', 'Rayong': 'central', 'Chanthaburi': 'central', 'Trat': 'central',
+      'Chumphon': 'south', 'Ranong': 'south', 'Surat Thani': 'south', 'Phangnga': 'south', 'Phuket': 'south', 'Krabi': 'south', 'Nakhon Si Thammarat': 'south', 'Trang': 'south', 'Phatthalung': 'south', 'Satun': 'south', 'Songkhla': 'south', 'Pattani': 'south', 'Yala': 'south', 'Narathiwat': 'south'
+    };
+
+    const PROVINCE_TH_NAMES = {
+      'Bangkok Metropolis': 'กรุงเทพมหานคร', 'Nonthaburi': 'นนทบุรี', 'Pathum Thani': 'ปทุมธานี', 'Samut Prakan': 'สมุทรปราการ', 'Samut Sakhon': 'สมุทรสาคร', 'Nakhon Pathom': 'นครปฐม',
+      'Chiang Mai': 'เชียงใหม่', 'Chiang Rai': 'เชียงราย', 'Lampang': 'ลำปาง', 'Lamphun': 'ลำพูน', 'Mae Hong Son': 'แม่ฮ่องสอน', 'Nan': 'น่าน', 'Phayao': 'พะเยา', 'Phrae': 'แพร่', 'Uttaradit': 'อุตรดิตถ์', 'Tak': 'ตาก', 'Sukhothai': 'สุโขทัย', 'Phitsanulok': 'พิษณุโลก', 'Phichit': 'พิจิตร', 'Kamphaeng Phet': 'กำแพงเพชร', 'Phetchabun': 'เพชรบูรณ์', 'Nakhon Sawan': 'นครสวรรค์', 'Uthai Thani': 'อุทัยธานี',
+      'Nakhon Ratchasima': 'นครราชสีมา', 'Khon Kaen': 'ขอนแก่น', 'Udon Thani': 'อุดรธานี', 'Ubon Ratchathani': 'อุบลราชธานี', 'Buri Ram': 'บุรีรัมย์', 'Surin': 'สุรินทร์', 'Si Sa Ket': 'ศรีสะเกษ', 'Roi Et': 'ร้อยเอ็ด', 'Chaiyaphum': 'ชัยภูมิ', 'Sakon Nakhon': 'สกลนคร', 'Kalasin': 'กาฬสินธุ์', 'Maha Sarakham': 'มหาสารคาม', 'Nong Khai': 'หนองคาย', 'Loei': 'เลย', 'Yasothon': 'ยโสธร', 'Mukdahan': 'มุกดาหาร', 'Bueng Kan': 'บึงกาฬ', 'Amnat Charoen': 'อำนาจเจริญ', 'Nong Bua Lam Phu': 'หนองบัวลำภู', 'Nakhon Phanom': 'นครพนม',
+      'Phra Nakhon Si Ayutthaya': 'พระนครศรีอยุธยา', 'Saraburi': 'สระบุรี', 'Lop Buri': 'ลพบุรี', 'Sing Buri': 'สิงห์บุรี', 'Chai Nat': 'ชัยนาท', 'Ang Thong': 'อ่างทอง', 'Suphan Buri': 'สุพรรณบุรี', 'Kanchanaburi': 'กาญจนบุรี', 'Ratchaburi': 'ราชบุรี', 'Samut Songkhram': 'สมุทรสงคราม', 'Phetchaburi': 'เพชรบุรี', 'Prachuap Khiri Khan': 'ประจวบคีรีขันธ์', 'Nakhon Nayok': 'นครนายก', 'Prachin Buri': 'ปราจีนบุรี', 'Sa Kaeo': 'สระแก้ว', 'Chachoengsao': 'ฉะเชิงเทรา', 'Chon Buri': 'ชลบุรี', 'Rayong': 'ระยอง', 'Chanthaburi': 'จันทบุรี', 'Trat': 'ตราด',
+      'Chumphon': 'ชุมพร', 'Ranong': 'ระนอง', 'Surat Thani': 'สุราษฎร์ธานี', 'Phangnga': 'พังงา', 'Phuket': 'ภูเก็ต', 'Krabi': 'กระบี่', 'Nakhon Si Thammarat': 'นครศรีธรรมราช', 'Trang': 'ตรัง', 'Phatthalung': 'พัทลุง', 'Satun': 'สตูล', 'Songkhla': 'สงขลา', 'Pattani': 'ปัตตานี', 'Yala': 'ยะลา', 'Narathiwat': 'นราธิวาส'
+    };
+
+    let leafletMap = null;
+    let geojsonLayer = null;
+    let rawGeoJsonData = null;
+    let provinceLayers = {};
+
+    function initLeafletMap() {
+      if (leafletMap) {
+        leafletMap.invalidateSize();
+        return;
+      }
+      const mapEl = document.getElementById('thailand-map');
+      if (!mapEl) return;
+
+      // Initialize Leaflet Map centered on Thailand
+      leafletMap = L.map('thailand-map', {
+        zoomControl: true,
+        scrollWheelZoom: false,
+        attributionControl: false
+      });
+
+      // CartoDB Positron clean executive basemap
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        maxZoom: 18,
+        subdomains: 'abcd'
+      }).addTo(leafletMap);
+
+      // Fit bounds to Thailand borders
+      const thailandBounds = L.latLngBounds([[5.5, 97.2], [20.6, 105.8]]);
+      leafletMap.fitBounds(thailandBounds, { padding: [15, 15] });
+
+      // Fetch authentic 77 provinces GeoJSON
+      fetch('/thailand-provinces.geojson')
+        .then(r => r.json())
+        .then(geoData => {
+          rawGeoJsonData = geoData;
+          renderGeoJsonLayer();
+        })
+        .catch(err => {
+          console.error('Failed to load Thailand GeoJSON:', err);
+        });
+    }
+
+    function renderGeoJsonLayer() {
+      if (!leafletMap || !rawGeoJsonData) return;
+      if (geojsonLayer) leafletMap.removeLayer(geojsonLayer);
+      provinceLayers = {};
+
+      const total = globalStats?.total || 202;
+      const geoDist = globalStats?.geo_distribution || {};
+
+      geojsonLayer = L.geoJSON(rawGeoJsonData, {
+        style: function(feature) {
+          const pName = feature.properties?.name;
+          const rId = PROVINCE_TO_REGION[pName] || 'central';
+          const regColor = REGION_COLORS[rId]?.fill || '#64748b';
+          return {
+            fillColor: regColor,
+            weight: 1.2,
+            opacity: 0.95,
+            color: '#ffffff',
+            fillOpacity: 0.72
+          };
+        },
+        onEachFeature: function(feature, layer) {
+          const pName = feature.properties?.name;
+          const thName = PROVINCE_TH_NAMES[pName] || pName;
+          const rId = PROVINCE_TO_REGION[pName] || 'central';
+          const rInfo = geoDist[rId] || { name_th: 'ภูมิภาค', name_en: 'Region', count: 0, top_unis: [] };
+          const pct = total > 0 ? ((rInfo.count / total) * 100).toFixed(1) : 0;
+
+          if (!provinceLayers[rId]) provinceLayers[rId] = [];
+          provinceLayers[rId].push(layer);
+
+          const tooltipHtml = `
+            <div style="font-weight: 800; font-size: 0.875rem; color: #38bdf8; margin-bottom: 3px;">
+              📍 ${thName} (${pName})
+            </div>
+            <div style="font-size: 0.75rem; color: #e2e8f0;">
+              ภูมิภาค: <strong>${rInfo.name_th}</strong>
+            </div>
+            <div style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-top: 4px;">
+              👥 ผู้สมัครในกลุ่มนี้: <span style="color:#fde047;">${rInfo.count} คน (${pct}%)</span>
+            </div>
+            <div style="font-size: 0.7rem; color: #cbd5e1; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 4px;">
+              🎓 สถาบันหลัก: ${rInfo.top_unis && rInfo.top_unis.length ? rInfo.top_unis.join(', ') : 'มหาวิทยาลัยในพื้นที่'}
+            </div>
+          `;
+
+          layer.bindTooltip(tooltipHtml, {
+            className: 'custom-geo-tooltip',
+            sticky: true,
+            direction: 'auto'
+          });
+
+          layer.on({
+            mouseover: function(e) {
+              const l = e.target;
+              l.setStyle({
+                weight: 2.8,
+                color: '#a6192e',
+                fillOpacity: 0.95
+              });
+              l.bringToFront();
+              highlightRegion(rId, true);
+            },
+            mouseout: function(e) {
+              geojsonLayer.resetStyle(e.target);
+              highlightRegion(rId, false);
+            },
+            click: function(e) {
+              selectRegion(rId);
+            }
+          });
+        }
+      }).addTo(leafletMap);
+    }
 
     function renderGeoLeaderboard(geoData, total) {
       const container = document.getElementById('geo-leaderboard');
@@ -1071,19 +1183,20 @@
 
       container.innerHTML = items.map(item => {
         const pct = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
-        const color = REGION_COLORS[item.id] || '#64748b';
+        const color = REGION_COLORS[item.id]?.fill || '#64748b';
         const topUnisText = item.top_unis && item.top_unis.length > 0 ? item.top_unis.join(', ') : 'สถาบันชั้นนำในพื้นที่';
 
-        // Update text labels on the SVG map directly!
-        const mapLbl = document.getElementById(`map-lbl-${item.id}`);
-        if (mapLbl) {
-          mapLbl.textContent = `${item.count} คน (${Math.round(pct)}%)`;
+        // Update Overseas badge if present
+        if (item.id === 'intl') {
+          const intlLbl = document.getElementById('map-lbl-intl');
+          if (intlLbl) intlLbl.textContent = `${item.count} คน (${pct}%)`;
         }
 
         return `
           <div class="geo-item" id="geo-row-${item.id}" 
                onmouseenter="highlightRegion('${item.id}', true)" 
-               onmouseleave="highlightRegion('${item.id}', false)">
+               onmouseleave="highlightRegion('${item.id}', false)"
+               onclick="selectRegion('${item.id}')">
             <div class="geo-row-header">
               <span class="geo-name">
                 <span class="geo-dot" style="background: ${color};"></span>
@@ -1100,49 +1213,36 @@
       }).join('');
     }
 
-    // Map Interactivity & Tooltip
-    function showRegionTooltip(e, regionId) {
-      if (!globalStats || !globalStats.geo_distribution) return;
-      const r = globalStats.geo_distribution[regionId];
-      if (!r) return;
-
-      const tt = document.getElementById('map-tooltip');
-      const total = globalStats.total || 202;
-      const pct = total > 0 ? ((r.count / total) * 100).toFixed(1) : 0;
-
-      document.getElementById('tt-title').innerText = `${r.name_th} (${r.name_en})`;
-      document.getElementById('tt-count').innerText = `${r.count} คน (${pct}% ของผู้สมัครทั้งหมด)`;
-      document.getElementById('tt-unis').innerText = r.top_unis && r.top_unis.length > 0 
-        ? `สถาบันหลัก: ${r.top_unis.join(', ')}`
-        : 'สถาบันหลัก: สถาบันในพื้นที่และมหาวิทยาลัยพันธมิตร';
-
-      const rect = e.target.getBoundingClientRect();
-      const parentRect = e.target.closest('.map-wrapper').getBoundingClientRect();
-      tt.style.left = `${Math.min(parentRect.width - 250, Math.max(10, e.clientX - parentRect.left - 100))}px`;
-      tt.style.top = `${Math.max(10, e.clientY - parentRect.top - 80)}px`;
-      tt.style.display = 'block';
-
-      highlightRegion(regionId, true);
-    }
-
-    function hideRegionTooltip() {
-      const tt = document.getElementById('map-tooltip');
-      if (tt) tt.style.display = 'none';
-      document.querySelectorAll('.map-region-path').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.geo-item').forEach(el => el.classList.remove('active'));
-    }
-
     function highlightRegion(regionId, isActive) {
-      const pathEl = document.getElementById(`path-${regionId}`);
       const rowEl = document.getElementById(`geo-row-${regionId}`);
-      if (pathEl) pathEl.classList.toggle('active', isActive);
       if (rowEl) rowEl.classList.toggle('active', isActive);
+
+      // Highlight provinces on Leaflet map
+      if (provinceLayers[regionId]) {
+        provinceLayers[regionId].forEach(l => {
+          if (isActive) {
+            l.setStyle({ weight: 2.5, color: '#a6192e', fillOpacity: 0.95 });
+            l.bringToFront();
+          } else {
+            if (geojsonLayer) geojsonLayer.resetStyle(l);
+          }
+        });
+      }
     }
 
     function selectRegion(regionId) {
       highlightRegion(regionId, true);
       const rowEl = document.getElementById(`geo-row-${regionId}`);
       if (rowEl) rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      
+      // If overseas, pulse the overseas card
+      if (regionId === 'intl') {
+        const badge = document.getElementById('map-badge-intl');
+        if (badge) {
+          badge.style.transform = 'scale(1.05)';
+          setTimeout(() => badge.style.transform = '', 300);
+        }
+      }
     }
 
     // 4. Render Top Decision Factors

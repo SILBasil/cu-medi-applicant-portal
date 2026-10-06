@@ -49,6 +49,25 @@ const serveDashboard = async (c: any) => {
   return c.text('Dashboard not found', 404);
 };
 
+// Helper to serve thailand-provinces.geojson
+const serveGeoJson = async (c: any) => {
+  if (c.env?.ASSETS) {
+    const geoUrl = new URL('/thailand-provinces.geojson', c.req.url);
+    const assetRes = await c.env.ASSETS.fetch(new Request(geoUrl.toString(), {
+      method: 'GET',
+      headers: c.req.raw.headers
+    }));
+    return new Response(assetRes.body, {
+      status: 200,
+      headers: {
+        'content-type': 'application/geo+json; charset=utf-8',
+        'cache-control': 'public, max-age=86400'
+      }
+    });
+  }
+  return c.text('GeoJSON not found', 404);
+};
+
 app.get('/interested', serveIndex);
 app.get('/stage1', serveIndex);
 app.get('/openhouse', serveIndex);
@@ -59,6 +78,7 @@ app.get('/portal', serveIndex);
 app.get('/dashboard', serveDashboard);
 app.get('/dashboard.html', serveDashboard);
 app.get('/intelligence', serveDashboard);
+app.get('/thailand-provinces.geojson', serveGeoJson);
 
 // Helper to get Neon SQL client
 const getDb = (c: any) => {
