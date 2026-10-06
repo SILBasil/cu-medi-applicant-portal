@@ -84,9 +84,9 @@ try {
 
 const I18N = {
   en: {
-    stage1_header_title: "CU-MEDi 2027 Admissions (Stage 1: Lead)",
-    stage2_header_title: "CU-MEDi Open House Registration (Stage 2)",
-    stage3_header_title: "CU-MEDi Applicant Survey (Stage 3)",
+    stage1_header_title: "CU-MEDi 2027 Admissions Registration",
+    stage2_header_title: "CU-MEDi Open House Registration",
+    stage3_header_title: "CU-MEDi Applicant Survey",
     gate_stage1_title: "Sign up for CU-MEDi 2027 Updates",
     gate_stage1_desc: "Enter your email to start your application journey and receive admission reminders.",
     gate_stage2_title: "Open House Registration Verification",
@@ -119,7 +119,7 @@ const I18N = {
     degree_title: "Bachelor's degree",
     degree_sub: "Graduation status / Transcript",
 
-    f1_intro_tag: "Stage 01 · Lead Capture",
+    f1_intro_tag: "Lead Capture",
     f1_intro_title: "The CU-MEDi Applications for 2027",
     f1_intro_desc: "Sign up to get updates on the 2027 admission round. Learn more at <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a>. <i>Remark: this portal is not an official application process, but a reminder to ensure requirements are complete.</i>",
     lbl_email: "Email address",
@@ -135,11 +135,13 @@ const I18N = {
     opt_maybe: "Maybe",
     opt_unsure: "Unsure",
     lbl_heard_from: "How did you know the CU-MEDi program?",
-    opt_hf_1: "CU-MEDi Website, Facebook, Roadshow",
-    opt_hf_2: "Faculty of Medicine sources",
-    opt_hf_3: "Chulalongkorn University Open House",
-    opt_hf_4: "Social media and personal referrals",
-    opt_hf_5: "Other",
+    opt_hf_1: "CU-MEDi Website / Social Media",
+    opt_hf_2: "MDCU Social Media",
+    opt_hf_3: "Google / Search",
+    opt_hf_4: "Education Website / Page",
+    opt_hf_5: "Word of Mouth",
+    opt_hf_6: "Event / Open House",
+    opt_hf_7: "Other",
     lbl_heard_other: "For other sources, please specify",
     lbl_f1_info_wanted: "What information do you want to receive? *",
     lbl_f1_info_other: "For other information wanted, please specify",
@@ -151,12 +153,12 @@ const I18N = {
     opt_iw_5: "Other",
     lbl_sugg_process: "Suggestion for the CU-MEDi application process",
     lbl_sugg_openhouse: "Suggestion for the upcoming open house",
-    lbl_consent_pdpa: "I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes.",
-    btn_submit_s1: "Submit Stage 1 Information",
+    lbl_consent_pdLeave: "I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes.",
+    btn_submit_s1: "Submit",
     btn_s1_to_s2: "Save & Continue to Open House (Step 2) →",
     btn_s1_to_s3: "Save & Continue to Next Step →",
 
-    f2_intro_tag: "Stage 02 · Event Registration",
+    f2_intro_tag: "Event Registration",
     f2_intro_title: "Pre-registration for CU-MEDi Open House",
     f2_intro_desc: "Pre-register for the Open House · Room 1209, Fl.12 Bhumisiri Mangkhalanusorn Bldg. & Live via MDCU Facebook · <i>Limited Onsite seats.</i>",
     lbl_major: "Major / Area of Study",
@@ -184,7 +186,7 @@ const I18N = {
     opt_f2_hf_6: "Other",
     lbl_f2_heard_other: "For other sources, please specify",
     lbl_f2_pdpa: "I acknowledge that registration details will be used for event check-in and communication.",
-    btn_submit_s2: "Submit Open House Registration",
+    btn_submit_s2: "Submit",
     btn_s2_to_s3: "Save & Continue to Survey (Step 3) →",
     btn_skip_s2: "Skip Open House & Go to Survey (Step 3) →",
 
@@ -219,12 +221,12 @@ const I18N = {
     lbl_first_choice: "Did you choose CU-MEDi as your first choice?",
     lbl_why_cumedi: "Why did you choose to apply to CU-MEDi?",
     lbl_f3_pdpa: "I consent to providing survey responses for CU-MEDi academic research.",
-    btn_submit_s3: "Submit Complete Applicant Survey"
+    btn_submit_s3: "Submit"
   },
   th: {
-    stage1_header_title: "ระบบรับสมัคร CU-MEDi 2027 (ขั้นตอนที่ 1: ข้อมูลผู้สนใจ)",
-    stage2_header_title: "ลงทะเบียนเข้าร่วม CU-MEDi Open House (ขั้นตอนที่ 2)",
-    stage3_header_title: "แบบสำรวจความคิดเห็นผู้สมัคร CU-MEDi (ขั้นตอนที่ 3)",
+    stage1_header_title: "ระบบลงทะเบียนรับข้อมูล CU-MEDi 2027",
+    stage2_header_title: "ลงทะเบียนเข้าร่วม CU-MEDi Open House",
+    stage3_header_title: "แบบสำรวจความคิดเห็นผู้สมัคร CU-MEDi",
     gate_stage1_title: "ลงทะเบียนรับข้อมูลข่าวสาร CU-MEDi 2027",
     gate_stage1_desc: "กรอกอีเมลของคุณเพื่อเริ่มต้นและรับการแจ้งเตือนกำหนดการรับสมัคร",
     gate_stage2_title: "ยืนยันการลงทะเบียน CU-MEDi Open House",
@@ -257,7 +259,7 @@ const I18N = {
     degree_title: "Bachelor's degree",
     degree_sub: "สถานะการศึกษาปริญญาตรี / ทรานสคริปต์",
 
-    f1_intro_tag: "ขั้นตอนที่ 01 · ข้อมูลผู้สนใจ (Lead Capture)",
+    f1_intro_tag: "ข้อมูลผู้สนใจ",
     f1_intro_title: "การเปิดรับสมัคร CU-MEDi ประจำปีการศึกษา 2027",
     f1_intro_desc: "ลงทะเบียนเพื่อรับข่าวสารและอัปเดตการรับสมัครรอบปี 2027 ศึกษารายละเอียดเพิ่มเติมได้ที่ <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a> <i>หมายเหตุ: ระบบนี้มิใช่การสมัครอย่างเป็นทางการ แต่เป็นการติดตามเตรียมความพร้อมคุณสมบัติของผู้สมัคร</i>",
     lbl_email: "ที่อยู่อีเมล",
@@ -273,11 +275,13 @@ const I18N = {
     opt_maybe: "อาจจะ (Maybe)",
     opt_unsure: "ยังไม่แน่ใจ (Unsure)",
     lbl_heard_from: "คุณรู้จักหลักสูตร CU-MEDi ผ่านช่องทางใด?",
-    opt_hf_1: "เว็บไซต์ CU-MEDi, Facebook, กิจกรรม Roadshow",
-    opt_hf_2: "ช่องทางประชาสัมพันธ์ของคณะแพทยศาสตร์",
-    opt_hf_3: "งานจุฬาฯ เอกซ์โป / จุฬาฯ Open House",
-    opt_hf_4: "โซเชียลมีเดียและคำแนะนำจากคนรู้จัก",
-    opt_hf_5: "อื่นๆ",
+    opt_hf_1: "เว็บไซต์ / โซเชียลมีเดีย CU-MEDi",
+    opt_hf_2: "โซเชียลมีเดีย คณะแพทยศาสตร์ จุฬาฯ (MDCU)",
+    opt_hf_3: "Google / เครื่องมือค้นหา",
+    opt_hf_4: "เว็บไซต์หรือเพจด้านการศึกษา",
+    opt_hf_5: "คนรู้จักแนะนำ / ปากต่อปาก",
+    opt_hf_6: "งานกิจกรรม / Open House",
+    opt_hf_7: "อื่น ๆ",
     lbl_heard_other: "หากเลือกช่องทางอื่นๆ โปรดระบุ",
     lbl_f1_info_wanted: "อยากได้ข้อมูลเรื่องไหน *",
     lbl_f1_info_other: "หากต้องการข้อมูลเรื่องอื่นๆ โปรดระบุ",
@@ -290,11 +294,11 @@ const I18N = {
     lbl_sugg_process: "ข้อเสนอแนะเกี่ยวกับขั้นตอนการรับสมัคร CU-MEDi",
     lbl_sugg_openhouse: "ข้อเสนอแนะสำหรับกิจกรรม Open House ที่กำลังจะมาถึง",
     lbl_consent_pdpa: "ข้าพเจ้ายินยอมให้เก็บ รวบรวม ใช้ และเปิดเผยข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) เพื่อประโยชน์ในการรับสมัคร CU-MEDi",
-    btn_submit_s1: "บันทึกข้อมูลขั้นตอนที่ 1",
+    btn_submit_s1: "ลงทะเบียน",
     btn_s1_to_s2: "บันทึกและไปต่อยัง Open House (ขั้นตอนที่ 2) →",
     btn_s1_to_s3: "บันทึกและไปต่อยังขั้นตอนถัดไป →",
 
-    f2_intro_tag: "ขั้นตอนที่ 02 · ลงทะเบียนกิจกรรม",
+    f2_intro_tag: "ลงทะเบียนกิจกรรม",
     f2_intro_title: "ลงทะเบียนล่วงหน้าเข้าร่วมงาน CU-MEDi Open House",
     f2_intro_desc: "ลงทะเบียนเข้าร่วมงาน ณ ห้อง 1209 ชั้น 12 อาคารภูมิสิริมังคลานุสรณ์ รพ.จุฬาฯ และรับชมถ่ายทอดสดผ่าน Facebook Live MDCU · <i>ที่นั่ง Onsite มีจำนวนจำกัด</i>",
     lbl_major: "สาขาวิชา / สาขาที่กำลังศึกษา",
@@ -322,11 +326,11 @@ const I18N = {
     opt_f2_hf_6: "อื่นๆ",
     lbl_f2_heard_other: "หากทราบจากช่องทางอื่น โปรดระบุ",
     lbl_f2_pdpa: "ข้าพเจ้ารับทราบว่าข้อมูลการลงทะเบียนจะนำไปใช้สำหรับเช็คอินเข้างานและติดต่อสื่อสาร",
-    btn_submit_s2: "ยืนยันการลงทะเบียน Open House",
+    btn_submit_s2: "ลงทะเบียน",
     btn_s2_to_s3: "บันทึกและไปทำแบบสำรวจ (ขั้นตอนที่ 3) →",
     btn_skip_s2: "ข้ามขั้นตอน Open House ไปทำแบบสำรวจทันที →",
 
-    f3_intro_tag: "ขั้นตอนที่ 03 · แบบสำรวจและงานวิจัย",
+    f3_intro_tag: "แบบสำรวจ",
     f3_intro_title: "แบบสำรวจความคิดเห็นผู้สมัคร CU-MEDi",
     f3_intro_desc: "แบบสอบถามเกี่ยวกับการเลือกสมัครเข้าศึกษาหลักสูตรแพทยศาสตรบัณฑิต (~3–5 นาที) การตอบแบบสำรวจไม่มีผลต่อการคัดเลือก ข้อมูลจะนำไปพัฒนาหลักสูตรและการเรียนการสอน",
     lbl_applied_status: "ท่านเคยยื่นใบสมัคร CU-MEDi แล้วหรือไม่? *",
@@ -357,7 +361,7 @@ const I18N = {
     lbl_first_choice: "ท่านเลือก CU-MEDi เป็นอันดับ 1 หรือไม่?",
     lbl_why_cumedi: "เหตุผลที่ท่านตัดสินใจสมัครเข้าศึกษาที่ CU-MEDi",
     lbl_f3_pdpa: "ข้าพเจ้ายินยอมให้ข้อมูลแบบสำรวจเพื่อใช้ในการศึกษาวิจัยทางวิชาการของ CU-MEDi",
-    btn_submit_s3: "ส่งแบบสำรวจผู้สมัครที่สมบูรณ์"
+    btn_submit_s3: "ส่งแบบสำรวจ"
   }
 };
 
@@ -625,6 +629,20 @@ function updateDropdownTranslations(lang) {
   });
 }
 
+// Helper to sync Header Title with Active Form and Language
+function setupStageHeader() {
+  const headerTitle = document.getElementById('header-stage-title');
+  if (!headerTitle) return;
+  const t = I18N[currentLang] || I18N.en;
+  if (activeStep === 1) {
+    headerTitle.textContent = t.stage1_header_title;
+  } else if (activeStep === 2) {
+    headerTitle.textContent = t.stage2_header_title;
+  } else if (activeStep === 3) {
+    headerTitle.textContent = t.stage3_header_title;
+  }
+}
+
 // Language Switcher Function
 function setLanguage(lang) {
   currentLang = lang;
@@ -707,6 +725,9 @@ function setLanguage(lang) {
   setText('opt-hf-3', t.opt_hf_3);
   setText('opt-hf-4', t.opt_hf_4);
   setText('opt-hf-5', t.opt_hf_5);
+  setText('opt-hf-6', t.opt_hf_6);
+  setText('opt-hf-7', t.opt_hf_7);
+  setText('btn-submit-1', t.btn_submit_s1);
   setText('lbl-f1-other', t.lbl_heard_other);
   setText('lbl-f1-info-wanted', t.lbl_f1_info_wanted);
   setText('lbl-f1-info-other', t.lbl_f1_info_other);
@@ -757,6 +778,7 @@ function setLanguage(lang) {
   setText('opt-f2-hf-6', t.opt_f2_hf_6);
   setText('lbl-f2-heard-other', t.lbl_f2_heard_other);
   setHtml('lbl-f2-pdpa', t.lbl_f2_pdpa + ' <span class="req">*</span>');
+  setText('btn-submit-2', t.btn_submit_s2);
   setText('btn-skip-2', t.btn_skip_s2);
 
   // Form 3
@@ -880,6 +902,8 @@ function showActiveStep(stepNum) {
   // Show target active step form directly
   const activeContainer = document.getElementById(`form-stage-${activeStep}`);
   if (activeContainer) activeContainer.style.display = 'block';
+
+  setupStageHeader();
 
   const t = I18N[currentLang] || I18N.en;
 
@@ -1039,12 +1063,24 @@ function prefillData(prefill) {
 // Synchronize visibility of "Other" text fields and conditional blocks
 function syncConditionalDisplay() {
   const f1HfOther = document.querySelector('#form1 input[name="heard_from"][value="Other"]');
-  const f1HfGroup = document.getElementById('f1-heard-other-group');
-  if (f1HfGroup) f1HfGroup.style.display = (f1HfOther && f1HfOther.checked) ? 'block' : 'none';
+  const f1HfInput = document.getElementById('f1-heard-other');
+  if (f1HfInput) {
+    const isChecked = Boolean(f1HfOther && f1HfOther.checked);
+    f1HfInput.style.display = isChecked ? 'inline-block' : 'none';
+    if (isChecked && document.activeElement !== f1HfInput && !f1HfInput.value) {
+      setTimeout(() => f1HfInput.focus(), 50);
+    }
+  }
 
   const f1IwOther = document.querySelector('#form1 input[name="info_wanted"][value="Other"]');
-  const f1IwGroup = document.getElementById('f1-info-other-group');
-  if (f1IwGroup) f1IwGroup.style.display = (f1IwOther && f1IwOther.checked) ? 'block' : 'none';
+  const f1IwInput = document.getElementById('f1-info-other');
+  if (f1IwInput) {
+    const isChecked = Boolean(f1IwOther && f1IwOther.checked);
+    f1IwInput.style.display = isChecked ? 'inline-block' : 'none';
+    if (isChecked && document.activeElement !== f1IwInput && !f1IwInput.value) {
+      setTimeout(() => f1IwInput.focus(), 50);
+    }
+  }
 
   const f2HfOther = document.querySelector('#form2 input[name="heard_from"][value="Other"]');
   const f2HfGroup = document.getElementById('f2-heard-other-group');
@@ -1343,7 +1379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Network error, please try again', false);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Submit Stage 1 Information';
+        btn.textContent = (I18N[currentLang] || I18N.en).btn_submit_s1;
       }
     });
   }
@@ -1408,7 +1444,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Network error, please try again', false);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Submit Open House Registration';
+        btn.textContent = (I18N[currentLang] || I18N.en).btn_submit_s2;
       }
     });
   }
@@ -1495,7 +1531,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Network error, please try again', false);
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Submit Survey Responses';
+        btn.textContent = (I18N[currentLang] || I18N.en).btn_submit_s3;
       }
     });
   }

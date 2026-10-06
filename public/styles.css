@@ -129,6 +129,14 @@ header {
   flex-shrink: 0;
 }
 
+.brand-logo-img {
+  height: 44px;
+  max-width: 160px;
+  object-fit: contain;
+  display: block;
+  flex-shrink: 0;
+}
+
 .brand-text h1 {
   font-size: 1.1rem;
   font-weight: 700;
@@ -138,6 +146,30 @@ header {
 .brand-text p {
   font-size: 0.75rem;
   color: var(--text-muted);
+}
+
+.inline-other-input {
+  flex: 1;
+  min-width: 140px;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  background: #ffffff;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.2s ease;
+  margin-left: 6px;
+}
+
+.inline-other-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(166, 25, 46, 0.12);
+}
+
+.checkbox-label-other {
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 /* Main Wrapper */
@@ -406,7 +438,7 @@ header {
 }
 
 .form-tag {
-  display: inline-block;
+  display: none;
   padding: 4px 10px;
   background: var(--primary-light);
   color: var(--primary);

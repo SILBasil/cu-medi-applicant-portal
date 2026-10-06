@@ -14,9 +14,9 @@
   <header>
     <div class="header-container">
       <div class="logo-group">
-        <div class="brand-badge">CU-MEDi</div>
+        <img src="/cumedi-logo.png" alt="CU-MEDi" class="brand-logo-img">
         <div class="brand-text">
-          <h1 id="header-stage-title">CU-MEDi Applicant Portal</h1>
+          <h1 id="header-stage-title">CU-MEDi 2027 Admissions Registration</h1>
           <p>Faculty of Medicine, Chulalongkorn University</p>
         </div>
       </div>
@@ -276,24 +276,23 @@
                 class="req">*</span></label>
             <div class="checkbox-group">
               <label class="checkbox-label"><input type="checkbox" name="heard_from"
-                  value="CU-MEDi Website, Facebook, Roadshow"> <span id="opt-hf-1">CU-MEDi Website, Facebook,
-                  Roadshow</span></label>
+                  value="CU-MEDi Website / Social Media"> <span id="opt-hf-1">CU-MEDi Website / Social Media</span></label>
               <label class="checkbox-label"><input type="checkbox" name="heard_from"
-                  value="Faculty of Medicine sources"> <span id="opt-hf-2">Faculty of Medicine sources</span></label>
+                  value="MDCU Social Media"> <span id="opt-hf-2">MDCU Social Media</span></label>
               <label class="checkbox-label"><input type="checkbox" name="heard_from"
-                  value="Chulalongkorn University Open House"> <span id="opt-hf-3">Chulalongkorn University Open
-                  House</span></label>
+                  value="Google / Search"> <span id="opt-hf-3">Google / Search</span></label>
               <label class="checkbox-label"><input type="checkbox" name="heard_from"
-                  value="Social media and personal referrals"> <span id="opt-hf-4">Social media and personal
-                  referrals</span></label>
-              <label class="checkbox-label"><input type="checkbox" name="heard_from" value="Other"> <span
-                  id="opt-hf-5">Other</span></label>
+                  value="Education Website / Page"> <span id="opt-hf-4">Education Website / Page</span></label>
+              <label class="checkbox-label"><input type="checkbox" name="heard_from"
+                  value="Word of Mouth"> <span id="opt-hf-5">Word of Mouth</span></label>
+              <label class="checkbox-label"><input type="checkbox" name="heard_from"
+                  value="Event / Open House"> <span id="opt-hf-6">Event / Open House</span></label>
+              <label class="checkbox-label checkbox-label-other">
+                <input type="checkbox" name="heard_from" value="Other" id="f1-hf-other-check">
+                <span id="opt-hf-7">Other</span>
+                <input type="text" name="heard_other" id="f1-heard-other" class="inline-other-input" placeholder="Please specify if Other / โปรดระบุ..." style="display: none;">
+              </label>
             </div>
-          </div>
-
-          <div class="form-group" id="f1-heard-other-group" style="display: none;">
-            <label class="form-label" id="lbl-f1-other">For other sources, please specify</label>
-            <input type="text" name="heard_other" id="f1-heard-other" class="form-input" placeholder="Please specify if Other">
           </div>
 
           <div class="form-group">
@@ -308,14 +307,12 @@
                   value="Admission Steps & Criteria"> <span id="opt-iw-3">Admission Steps & Criteria</span></label>
               <label class="checkbox-label"><input type="checkbox" name="info_wanted" value="Activities / Open House">
                 <span id="opt-iw-4">Activities / Open House</span></label>
-              <label class="checkbox-label"><input type="checkbox" name="info_wanted" value="Other"> <span
-                  id="opt-iw-5">Other</span></label>
+              <label class="checkbox-label checkbox-label-other">
+                <input type="checkbox" name="info_wanted" value="Other" id="f1-iw-other-check">
+                <span id="opt-iw-5">Other</span>
+                <input type="text" name="info_other" id="f1-info-other" class="inline-other-input" placeholder="Please specify if Other / โปรดระบุ..." style="display: none;">
+              </label>
             </div>
-          </div>
-
-          <div class="form-group" id="f1-info-other-group" style="display: none;">
-            <label class="form-label" id="lbl-f1-info-other">For other information wanted, please specify</label>
-            <input type="text" name="info_other" id="f1-info-other" class="form-input" placeholder="Please specify if Other">
           </div>
 
           <div class="form-group">
@@ -344,7 +341,7 @@
             </label>
           </div>
 
-          <button type="submit" class="btn-submit" id="btn-submit-1">Submit Stage 1 Information</button>
+          <button type="submit" class="btn-submit" id="btn-submit-1">Submit</button>
         </div> <!-- End f1-locked-body -->
       </form>
     </div>
@@ -519,8 +516,7 @@
           </div>
 
           <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 1rem;">
-            <button type="submit" class="btn-submit" id="btn-submit-2" style="flex: 1; min-width: 220px;">Submit Open
-              House Registration</button>
+            <button type="submit" class="btn-submit" id="btn-submit-2" style="flex: 1; min-width: 220px;">Submit</button>
             <button type="button" class="btn-skip-stage" id="btn-skip-2" style="display: none;" onclick="skipToStep3()">
               Skip Open House & Go to Survey (Step 3) →
             </button>
@@ -570,14 +566,6 @@
                 <option value="Preparing">Preparing to Apply</option>
                 <option value="Not yet">Not yet</option>
                 <option value="Decided not to apply">Decided not to apply</option>
-              </select>
-            </div>
-            <div class="form-group" id="f3-intake-box">
-              <label class="form-label" id="lbl-f3-intake">Application Round (if applied)</label>
-              <select name="intake_round" class="form-select" id="sel-f3-intake">
-                <option value="" selected disabled>-- Select Round / เลือกรอบการรับสมัคร --</option>
-                <option value="Direct Admission 2027">Direct Admission 2027 (รอบรับตรง 2027)</option>
-                <option value="International 2027">International 2027 (รอบ International 2027)</option>
               </select>
             </div>
           </div>
@@ -784,7 +772,7 @@
             </label>
           </div>
 
-          <button type="submit" class="btn-submit" id="btn-submit-3">Submit Survey Responses</button>
+          <button type="submit" class="btn-submit" id="btn-submit-3">Submit</button>
         </div> <!-- End f3-locked-body -->
       </form>
     </div>
