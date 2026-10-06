@@ -176,31 +176,32 @@
 
     /* Executive Subheader Banner */
     .exec-banner {
-      background: linear-gradient(135deg, #1b2a4a 0%, #0d1629 100%);
-      color: white;
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.4rem 1.8rem;
+      padding: 1.25rem 1.75rem;
       margin-bottom: 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 20px;
       flex-wrap: wrap;
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--shadow-sm);
     }
     .exec-banner-content h2 {
-      font-size: 1.35rem;
+      font-size: 1.2rem;
       font-weight: 800;
-      margin-bottom: 0.25rem;
+      color: var(--navy);
+      margin-bottom: 0.2rem;
       letter-spacing: -0.01em;
     }
     .exec-banner-content p {
-      font-size: 0.85rem;
-      color: #94a3b8;
+      font-size: 0.825rem;
+      color: var(--text-muted);
     }
     .exec-banner-stat {
       display: flex;
-      gap: 28px;
+      gap: 24px;
       align-items: center;
     }
     .filter-group {
@@ -245,19 +246,24 @@
       display: flex;
       flex-direction: column;
       gap: 2px;
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--border);
+    }
+    .stat-pill-box:first-child {
+      border-left: none;
+      padding-left: 0;
     }
     .stat-pill-box .sub {
       font-size: 0.725rem;
-      color: #94a3b8;
-      text-transform: uppercase;
-      font-weight: 700;
-      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      font-weight: 600;
+      letter-spacing: 0.01em;
     }
     .stat-pill-box .num {
-      font-size: 1.75rem;
+      font-size: 1.6rem;
       font-weight: 800;
-      color: #38bdf8;
-      line-height: 1.1;
+      color: var(--navy);
+      line-height: 1.15;
     }
 
     /* KPI Hero Grid */
@@ -271,67 +277,38 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 1.25rem 1.4rem;
+      padding: 1.3rem 1.4rem;
       box-shadow: var(--shadow-sm);
       transition: all 0.2s ease;
-      position: relative;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .kpi-card:hover {
       box-shadow: var(--shadow-md);
       transform: translateY(-2px);
       border-color: #cbd5e1;
     }
-    .kpi-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--border);
-    }
-    .kpi-card.crimson::before { background: var(--primary); }
-    .kpi-card.navy::before { background: var(--navy); }
-    .kpi-card.green::before { background: var(--success); }
-    .kpi-card.amber::before { background: var(--warning); }
-
-    .kpi-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 0.45rem;
-    }
     .kpi-title {
       font-size: 0.775rem;
       font-weight: 700;
       color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
+      margin-bottom: 0.45rem;
+      letter-spacing: 0.01em;
     }
-    .kpi-tag {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-    .tag-crimson { background: var(--primary-light); color: var(--primary); }
-    .tag-navy { background: #e0e7ff; color: var(--navy); }
-    .tag-success { background: var(--success-bg); color: var(--success); }
-    .tag-warning { background: var(--warning-bg); color: var(--warning); }
-
     .kpi-number {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: 800;
       color: var(--navy);
       letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 0.35rem;
+      line-height: 1.15;
+      margin-bottom: 0.4rem;
     }
     .kpi-desc {
-      font-size: 0.775rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       font-weight: 500;
+      line-height: 1.35;
     }
 
     /* Grid Layouts */
@@ -368,9 +345,6 @@
       box-shadow: var(--shadow-sm);
     }
     .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
       margin-bottom: 1.2rem;
       padding-bottom: 0.75rem;
       border-bottom: 1px solid var(--surface-subtle);
@@ -387,14 +361,6 @@
       font-size: 0.775rem;
       color: var(--text-muted);
       margin-top: 2px;
-    }
-    .card-badge {
-      font-size: 0.7rem;
-      font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 6px;
-      background: var(--surface-subtle);
-      color: var(--navy);
     }
 
     /* Thailand Geo Map Section (Leaflet Interactive Map) */
@@ -741,56 +707,49 @@
     <!-- Executive Highlight Banner -->
     <section class="exec-banner">
       <div class="exec-banner-content">
-        <h2>Executive Admissions Summary</h2>
+        <h2>ภาพรวมสถิติการรับสมัคร (Admissions Intelligence)</h2>
+        <p>ข้อมูลวิเคราะห์เชิงลึกสำหรับการวางแผนยุทธศาสตร์ คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</p>
       </div>
       <div class="exec-banner-stat">
         <div class="stat-pill-box">
-          <div class="sub">Total Prospects</div>
+          <div class="sub">ความตั้งใจยื่นรอบ 2027</div>
+          <div class="num mono" id="banner-intent" style="color: var(--primary);">66.3%</div>
+        </div>
+        <div class="stat-pill-box">
+          <div class="sub">เลือกเป็นอันดับ 1 (First Choice)</div>
+          <div class="num mono" id="banner-equity">66.0%</div>
+        </div>
+        <div class="stat-pill-box">
+          <div class="sub">ผู้สนใจสะสมทั้งหมด</div>
           <div class="num mono" id="banner-total">202</div>
-        </div>
-        <div class="stat-pill-box">
-          <div class="sub">Target Intent</div>
-          <div class="num mono" style="color: #4ade80;" id="banner-intent">66.3%</div>
-        </div>
-        <div class="stat-pill-box">
-          <div class="sub">1st Choice Equity</div>
-          <div class="num mono" style="color: #f472b6;" id="banner-equity">66.0%</div>
         </div>
       </div>
     </section>
 
     <!-- 1. Top-Level Executive KPI Grid -->
     <section class="kpi-grid">
-      <div class="kpi-card crimson">
-        <div class="kpi-header">
-          <span class="kpi-title">Total Candidate Pipeline</span>
-          <span class="kpi-tag tag-crimson">Stage 1 Leads</span>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-title">ผู้สนใจลงทะเบียนสะสม</div>
         <div class="kpi-number mono" id="kpi-total">202</div>
+        <div class="kpi-desc">จำนวนผู้ลงทะเบียนทั้งหมดในฐานข้อมูล</div>
       </div>
 
-      <div class="kpi-card navy">
-        <div class="kpi-header">
-          <span class="kpi-title">Open House Demand</span>
-          <span class="kpi-tag tag-navy" id="kpi-oh-conv">49.5% Conv.</span>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-title">ลงทะเบียนร่วมงาน Open House</div>
         <div class="kpi-number mono" id="kpi-oh-count">100</div>
+        <div class="kpi-desc" id="kpi-oh-conv">อัตรา Conversion 49.5% ของผู้สนใจ</div>
       </div>
 
-      <div class="kpi-card green">
-        <div class="kpi-header">
-          <span class="kpi-title">Immediate Apply Intent</span>
-          <span class="kpi-tag tag-success">Target Pool</span>
-        </div>
-        <div class="kpi-number mono" id="kpi-intent-count">133</div>
+      <div class="kpi-card">
+        <div class="kpi-title">กลุ่มตั้งใจยื่นรอบปี 2027</div>
+        <div class="kpi-number mono" id="kpi-intent-count" style="color: var(--primary);">133</div>
+        <div class="kpi-desc">กลุ่มเป้าหมายหลักที่มีความตั้งใจยื่นในรอบนี้</div>
       </div>
 
-      <div class="kpi-card amber">
-        <div class="kpi-header">
-          <span class="kpi-title">MCAT Score Readiness</span>
-          <span class="kpi-tag tag-warning">Ready</span>
-        </div>
+      <div class="kpi-card">
+        <div class="kpi-title">ความพร้อมคะแนน MCAT</div>
         <div class="kpi-number mono" id="kpi-mcat-ready">38%</div>
+        <div class="kpi-desc">ผู้สมัครที่มีผลคะแนนสอบพร้อมยื่นทันที</div>
       </div>
     </section>
 
@@ -801,7 +760,6 @@
           <h3>การกระจายตัวทางภูมิศาสตร์ของผู้สมัคร (Geographic Distribution Heatmap)</h3>
           <p>วิเคราะห์ความหนาแน่นของผู้สมัครตามภูมิภาคและสถาบันต้นทาง ชี้เป้าหมายการขยายกิจกรรม Roadshow</p>
         </div>
-        <span class="card-badge">Interactive Regional Map</span>
       </div>
 
       <div class="grid-map-split">
@@ -828,8 +786,8 @@
             <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล</span>
             <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ</span>
             <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้</span>
-            <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ.</span>
-            <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน</span>
+            <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคกลาง & ต.อ.</span>
+            <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคอีสาน</span>
           </div>
         </div>
 
@@ -844,7 +802,7 @@
             </div>
           </div>
           <div style="margin-top: 1rem; padding: 10px 14px; background: var(--surface-subtle); border-radius: 8px; font-size: 0.75rem; color: var(--text-muted); border-left: 3px solid var(--primary);">
-            <strong>Executive Takeaway:</strong> ผู้สมัครกลุ่มต่างประเทศ (International Graduates) และภาคเหนือ-ใต้ (CMU &amp; PSU) มีสัดส่วนรวมกันสูงถึง 52% สะท้อนความต้องการเรียนแพทย์หลักสูตรนานาชาติของนักเรียนไทยที่จบจากต่างประเทศและภูมิภาคหลัก
+            <strong>ข้อสังเกตเชิงยุทธศาสตร์:</strong> ผู้สมัครกลุ่มต่างประเทศ (International Graduates) และภาคเหนือ-ใต้ (CMU &amp; PSU) มีสัดส่วนรวมกันสูงถึง 52% สะท้อนความต้องการเรียนแพทย์หลักสูตรนานาชาติของนักเรียนไทยที่จบจากต่างประเทศและภูมิภาคหลัก
           </div>
         </div>
       </div>
@@ -859,7 +817,6 @@
             <h3>ช่องทางที่มาของผู้สมัคร (Acquisition Attribution)</h3>
             <p>วิเคราะห์ช่องทางที่ดึงดูดผู้สมัครที่มีคุณภาพสูงสุด (UTM Source &amp; Referrals)</p>
           </div>
-          <span class="card-badge">Top Channels</span>
         </div>
         <div class="chart-box">
           <canvas id="chart-channels"></canvas>
@@ -873,7 +830,6 @@
             <h3>สถาบันการศึกษาเดิมของผู้สมัคร (Top Feeder Institutions)</h3>
             <p>แหล่งที่มาของผู้สมัครระดับปริญญาตรีและโรงเรียนมัธยมชั้นนำ</p>
           </div>
-          <span class="card-badge">Top Feeders</span>
         </div>
         <div class="chart-box">
           <canvas id="chart-universities"></canvas>
@@ -890,7 +846,6 @@
             <h3>5 ปัจจัยสำคัญที่สุดในการตัดสินใจเลือก CU-MEDi</h3>
             <p>จากการประเมินเกณฑ์ 30 Decision Factors (คะแนนเต็ม 5.0)</p>
           </div>
-          <span class="card-badge">Scale 1–5</span>
         </div>
         <div class="factor-rank-list" id="top-factors-list">
           <!-- Dynamically populated -->
@@ -904,7 +859,6 @@
             <h3>สถาบันแพทย์เปรียบเทียบ (Medical Schools Benchmark)</h3>
             <p>สัดส่วนอันดับโรงเรียนแพทย์ที่ผู้สมัครยื่นควบคู่ (1st, 2nd, 3rd Rank Choice)</p>
           </div>
-          <span class="card-badge">Competitor Matrix</span>
         </div>
         <div class="chart-box">
           <canvas id="chart-competitors"></canvas>
@@ -921,12 +875,11 @@
             <h3>Conversion Funnel แต่ละขั้นตอน</h3>
             <p>สถิติการแปลงสภาพจาก Lead สู่การลงทะเบียนงาน และการทำแบบสำรวจเจาะลึก</p>
           </div>
-          <span class="card-badge">Journey Funnel</span>
         </div>
         <div class="funnel-container">
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">1. ผู้สนใจ (Leads)</div>
+              <div class="funnel-step-name">1. ผู้สนใจลงทะเบียน</div>
               <div class="funnel-step-sub">Initial Registrations</div>
             </div>
             <div class="funnel-track">
@@ -948,8 +901,8 @@
 
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">2.1 เข้าร่วมงานจริง</div>
-              <div class="funnel-step-sub">Verified Attended Day</div>
+              <div class="funnel-step-name">3. เข้าร่วมงานจริง</div>
+              <div class="funnel-step-sub">Verified Attended</div>
             </div>
             <div class="funnel-track">
               <div class="funnel-bar" id="fn-att-bar" style="width: 38%; background: var(--primary);">37.6%</div>
@@ -959,8 +912,8 @@
 
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">3. ทำแบบสำรวจเจาะลึก</div>
-              <div class="funnel-step-sub">Completed 30 Factors</div>
+              <div class="funnel-step-name">4. ทำแบบสำรวจเจาะลึก</div>
+              <div class="funnel-step-sub">Completed Survey</div>
             </div>
             <div class="funnel-track">
               <div class="funnel-bar" id="fn-s3-bar" style="width: 25%; background: #be123c;">24.8%</div>
@@ -977,7 +930,6 @@
             <h3>ความพร้อมด้านคุณสมบัติ (Readiness Diagnostic)</h3>
             <p>ประเมินความพร้อมเอกสารเพื่อวางแผนการสนับสนุนผู้สมัคร</p>
           </div>
-          <span class="card-badge">Admission Readiness</span>
         </div>
         <div class="readiness-list">
           <div class="readiness-item">
@@ -1087,7 +1039,7 @@
 
       const ohConv = total > 0 ? ((s2 / total) * 100).toFixed(1) : '0.0';
       const kpiOhConv = document.getElementById('kpi-oh-conv');
-      if (kpiOhConv) kpiOhConv.innerText = `${ohConv}% Conv.`;
+      if (kpiOhConv) kpiOhConv.innerText = `อัตรา Conversion ${ohConv}% ของผู้สนใจ`;
 
       const kpiOhCount = document.getElementById('kpi-oh-count');
       if (kpiOhCount) kpiOhCount.innerText = s2.toLocaleString();
@@ -1493,7 +1445,8 @@
             labels: topSchools.map(x => x.name),
             datasets: [{
               data: topSchools.map(x => x.count),
-              backgroundColor: ['#a6192e', '#1b2a4a', '#2563eb', '#059669', '#d97706', '#9333ea'],
+              backgroundColor: ['#a6192e', '#1b2a4a', '#334155', '#475569', '#64748b', '#94a3b8'],
+              borderColor: '#ffffff',
               borderWidth: 2
             }]
           },
