@@ -692,10 +692,14 @@
         <div class="filter-group">
           <label for="filter-year" class="filter-label">รอบปีรับเข้า:</label>
           <select id="filter-year" class="filter-select" onchange="onYearFilterChange(this.value)">
-            <option value="all" selected>ทุกรอบปี (All Cohorts)</option>
-            <option value="2027">Class of 2027 (รอบปีปัจจุบัน)</option>
-            <option value="2028">Class of 2028 (รอบปีถัดไป)</option>
-            <option value="later">2029+ / ยังไม่ระบุ</option>
+            <option value="all" selected>ทุกรอบปี (All Years)</option>
+            <option value="2568">ปี 2568 (2025)</option>
+            <option value="2569">ปี 2569 (2026)</option>
+            <option value="2570">ปี 2570 (2027)</option>
+            <option value="2571">ปี 2571 (2028)</option>
+            <option value="2572">ปี 2572 (2029)</option>
+            <option value="2573">ปี 2573 (2030)</option>
+            <option value="2574">ปี 2574 (2031)</option>
           </select>
         </div>
       </div>
@@ -750,6 +754,23 @@
         <div class="kpi-title">ความพร้อมคะแนน MCAT</div>
         <div class="kpi-number mono" id="kpi-mcat-ready">38%</div>
         <div class="kpi-desc">ผู้สมัครที่มีผลคะแนนสอบพร้อมยื่นทันที</div>
+      </div>
+    </section>
+
+    
+    <!-- 5-Year Candidate Pipeline Roadmap -->
+    <section class="card" style="margin-bottom: 1.5rem; padding: 1.25rem 1.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <h3 style="font-size: 1rem; font-weight: 700; color: var(--navy);">เป้าหมายการรับสมัคร 5 ปี (5-Year Candidate Pipeline Roadmap)</h3>
+          <p style="font-size: 0.775rem; color: var(--text-muted); margin-top: 2px;">จำนวนและสัดส่วนผู้สมัครจำแนกตามปีที่ตั้งใจยื่น พร้อมอัตราส่วนเปรียบเทียบกับฐานรวม</p>
+        </div>
+        <div id="pipeline-active-badge" style="font-size: 0.75rem; font-weight: 700; color: var(--navy); background: var(--surface-subtle); padding: 4px 12px; border-radius: 6px; border: 1px solid var(--border);">
+          ภาพรวมทุกปี (All Years)
+        </div>
+      </div>
+      <div id="pipeline-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px;">
+        <!-- Rendered dynamically -->
       </div>
     </section>
 
@@ -879,8 +900,8 @@
         <div class="funnel-container">
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">1. ผู้สนใจลงทะเบียน</div>
-              <div class="funnel-step-sub">Initial Registrations</div>
+              <div class="funnel-step-name">1. ฟอร์ม 1: ผู้สนใจลงทะเบียน</div>
+              <div class="funnel-step-sub" id="fn-s1-sub">100% ฐานตั้งต้น</div>
             </div>
             <div class="funnel-track">
               <div class="funnel-bar" id="fn-s1-bar" style="width: 100%; background: #1b2a4a;">100%</div>
@@ -890,8 +911,8 @@
 
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">2. ลงทะเบียน Open House</div>
-              <div class="funnel-step-sub">Pre-registered</div>
+              <div class="funnel-step-name">2. ฟอร์ม 2: ลงทะเบียน Open House</div>
+              <div class="funnel-step-sub" id="fn-s2-sub">49.5% ของฟอร์ม 1</div>
             </div>
             <div class="funnel-track">
               <div class="funnel-bar" id="fn-s2-bar" style="width: 50%; background: #2563eb;">49.5%</div>
@@ -901,8 +922,8 @@
 
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">3. เข้าร่วมงานจริง</div>
-              <div class="funnel-step-sub">Verified Attended</div>
+              <div class="funnel-step-name">3. เข้าร่วมงานจริง (Verified)</div>
+              <div class="funnel-step-sub" id="fn-att-sub">76.0% ของฟอร์ม 2</div>
             </div>
             <div class="funnel-track">
               <div class="funnel-bar" id="fn-att-bar" style="width: 38%; background: #0d9488;">37.6%</div>
@@ -912,8 +933,8 @@
 
           <div class="funnel-step">
             <div>
-              <div class="funnel-step-name">4. ทำแบบสำรวจเจาะลึก</div>
-              <div class="funnel-step-sub">Completed Survey</div>
+              <div class="funnel-step-name">4. ฟอร์ม 3: แบบสำรวจเจาะลึก 30 ปัจจัย</div>
+              <div class="funnel-step-sub" id="fn-s3-sub">50.0% ของฟอร์ม 2 (24.8% รวม)</div>
             </div>
             <div class="funnel-track">
               <div class="funnel-bar" id="fn-s3-bar" style="width: 25%; background: #a6192e;">24.8%</div>
@@ -991,7 +1012,8 @@
         const stats = await res.json();
         globalStats = stats;
 
-        renderExecutiveKPIs(stats);
+        renderExecutiveKPIs(stats, year);
+        renderCohortPipeline(stats.cohort_trend, year, stats.total);
         renderGeoLeaderboard(stats.geo_distribution, stats.total);
         if (!leafletMap) {
           initLeafletMap();
@@ -1011,7 +1033,7 @@
     }
 
     // 2. Render Top KPIs
-    function renderExecutiveKPIs(s) {
+    function renderExecutiveKPIs(s, selectedYear = 'all') {
       const total = s.total || 0;
       const s2 = s.stage2_count || 0;
       const s3 = s.stage3_count || 0;
@@ -1064,20 +1086,74 @@
         fnS2Bar.style.width = `${Math.min(ohConv, 100)}%`;
         fnS2Bar.innerText = `${ohConv}%`;
       }
+      const fnS2Sub = document.getElementById('fn-s2-sub');
+      if (fnS2Sub) fnS2Sub.innerText = `${ohConv}% ของฟอร์ม 1`;
 
+      const attOfS2 = s2 > 0 ? ((att / s2) * 100).toFixed(1) : '0.0';
       const attPct = total > 0 ? ((att / total) * 100).toFixed(1) : '0.0';
       const fnAttBar = document.getElementById('fn-att-bar');
       if (fnAttBar) {
         fnAttBar.style.width = `${Math.min(attPct, 100)}%`;
         fnAttBar.innerText = `${attPct}%`;
       }
+      const fnAttSub = document.getElementById('fn-att-sub');
+      if (fnAttSub) fnAttSub.innerText = `${attOfS2}% ของฟอร์ม 2`;
 
+      const s3OfS2 = s2 > 0 ? ((s3 / s2) * 100).toFixed(1) : '0.0';
       const s3Pct = total > 0 ? ((s3 / total) * 100).toFixed(1) : '0.0';
       const fnS3Bar = document.getElementById('fn-s3-bar');
       if (fnS3Bar) {
         fnS3Bar.style.width = `${Math.min(s3Pct, 100)}%`;
         fnS3Bar.innerText = `${s3Pct}%`;
       }
+      const fnS3Sub = document.getElementById('fn-s3-sub');
+      if (fnS3Sub) {
+        fnS3Sub.innerText = s3OfS2 + "% ของฟอร์ม 2 (" + s3Pct + "% รวม)";
+      }
+    }
+
+    // 2.1 Render 5-Year Cohort Pipeline Roadmap
+    function renderCohortPipeline(trend, selectedYear, total) {
+      const container = document.getElementById('pipeline-cards-grid');
+      const badge = document.getElementById('pipeline-active-badge');
+      if (!container) return;
+
+      if (badge) {
+        badge.innerText = selectedYear === 'all' ? 'ภาพรวมทุกปี (All Years)' : `กรองเฉพาะปี ${selectedYear}`;
+      }
+
+      if (!trend || trend.length === 0) {
+        trend = [
+          { year_ce: 2027, year_be: 2570, count: 134, pct: '66.3' },
+          { year_ce: 2028, year_be: 2571, count: 42, pct: '20.8' },
+          { year_ce: 2029, year_be: 2572, count: 15, pct: '7.4' },
+          { year_ce: 2030, year_be: 2573, count: 10, pct: '5.0' },
+          { year_ce: 2031, year_be: 2574, count: 0, pct: '0.0' }
+        ];
+      }
+
+      container.innerHTML = trend.map(item => {
+        const isSelected = selectedYear !== 'all' && (selectedYear == item.year_be || selectedYear == item.year_ce);
+        const cardStyle = isSelected 
+          ? 'border: 2px solid var(--primary); background: #fdf2f4;' 
+          : 'border: 1px solid var(--border); background: var(--surface);';
+        const numColor = item.count > 0 ? (isSelected ? 'var(--primary)' : 'var(--navy)') : '#94a3b8';
+
+        return `
+          <div style="${cardStyle} border-radius: 10px; padding: 12px 14px; transition: all 0.2s ease;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 0.825rem; font-weight: 800; color: var(--navy);">ปี ${item.year_be}</span>
+              <span style="font-size: 0.7rem; font-weight: 600; color: var(--text-muted);">(${item.year_ce})</span>
+            </div>
+            <div style="font-size: 1.55rem; font-weight: 800; color: ${numColor}; line-height: 1.15; margin-bottom: 4px;" class="mono">
+              ${item.count.toLocaleString()} <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted);">คน</span>
+            </div>
+            <div style="font-size: 0.725rem; font-weight: 600; color: ${item.count > 0 ? 'var(--primary)' : 'var(--text-light)'};">
+              ${item.count > 0 ? `${item.pct}% ของทั้งหมด` : 'ยังไม่มีข้อมูล'}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     // 3. Leaflet Geographic Map & Regional Leaderboard

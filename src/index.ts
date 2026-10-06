@@ -396,17 +396,61 @@ app.get('/api/stats', async (c) => {
   try {
     let allApplicants = await sql`SELECT * FROM applicants;`;
 
-    // Filter by Intake Year Cohort if requested
-    let applicants = allApplicants;
+    // Normalize Year Filter (supports CE: 2026, 2027, etc. and BE: 2569, 2570, etc.)
+    let targetYearCE: number | null = null;
     if (year !== 'all') {
+      const parsed = parseInt(year, 10);
+      if (!isNaN(parsed)) {
+        targetYearCE = parsed > 2400 ? parsed - 543 : parsed;
+      }
+    }
+
+    let applicants = allApplicants;
+    if (targetYearCE !== null) {
       applicants = allApplicants.filter((a: any) => {
         const intent = (a.s1_apply_intent || '').toLowerCase();
-        if (year === '2027') return intent.includes('2027') || intent === 'yes';
-        if (year === '2028') return intent.includes('2028');
-        if (year === '2029' || year === 'later') return intent.includes('2029') || (!intent.includes('2027') && !intent.includes('2028'));
-        return intent.includes(year);
+        const createdYear = new Date(a.created_at).getFullYear();
+
+        if (targetYearCE === 2026) {
+          return createdYear === 2026;
+        }
+        if (targetYearCE === 2027) {
+          return intent.includes('2027') || intent.includes('this year') || intent === 'yes';
+        }
+        if (targetYearCE === 2028) {
+          return intent.includes('2028') || intent.includes('next year');
+        }
+        if (targetYearCE === 2029) {
+          return intent.includes('2029');
+        }
+        if (targetYearCE === 2030) {
+          return intent.includes('2030');
+        }
+        if (targetYearCE === 2031) {
+          return intent.includes('2031');
+        }
+        return intent.includes(targetYearCE.toString());
       });
     }
+
+    // 5-Year Cohort Trend Pipeline
+    const baseTotal = allApplicants.length;
+    const c2027 = allApplicants.filter((a: any) => {
+      const intent = (a.s1_apply_intent || '').toLowerCase();
+      return intent.includes('2027') || intent.includes('this year') || intent === 'yes';
+    }).length;
+    const c2028 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2028')).length;
+    const c2029 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2029')).length;
+    const c2030 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2030')).length;
+    const c2031 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2031')).length;
+
+    const cohortTrend = [
+      { year_ce: 2027, year_be: 2570, count: c2027, pct: baseTotal > 0 ? ((c2027 / baseTotal) * 100).toFixed(1) : '0.0' },
+      { year_ce: 2028, year_be: 2571, count: c2028, pct: baseTotal > 0 ? ((c2028 / baseTotal) * 100).toFixed(1) : '0.0' },
+      { year_ce: 2029, year_be: 2572, count: c2029, pct: baseTotal > 0 ? ((c2029 / baseTotal) * 100).toFixed(1) : '0.0' },
+      { year_ce: 2030, year_be: 2573, count: c2030, pct: baseTotal > 0 ? ((c2030 / baseTotal) * 100).toFixed(1) : '0.0' },
+      { year_ce: 2031, year_be: 2574, count: c2031, pct: baseTotal > 0 ? ((c2031 / baseTotal) * 100).toFixed(1) : '0.0' }
+    ];
 
     const total = applicants.length;
     const stage1Count = applicants.filter((a: any) => a.stage1_completed).length;
@@ -615,6 +659,7 @@ app.get('/api/stats', async (c) => {
       geo_distribution: geoDistribution,
       readiness,
       top_factors: finalTopFactors,
+      cohort_trend: cohortTrend,
       top_schools: topSchools.length > 0 ? topSchools : [
         { name: "CU-MEDi (Chulalongkorn)", count: 48 },
         { name: "RAMA-IDP (Mahidol)", count: 28 },
