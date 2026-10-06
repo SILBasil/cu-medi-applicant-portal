@@ -149,27 +149,118 @@ header {
   flex: 1;
 }
 
-/* Verification Gate Modal Card */
-#verification-gate,
+/* Email Verification & Locked Form Section */
+.email-gate-section {
+  background: var(--surface-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.email-gate-section.verified {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.email-input-group {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.email-input-group .form-input {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.btn-verify-email {
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0 1.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-verify-email:hover {
+  background: var(--navy-light);
+}
+
+.email-status-banner {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.email-status-banner.locked {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.email-status-banner.success {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+  font-weight: 500;
+}
+
+.email-status-banner.new-user {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.email-status-banner.already-done {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+/* Locked Form Section (Grayed out & disabled until email is verified) */
+.form-body-locked {
+  opacity: 0.38;
+  pointer-events: none;
+  filter: grayscale(40%);
+  transition: opacity 0.35s ease, filter 0.35s ease;
+  position: relative;
+  user-select: none;
+}
+
+.form-body-locked.unlocked {
+  opacity: 1;
+  pointer-events: auto;
+  filter: none;
+  user-select: auto;
+}
+
+/* Highlight prefilled inputs */
+.prefilled-highlight {
+  background-color: #f0fdf4 !important;
+  border-color: #86efac !important;
+  box-shadow: 0 0 0 1px #86efac;
+}
+
 #already-completed-card {
   width: 100%;
   max-width: 580px;
   margin: 1.5rem auto 2rem auto;
-}
-
-#gate-title {
-  font-size: 1.25rem;
-  line-height: 1.4;
-  margin-bottom: 8px;
-  min-height: 1.75rem;
-}
-
-#gate-desc {
-  font-size: 0.875rem;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-  min-height: 2.75rem;
-  line-height: 1.45;
 }
 
 /* Journey Stepper */

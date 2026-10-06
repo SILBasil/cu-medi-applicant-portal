@@ -148,7 +148,12 @@ app.get('/api/applicant/status', async (c) => {
       country: appRecord.country,
       university: appRecord.university,
       major: appRecord.major,
-      bachelor_degree: appRecord.s1_bachelor_degree
+      bachelor_degree: appRecord.s1_bachelor_degree,
+      education_level: appRecord.s2_education_level,
+      year_of_study: appRecord.s2_year_of_study,
+      gender: appRecord.s3_gender,
+      age: appRecord.s3_age,
+      region: appRecord.s3_region
     };
 
     return c.json({

@@ -489,17 +489,19 @@ function setLanguage(lang) {
     if (el && html !== undefined) el.innerHTML = html;
   };
 
-  // Header & Gate
+  // Header & Email Buttons
   setupStageHeader();
-  const emailInput = document.getElementById('gate-email-input');
-  if (emailInput) emailInput.placeholder = t.gate_email_placeholder;
-  setText('btn-gate-verify', t.gate_verify_btn);
-  setText('gate-toggle-mode', t.gate_phone_toggle);
-  const phoneInput = document.getElementById('gate-phone-input');
-  if (phoneInput) phoneInput.placeholder = t.gate_phone_placeholder;
-  const nameInput = document.getElementById('gate-name-input');
-  if (nameInput) nameInput.placeholder = t.gate_name_placeholder;
-  setText('btn-gate-verify-phone', t.gate_phone_btn);
+  ['1', '2', '3'].forEach(num => {
+    const btn = document.getElementById(`btn-f${num}-check-email`);
+    if (btn) {
+      const isLocked = document.getElementById(`f${num}-locked-body`) && !document.getElementById(`f${num}-locked-body`).classList.contains('unlocked');
+      if (isLocked) {
+        btn.textContent = currentLang === 'th' ? 'ดำเนินการต่อ →' : 'Continue →';
+      } else {
+        btn.textContent = currentLang === 'th' ? '✓ ตรวจสอบแล้ว' : '✓ Verified';
+      }
+    }
+  });
 
   // Stepper
   setText('node-label-1', t.step_node_1);
@@ -741,21 +743,29 @@ function prefillData(prefill) {
 
   const emailVal = prefill.email || verifiedApplicant?.email || '';
 
-  // Always fill email fields (now editable inputs, not hidden)
+  // Synchronize email fields across all 3 forms
   ['f1', 'f2', 'f3'].forEach(fId => {
     const emailInput = document.getElementById(`${fId}-email`);
-    if (emailInput && emailVal) emailInput.value = emailVal;
+    if (emailInput && emailVal) {
+      emailInput.value = emailVal;
+    }
   });
 
-  // Prefill Form 1
+  const highlightField = (el) => {
+    if (!el) return;
+    el.classList.add('prefilled-highlight');
+    setTimeout(() => el.classList.remove('prefilled-highlight'), 3000);
+  };
+
+  // Prefill Form 1 (Lead Capture)
   const f1 = document.getElementById('form1');
   if (f1) {
-    if (prefill.name && f1.elements['name']) f1.elements['name'].value = prefill.name;
-    if (prefill.phone && f1.elements['phone']) f1.elements['phone'].value = prefill.phone;
-    if (prefill.nationality && f1.elements['nationality']) f1.elements['nationality'].value = prefill.nationality;
-    if (prefill.country && f1.elements['country']) f1.elements['country'].value = prefill.country;
-    if (prefill.university && f1.elements['university']) f1.elements['university'].value = prefill.university;
-    if (prefill.bachelor_degree && f1.elements['bachelor_degree']) f1.elements['bachelor_degree'].value = prefill.bachelor_degree;
+    if (prefill.name && f1.elements['name']) { f1.elements['name'].value = prefill.name; highlightField(f1.elements['name']); }
+    if (prefill.phone && f1.elements['phone']) { f1.elements['phone'].value = prefill.phone; highlightField(f1.elements['phone']); }
+    if (prefill.nationality && f1.elements['nationality']) { f1.elements['nationality'].value = prefill.nationality; highlightField(f1.elements['nationality']); }
+    if (prefill.country && f1.elements['country']) { f1.elements['country'].value = prefill.country; highlightField(f1.elements['country']); }
+    if (prefill.university && f1.elements['university']) { f1.elements['university'].value = prefill.university; highlightField(f1.elements['university']); }
+    if (prefill.bachelor_degree && f1.elements['bachelor_degree']) { f1.elements['bachelor_degree'].value = prefill.bachelor_degree; highlightField(f1.elements['bachelor_degree']); }
     if (prefill.req_readiness) {
       let r = prefill.req_readiness;
       if (typeof r === 'string') {
@@ -778,152 +788,196 @@ function prefillData(prefill) {
     }
   }
 
-  // Prefill Form 2
+  // Prefill Form 2 (Open House)
   const f2 = document.getElementById('form2');
   if (f2) {
-    if (prefill.name && document.getElementById('f2-name')) document.getElementById('f2-name').value = prefill.name;
-    if (prefill.nationality && document.getElementById('f2-nationality')) document.getElementById('f2-nationality').value = prefill.nationality;
-    if (prefill.phone && document.getElementById('f2-phone')) document.getElementById('f2-phone').value = prefill.phone;
-    if (prefill.university && document.getElementById('f2-university')) document.getElementById('f2-university').value = prefill.university;
-    if (prefill.major && document.getElementById('f2-major')) document.getElementById('f2-major').value = prefill.major;
+    const f2Name = document.getElementById('f2-name');
+    const f2Phone = document.getElementById('f2-phone');
+    const f2Nat = document.getElementById('f2-nationality');
+    const f2Uni = document.getElementById('f2-university');
+    const f2Major = document.getElementById('f2-major');
+
+    if (prefill.name && f2Name) { f2Name.value = prefill.name; highlightField(f2Name); }
+    if (prefill.phone && f2Phone) { f2Phone.value = prefill.phone; highlightField(f2Phone); }
+    if (prefill.nationality && f2Nat) { f2Nat.value = prefill.nationality; highlightField(f2Nat); }
+    if (prefill.university && f2Uni) { f2Uni.value = prefill.university; highlightField(f2Uni); }
+    if (prefill.major && f2Major) { f2Major.value = prefill.major; highlightField(f2Major); }
+    if (prefill.education_level && document.getElementById('sel-f2-edu')) {
+      document.getElementById('sel-f2-edu').value = prefill.education_level;
+    }
+    if (prefill.year_of_study && document.getElementById('sel-f2-year')) {
+      document.getElementById('sel-f2-year').value = prefill.year_of_study;
+    }
   }
 
-  // Prefill Form 3
+  // Prefill Form 3 (Survey)
   const f3 = document.getElementById('form3');
   if (f3) {
-    if (prefill.name && document.getElementById('f3-name')) document.getElementById('f3-name').value = prefill.name;
+    const f3Name = document.getElementById('f3-name');
+    if (prefill.name && f3Name) { f3Name.value = prefill.name; highlightField(f3Name); }
+    if (prefill.gender && document.getElementById('sel-f3-gender')) {
+      document.getElementById('sel-f3-gender').value = prefill.gender;
+    }
+    if (prefill.age && f3.elements['age']) {
+      f3.elements['age'].value = prefill.age;
+    }
+    if (prefill.region && document.getElementById('sel-f3-region')) {
+      document.getElementById('sel-f3-region').value = prefill.region;
+    }
   }
 }
 
-// Verification Gate Action
-async function verifyAndProceed(params) {
-  let url = '/api/applicant/status?';
-  if (params.email) url += `email=${encodeURIComponent(params.email)}`;
-  else if (params.phone) url += `phone=${encodeURIComponent(params.phone)}&name=${encodeURIComponent(params.name || '')}`;
-  else return;
+// Check form email, lookup existing records, prefill, and unlock the form
+async function checkFormEmail(stageNum) {
+  const emailInput = document.getElementById(`f${stageNum}-email`);
+  if (!emailInput) return;
+  const email = emailInput.value.trim().toLowerCase();
 
-  const btn = params.email ? document.getElementById('btn-gate-verify') : document.getElementById('btn-gate-verify-phone');
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'Verifying...';
+  const statusBanner = document.getElementById(`f${stageNum}-email-status`);
+  const lockedBody = document.getElementById(`f${stageNum}-locked-body`);
+  const checkBtn = document.getElementById(`btn-f${stageNum}-check-email`);
+
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!email || !emailRegex.test(email)) {
+    if (statusBanner) {
+      statusBanner.className = 'email-status-banner locked';
+      statusBanner.innerHTML = `<span>⚠️ ${currentLang === 'th' ? 'กรุณาระบุอีเมลที่ถูกต้อง (เช่น yourname@example.com)' : 'Please enter a valid email address (e.g. yourname@example.com)'}</span>`;
+    }
+    emailInput.focus();
+    return;
+  }
+
+  if (checkBtn) {
+    checkBtn.disabled = true;
+    checkBtn.textContent = currentLang === 'th' ? 'กำลังตรวจสอบ...' : 'Checking...';
+  }
+
+  if (statusBanner) {
+    statusBanner.className = 'email-status-banner';
+    statusBanner.innerHTML = `<span>⏳ ${currentLang === 'th' ? 'กำลังตรวจสอบประวัติผู้สมัคร...' : 'Verifying applicant record...'}</span>`;
   }
 
   try {
-    const res = await fetch(url);
+    const res = await fetch(`/api/applicant/status?email=${encodeURIComponent(email)}`);
     const data = await res.json();
     verifiedApplicant = data;
 
-    const emailUsed = data.email || params.email || '';
-
-    // Check if TARGET stage is ALREADY COMPLETED
+    // Check if THIS stage is already completed
     let isAlreadyDone = false;
-    if (currentStage === 1 && data.stage1_completed) isAlreadyDone = true;
-    if (currentStage === 2 && data.stage2_completed) isAlreadyDone = true;
-    if (currentStage === 3 && data.stage3_completed) isAlreadyDone = true;
+    if (stageNum === 1 && data.stage1_completed) isAlreadyDone = true;
+    if (stageNum === 2 && data.stage2_completed) isAlreadyDone = true;
+    if (stageNum === 3 && data.stage3_completed) isAlreadyDone = true;
 
-    if (isAlreadyDone) {
-      document.getElementById('verification-gate').style.display = 'none';
-      const doneCard = document.getElementById('already-completed-card');
-      const doneText = document.getElementById('already-completed-text');
-      if (doneText) {
-        doneText.textContent = `You have already submitted Stage ${currentStage} for ${emailUsed}. Your record is securely saved in the system.`;
-      }
-      if (doneCard) doneCard.style.display = 'block';
-      return;
+    // Unlock the form section!
+    if (lockedBody) {
+      lockedBody.classList.add('unlocked');
+    }
+    const emailBox = document.getElementById(`f${stageNum}-email-box`);
+    if (emailBox) {
+      emailBox.classList.add('verified');
     }
 
-    // Unlock form area
-    document.getElementById('verification-gate').style.display = 'none';
-
-    // Show verified pill in header
+    // Show verified user pill in header
     const pill = document.getElementById('verified-user-pill');
     const pillText = document.getElementById('verified-email-text');
-    if (pill && pillText && emailUsed) {
-      pillText.textContent = `✓ ${emailUsed}`;
+    if (pill && pillText) {
+      pillText.textContent = `✓ ${email}`;
       pill.style.display = 'block';
     }
 
-    // Prefill all inputs (email + profile data)
-    const mergedPrefill = Object.assign({ email: emailUsed, phone: params.phone, name: params.name }, data.prefill || {});
-    prefillData(mergedPrefill);
-
     if (data.exists) {
-      showToast(`Welcome back, ${data.name || emailUsed}! Profile loaded.`);
+      // Prefill all available fields across forms
+      const mergedPrefill = Object.assign({ email }, data.prefill || {});
+      prefillData(mergedPrefill);
+
+      const applicantName = data.name || (data.prefill && data.prefill.name) || '';
+
+      if (isAlreadyDone) {
+        if (statusBanner) {
+          statusBanner.className = 'email-status-banner already-done';
+          statusBanner.innerHTML = `<span>📌 ${currentLang === 'th' 
+            ? `คุณเคยส่งฟอร์มนี้เรียบร้อยแล้ว (${email}) หากต้องการแก้ไขข้อมูล สามารถปรับปรุงด้านล่างแล้วกดส่งอีกครั้งได้ครับ` 
+            : `You have previously submitted this stage (${email}). You can review or update the details below and submit again.`}</span>`;
+        }
+        showToast(currentLang === 'th' ? 'พบข้อมูลเดิมที่เคยส่งไว้เรียบร้อยแล้ว' : 'Found existing submission record.');
+      } else {
+        if (statusBanner) {
+          statusBanner.className = 'email-status-banner success';
+          statusBanner.innerHTML = `<span>✨ ${currentLang === 'th' 
+            ? `ยินดีต้อนรับกลับมา <b>${applicantName || email}</b>! ระบบดึงข้อมูลชื่อ เบอร์โทร และประวัติเดิมให้เรียบร้อยแล้ว` 
+            : `Welcome back <b>${applicantName || email}</b>! Your profile details have been auto-filled.`}</span>`;
+        }
+        showToast(currentLang === 'th' ? `ยินดีต้อนรับกลับมา ${applicantName || email}! ดึงข้อมูลเดิมแล้ว` : `Welcome back, ${applicantName || email}! Profile auto-filled.`);
+      }
+    } else {
+      // New applicant
+      if (statusBanner) {
+        statusBanner.className = 'email-status-banner new-user';
+        statusBanner.innerHTML = `<span>✨ ${currentLang === 'th' 
+          ? `บันทึกอีเมลเรียบร้อยแล้ว ท่านสามารถกรอกข้อมูลด้านล่างต่อได้เลยครับ` 
+          : `Email confirmed! Please complete the form details below.`}</span>`;
+      }
     }
 
-    // Standalone stage: directly show target stage form
-    activeStep = currentStage;
-    showActiveStep(activeStep);
+    // Focus smoothly to next field (Full Name)
+    const nextInput = document.getElementById(`f${stageNum}-name`);
+    if (nextInput && !nextInput.value) {
+      nextInput.focus();
+    }
 
   } catch (err) {
-    console.error('Error verifying applicant:', err);
-    showToast('Failed to verify. Please try again.', false);
+    console.error('Error verifying email:', err);
+    if (statusBanner) {
+      statusBanner.className = 'email-status-banner locked';
+      statusBanner.innerHTML = `<span>⚠️ ${currentLang === 'th' ? 'เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง' : 'Connection error, please try again.'}</span>`;
+    }
   } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.textContent = 'Verify & Continue →';
+    if (checkBtn) {
+      checkBtn.disabled = false;
+      checkBtn.textContent = currentLang === 'th' ? '✓ ตรวจสอบแล้ว' : '✓ Verified';
     }
   }
 }
+window.checkFormEmail = checkFormEmail;
 
 // DOM Ready
 document.addEventListener('DOMContentLoaded', () => {
   currentStage = detectStage();
   setLanguage(currentLang);
 
-  // Mode Toggle (Email vs Phone)
-  const toggleBtn = document.getElementById('gate-toggle-mode');
-  const emailBox = document.getElementById('gate-email-box');
-  const phoneBox = document.getElementById('gate-phone-box');
-  let isPhoneMode = false;
+  // Directly show the target form
+  showActiveStep(currentStage);
 
-  if (toggleBtn && emailBox && phoneBox) {
-    toggleBtn.addEventListener('click', () => {
-      isPhoneMode = !isPhoneMode;
-      if (isPhoneMode) {
-        emailBox.style.display = 'none';
-        phoneBox.style.display = 'flex';
-        toggleBtn.textContent = 'Switch back to Email verification';
-      } else {
-        emailBox.style.display = 'flex';
-        phoneBox.style.display = 'none';
-        toggleBtn.textContent = 'Forgot email? Search by Phone & Name';
-      }
-    });
-  }
+  // Bind Enter key and onBlur auto-check for email inputs in all forms
+  [1, 2, 3].forEach(stageNum => {
+    const emailInput = document.getElementById(`f${stageNum}-email`);
+    if (emailInput) {
+      emailInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          checkFormEmail(stageNum);
+        }
+      });
+      emailInput.addEventListener('blur', () => {
+        const val = emailInput.value.trim();
+        const lockedBody = document.getElementById(`f${stageNum}-locked-body`);
+        if (val && lockedBody && !lockedBody.classList.contains('unlocked')) {
+          checkFormEmail(stageNum);
+        }
+      });
+    }
+  });
 
-  // Gate Verify Buttons
-  const btnVerifyEmail = document.getElementById('btn-gate-verify');
-  if (btnVerifyEmail) {
-    btnVerifyEmail.addEventListener('click', () => {
-      const email = document.getElementById('gate-email-input').value.trim();
-      if (!email) {
-        showToast('Please enter a valid email address', false);
-        return;
-      }
-      verifyAndProceed({ email });
-    });
-  }
-
-  const btnVerifyPhone = document.getElementById('btn-gate-verify-phone');
-  if (btnVerifyPhone) {
-    btnVerifyPhone.addEventListener('click', () => {
-      const phone = document.getElementById('gate-phone-input').value.trim();
-      const name = document.getElementById('gate-name-input').value.trim();
-      if (!phone) {
-        showToast('Please enter your phone number', false);
-        return;
-      }
-      verifyAndProceed({ phone, name });
-    });
-  }
-
-  // Auto trigger if email is in URL
+  // Auto trigger if email is in URL parameter
   const params = new URLSearchParams(window.location.search);
   const urlEmail = params.get('email');
   if (urlEmail) {
-    document.getElementById('gate-email-input').value = urlEmail;
-    verifyAndProceed({ email: urlEmail });
+    const activeEmailInput = document.getElementById(`f${currentStage}-email`);
+    if (activeEmailInput) {
+      activeEmailInput.value = urlEmail;
+      checkFormEmail(currentStage);
+    }
   }
 
   // Attend mode toggle for Open House Session
