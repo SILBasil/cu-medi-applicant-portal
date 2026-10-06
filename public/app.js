@@ -411,16 +411,13 @@ function renderFactors() {
     if (!container) return;
     container.innerHTML = factors.map((f, idx) => {
       const factorKey = `${prefix}_${idx + 1}`;
-      if (factorRatings[factorKey] === undefined) {
-        factorRatings[factorKey] = 3;
-      }
       const currentVal = factorRatings[factorKey];
       return `
         <div class="factor-item">
           <div class="factor-name">${idx + 1}. ${f}</div>
           <div class="scale-options">
             ${[1, 2, 3, 4, 5].map(val => `
-              <button type="button" class="scale-btn ${val === currentVal ? 'active' : ''}" 
+              <button type="button" class="scale-btn ${currentVal !== undefined && val === currentVal ? 'active' : ''}" 
                       onclick="selectFactor('${factorKey}', ${val}, this)">
                 ${val}
               </button>
@@ -843,6 +840,8 @@ async function checkFormEmail(stageNum) {
     if (statusBanner) {
       statusBanner.className = 'email-status-banner locked';
       statusBanner.innerHTML = `<span>⚠️ ${currentLang === 'th' ? 'กรุณาระบุอีเมลที่ถูกต้อง (เช่น yourname@example.com)' : 'Please enter a valid email address (e.g. yourname@example.com)'}</span>`;
+    } else {
+      showToast(currentLang === 'th' ? 'กรุณาระบุอีเมลที่ถูกต้อง' : 'Please enter a valid email address', false);
     }
     emailInput.focus();
     return;
