@@ -1078,14 +1078,9 @@
         attributionControl: false
       });
 
-      // CartoDB Positron clean executive basemap
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        maxZoom: 18,
-        subdomains: 'abcd'
-      }).addTo(leafletMap);
-
+      // Clean vector map without third-party tile watermarks
       // Fit bounds to Thailand borders
-      const thailandBounds = L.latLngBounds([[5.5, 97.2], [20.6, 105.8]]);
+      const thailandBounds = L.latLngBounds([[5.6, 97.2], [20.5, 105.8]]);
       leafletMap.fitBounds(thailandBounds, { padding: [15, 15] });
 
       // Fetch authentic 77 provinces GeoJSON
@@ -1190,6 +1185,23 @@
         if (item.id === 'intl') {
           const intlLbl = document.getElementById('map-lbl-intl');
           if (intlLbl) intlLbl.textContent = `${item.count} คน (${pct}%)`;
+        }
+
+        // Update Bottom Map Legend
+        const legendEl = document.getElementById('map-legend-bar');
+        if (legendEl && geoData) {
+          const bkk = geoData.bkk?.count || 0;
+          const north = geoData.north?.count || 0;
+          const south = geoData.south?.count || 0;
+          const central = geoData.central?.count || 0;
+          const northeast = geoData.northeast?.count || 0;
+          legendEl.innerHTML = `
+            <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (${bkk} คน)</span>
+            <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (${north} คน)</span>
+            <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (${south} คน)</span>
+            <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ. (${central} คน)</span>
+            <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน (${northeast} คน)</span>
+          `;
         }
 
         return `
