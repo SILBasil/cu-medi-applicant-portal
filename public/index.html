@@ -219,51 +219,75 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>
-                      <div style="font-weight: 600; color: var(--navy);" id="txt-mcat-title">MCAT</div>
-                      <div style="font-size: 0.775rem; color: var(--text-muted);" id="txt-mcat-sub">MCAT score report
-                      </div>
+                    <td class="req-title-cell">
+                      <div style="font-weight: 700; color: var(--navy); font-size: 0.95rem;" id="txt-mcat-title">MCAT</div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;" id="txt-mcat-sub">MCAT score report</div>
                     </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_mcat" value="Done" required class="grid-radio">
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_mcat" value="Done" required class="grid-radio">
+                        <span class="grid-opt-text opt-done-label">Done</span>
+                      </label>
                     </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_mcat" value="Tentative Date" class="grid-radio">
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_mcat" value="Tentative Date" class="grid-radio">
+                        <span class="grid-opt-text opt-tentative-label">Tentative Date</span>
+                      </label>
                     </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_mcat" value="Not Done" class="grid-radio">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div style="font-weight: 600; color: var(--navy);" id="txt-eng-title">English (TOEFL/IELTS)</div>
-                      <div style="font-size: 0.775rem; color: var(--text-muted);" id="txt-eng-sub">English proficiency
-                        test result</div>
-                    </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_eng" value="Done" required class="grid-radio">
-                    </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_eng" value="Tentative Date" class="grid-radio">
-                    </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_eng" value="Not Done" class="grid-radio">
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_mcat" value="Not Done" class="grid-radio">
+                        <span class="grid-opt-text opt-notdone-label">Not Done</span>
+                      </label>
                     </td>
                   </tr>
                   <tr>
-                    <td>
-                      <div style="font-weight: 600; color: var(--navy);" id="txt-degree-title">Bachelor's degree</div>
-                      <div style="font-size: 0.775rem; color: var(--text-muted);" id="txt-degree-sub">Graduation status
-                        / Transcript</div>
+                    <td class="req-title-cell">
+                      <div style="font-weight: 700; color: var(--navy); font-size: 0.95rem;" id="txt-eng-title">English (TOEFL/IELTS)</div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;" id="txt-eng-sub">English proficiency test result</div>
                     </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_degree" value="Done" required class="grid-radio">
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_eng" value="Done" required class="grid-radio">
+                        <span class="grid-opt-text opt-done-label">Done</span>
+                      </label>
                     </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_degree" value="Tentative Date" class="grid-radio">
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_eng" value="Tentative Date" class="grid-radio">
+                        <span class="grid-opt-text opt-tentative-label">Tentative Date</span>
+                      </label>
                     </td>
-                    <td style="text-align: center;">
-                      <input type="radio" name="req_degree" value="Not Done" class="grid-radio">
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_eng" value="Not Done" class="grid-radio">
+                        <span class="grid-opt-text opt-notdone-label">Not Done</span>
+                      </label>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="req-title-cell">
+                      <div style="font-weight: 700; color: var(--navy); font-size: 0.95rem;" id="txt-degree-title">Bachelor's degree</div>
+                      <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;" id="txt-degree-sub">Graduation status / Transcript</div>
+                    </td>
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_degree" value="Done" required class="grid-radio">
+                        <span class="grid-opt-text opt-done-label">Done</span>
+                      </label>
+                    </td>
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_degree" value="Tentative Date" class="grid-radio">
+                        <span class="grid-opt-text opt-tentative-label">Tentative Date</span>
+                      </label>
+                    </td>
+                    <td class="req-option-cell">
+                      <label class="grid-cell-label">
+                        <input type="radio" name="req_degree" value="Not Done" class="grid-radio">
+                        <span class="grid-opt-text opt-notdone-label">Not Done</span>
+                      </label>
                     </td>
                   </tr>
                 </tbody>
@@ -686,7 +710,7 @@
           <!-- Postgraduation Plans -->
           <div class="form-group">
             <label class="form-label" id="lbl-f3-postgrad">Postgraduation plans <span class="req">*</span></label>
-            <div class="radio-group" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+            <div class="radio-group" style="width: 100%;">
               <label class="radio-label"><input type="radio" name="postgrad_plan" value="Medical specialization"
                   required> <span id="opt-pg-1">Medical specialization</span></label>
               <label class="radio-label"><input type="radio" name="postgrad_plan" value="Medical research"> <span

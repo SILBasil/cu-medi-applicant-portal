@@ -718,6 +718,10 @@ function setLanguage(lang) {
   setText('txt-degree-title', t.degree_title);
   setText('txt-degree-sub', t.degree_sub);
 
+  document.querySelectorAll('.opt-done-label').forEach(el => el.innerText = t.th_done);
+  document.querySelectorAll('.opt-tentative-label').forEach(el => el.innerText = t.th_tentative);
+  document.querySelectorAll('.opt-notdone-label').forEach(el => el.innerText = t.th_notdone);
+
   // Form 1 bottom
   setText('lbl-f1-heard', t.lbl_heard_from + ' *');
   setText('opt-hf-1', t.opt_hf_1);
