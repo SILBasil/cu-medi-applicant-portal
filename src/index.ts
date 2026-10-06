@@ -398,10 +398,17 @@ app.get('/api/stats', async (c) => {
 
     // Normalize Year Filter (supports CE: 2026, 2027, etc. and BE: 2569, 2570, etc.)
     let targetYearCE: number | null = null;
+    let targetYearBE: number | null = null;
     if (year !== 'all') {
       const parsed = parseInt(year, 10);
       if (!isNaN(parsed)) {
-        targetYearCE = parsed > 2400 ? parsed - 543 : parsed;
+        if (parsed > 2400) {
+          targetYearBE = parsed;
+          targetYearCE = parsed - 543;
+        } else {
+          targetYearCE = parsed;
+          targetYearBE = parsed + 543;
+        }
       }
     }
 
@@ -409,11 +416,6 @@ app.get('/api/stats', async (c) => {
     if (targetYearCE !== null) {
       applicants = allApplicants.filter((a: any) => {
         const intent = (a.s1_apply_intent || '').toLowerCase();
-        const createdYear = new Date(a.created_at).getFullYear();
-
-        if (targetYearCE === 2026) {
-          return createdYear === 2026;
-        }
         if (targetYearCE === 2027) {
           return intent.includes('2027') || intent.includes('this year') || intent === 'yes';
         }
@@ -423,44 +425,61 @@ app.get('/api/stats', async (c) => {
         if (targetYearCE === 2029) {
           return intent.includes('2029');
         }
-        if (targetYearCE === 2030) {
-          return intent.includes('2030');
-        }
-        if (targetYearCE === 2031) {
-          return intent.includes('2031');
-        }
-        return intent.includes(targetYearCE.toString());
+        return intent.includes(targetYearCE.toString()) || (targetYearBE ? intent.includes(targetYearBE.toString()) : false);
       });
     }
 
-    // 5-Year Cohort Trend Pipeline
+    // 5-Year Cohort Trend Pipeline:
+    // Starts from the filtered year if specified, otherwise starts from 2027 (2570)
     const baseTotal = allApplicants.length;
-    const c2027 = allApplicants.filter((a: any) => {
-      const intent = (a.s1_apply_intent || '').toLowerCase();
-      return intent.includes('2027') || intent.includes('this year') || intent === 'yes';
-    }).length;
-    const c2028 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2028')).length;
-    const c2029 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2029')).length;
-    const c2030 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2030')).length;
-    const c2031 = allApplicants.filter((a: any) => (a.s1_apply_intent || '').toLowerCase().includes('2031')).length;
+    const startYearCE = targetYearCE !== null ? targetYearCE : 2027;
 
-    const cohortTrend = [
-      { year_ce: 2027, year_be: 2570, count: c2027, pct: baseTotal > 0 ? ((c2027 / baseTotal) * 100).toFixed(1) : '0.0' },
-      { year_ce: 2028, year_be: 2571, count: c2028, pct: baseTotal > 0 ? ((c2028 / baseTotal) * 100).toFixed(1) : '0.0' },
-      { year_ce: 2029, year_be: 2572, count: c2029, pct: baseTotal > 0 ? ((c2029 / baseTotal) * 100).toFixed(1) : '0.0' },
-      { year_ce: 2030, year_be: 2573, count: c2030, pct: baseTotal > 0 ? ((c2030 / baseTotal) * 100).toFixed(1) : '0.0' },
-      { year_ce: 2031, year_be: 2574, count: c2031, pct: baseTotal > 0 ? ((c2031 / baseTotal) * 100).toFixed(1) : '0.0' }
-    ];
+    const cohortTrend = [];
+    for (let i = 0; i < 5; i++) {
+      const yCE = startYearCE + i;
+      const yBE = yCE + 543;
+      let count = 0;
+      if (yCE === 2027) {
+        count = allApplicants.filter((a: any) => {
+          const intent = (a.s1_apply_intent || '').toLowerCase();
+          return intent.includes('2027') || intent.includes('this year') || intent === 'yes';
+        }).length;
+      } else if (yCE === 2028) {
+        count = allApplicants.filter((a: any) => {
+          const intent = (a.s1_apply_intent || '').toLowerCase();
+          return intent.includes('2028') || intent.includes('next year');
+        }).length;
+      } else if (yCE === 2029) {
+        count = allApplicants.filter((a: any) => {
+          const intent = (a.s1_apply_intent || '').toLowerCase();
+          return intent.includes('2029');
+        }).length;
+      } else {
+        count = allApplicants.filter((a: any) => {
+          const intent = (a.s1_apply_intent || '').toLowerCase();
+          return intent.includes(yCE.toString()) || intent.includes(yBE.toString());
+        }).length;
+      }
+
+      cohortTrend.push({
+        year_ce: yCE,
+        year_be: yBE,
+        count,
+        pct: baseTotal > 0 ? ((count / baseTotal) * 100).toFixed(1) : '0.0'
+      });
+    }
 
     const total = applicants.length;
     const stage1Count = applicants.filter((a: any) => a.stage1_completed).length;
     const stage2Count = applicants.filter((a: any) => a.stage2_completed).length;
     const stage3Count = applicants.filter((a: any) => a.stage3_completed).length;
     const stage2Attended = applicants.filter((a: any) => a.s2_attended).length;
-    const intent2027 = applicants.filter((a: any) => {
-      const intent = (a.s1_apply_intent || '').toLowerCase();
-      return intent.includes('2027') || intent === 'yes';
-    }).length;
+    const intentCount = targetYearCE !== null
+      ? applicants.length
+      : allApplicants.filter((a: any) => {
+          const intent = (a.s1_apply_intent || '').toLowerCase();
+          return intent.includes('2027') || intent === 'yes';
+        }).length;
     const firstChoice = applicants.filter((a: any) => a.s3_first_choice === 'Yes' || a.s3_first_choice === 'first').length;
 
     // Attend Modes
@@ -646,12 +665,16 @@ app.get('/api/stats', async (c) => {
 
     return c.json({
       selected_year: year,
+      target_year_ce: targetYearCE,
+      target_year_be: targetYearBE,
       total,
+      base_total: baseTotal,
       stage1_count: stage1Count,
       stage2_count: stage2Count,
       stage3_count: stage3Count,
       stage2_attended_count: stage2Attended,
-      intent_2027_count: intent2027,
+      intent_count: intentCount,
+      intent_2027_count: intentCount,
       first_choice_count: firstChoice,
       attend_modes: attendModes,
       utm_sources: utmSources,

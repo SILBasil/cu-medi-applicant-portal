@@ -716,7 +716,7 @@
       </div>
       <div class="exec-banner-stat">
         <div class="stat-pill-box">
-          <div class="sub">ความตั้งใจยื่นรอบ 2027</div>
+          <div class="sub" id="banner-intent-label">ความตั้งใจยื่นรอบปี 2570</div>
           <div class="num mono" id="banner-intent" style="color: var(--primary);">66.3%</div>
         </div>
         <div class="stat-pill-box">
@@ -1035,18 +1035,39 @@
     // 2. Render Top KPIs
     function renderExecutiveKPIs(s, selectedYear = 'all') {
       const total = s.total || 0;
+      const baseTotal = s.base_total !== undefined ? s.base_total : total;
       const s2 = s.stage2_count || 0;
       const s3 = s.stage3_count || 0;
       const att = s.stage2_attended_count || 0;
-      const intent = s.intent_2027_count || 0;
+      const intent = s.intent_count !== undefined ? s.intent_count : (s.intent_2027_count || 0);
 
       const bannerTotal = document.getElementById('banner-total');
-      if (bannerTotal) bannerTotal.innerText = total.toLocaleString();
+      if (bannerTotal) bannerTotal.innerText = (selectedYear === 'all' ? total : baseTotal).toLocaleString();
 
       const kpiTotal = document.getElementById('kpi-total');
       if (kpiTotal) kpiTotal.innerText = total.toLocaleString();
 
-      const intentPct = total > 0 ? ((intent / total) * 100).toFixed(1) : '0.0';
+      // Dynamic labels for Intent/Target Year
+      const bannerIntentLabel = document.getElementById('banner-intent-label');
+      const kpiIntentTitle = document.getElementById('kpi-intent-title');
+      const kpiIntentDesc = document.getElementById('kpi-intent-desc');
+
+      if (selectedYear !== 'all') {
+        const parsed = parseInt(selectedYear, 10);
+        const yBE = parsed > 2400 ? parsed : parsed + 543;
+        const yCE = parsed > 2400 ? parsed - 543 : parsed;
+        const yearLabel = `ปี ${yBE} (${yCE})`;
+
+        if (bannerIntentLabel) bannerIntentLabel.innerText = `ความตั้งใจยื่น ${yearLabel}`;
+        if (kpiIntentTitle) kpiIntentTitle.innerText = `กลุ่มเป้าหมาย ${yearLabel}`;
+        if (kpiIntentDesc) kpiIntentDesc.innerText = `จำนวนผู้สนใจที่มีเป้าหมายยื่นรอบ ${yearLabel}`;
+      } else {
+        if (bannerIntentLabel) bannerIntentLabel.innerText = 'ความตั้งใจยื่นรอบปี 2570';
+        if (kpiIntentTitle) kpiIntentTitle.innerText = 'กลุ่มตั้งใจยื่นรอบปี 2570';
+        if (kpiIntentDesc) kpiIntentDesc.innerText = 'กลุ่มเป้าหมายหลักที่มีความตั้งใจยื่นในรอบนี้';
+      }
+
+      const intentPct = baseTotal > 0 ? ((intent / baseTotal) * 100).toFixed(1) : '0.0';
       const bannerIntent = document.getElementById('banner-intent');
       if (bannerIntent) bannerIntent.innerText = `${intentPct}%`;
 
@@ -1119,7 +1140,13 @@
       if (!container) return;
 
       if (badge) {
-        badge.innerText = selectedYear === 'all' ? 'ภาพรวมทุกปี (All Years)' : `กรองเฉพาะปี ${selectedYear}`;
+        if (selectedYear === 'all') {
+        badge.innerText = 'ภาพรวมทุกปี (All Years)';
+      } else {
+        const parsed = parseInt(selectedYear, 10);
+        const yBE = parsed > 2400 ? parsed : parsed + 543;
+        badge.innerText = `กรองเฉพาะปี ${yBE}`;
+      }
       }
 
       if (!trend || trend.length === 0) {
