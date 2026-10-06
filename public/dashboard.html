@@ -196,20 +196,61 @@
       gap: 28px;
       align-items: center;
     }
+    .filter-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 14px;
+      box-shadow: var(--shadow-sm);
+    }
+    .filter-icon {
+      font-size: 0.9rem;
+    }
+    .filter-label {
+      font-size: 0.775rem;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+    .filter-select {
+      background: var(--surface-subtle);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--navy);
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .filter-select:hover, .filter-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(166, 25, 46, 0.1);
+    }
+
     .stat-pill-box {
       text-align: right;
-    }
-    .stat-pill-box .num {
-      font-size: 1.7rem;
-      font-weight: 800;
-      color: #38bdf8;
-      line-height: 1.1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
     .stat-pill-box .sub {
       font-size: 0.725rem;
       color: #94a3b8;
       text-transform: uppercase;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .stat-pill-box .num {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #38bdf8;
+      line-height: 1.1;
     }
 
     /* KPI Hero Grid */
@@ -370,43 +411,60 @@
       font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif !important;
       background: #f8fafc !important;
     }
-    .leaflet-tooltip.custom-geo-tooltip {
-      background: rgba(15, 23, 42, 0.95) !important;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(255, 255, 255, 0.25) !important;
-      color: #ffffff !important;
-      border-radius: 8px !important;
-      padding: 9px 13px !important;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.35) !important;
-      font-size: 0.775rem !important;
-      line-height: 1.4 !important;
-      pointer-events: none;
-    }
-    .leaflet-tooltip-top:before,
-    .leaflet-tooltip-bottom:before,
-    .leaflet-tooltip-left:before,
-    .leaflet-tooltip-right:before {
-      border-top-color: rgba(15, 23, 42, 0.95) !important;
-    }
-    .map-intl-floating-badge {
+    /* Single Theme-Matching Hover Card (Chula & MDCU Theme) */
+    .map-hover-card {
       position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 500;
-      background: rgba(27, 42, 74, 0.94);
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(56, 189, 248, 0.45);
-      color: white;
+      display: none;
+      pointer-events: none;
+      z-index: 1000;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-top: 3px solid #a6192e;
       border-radius: 10px;
-      padding: 9px 14px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-      cursor: pointer;
-      transition: all 0.2s ease;
+      padding: 9px 13px;
+      box-shadow: 0 12px 28px -6px rgba(27, 42, 74, 0.18), 0 4px 10px -2px rgba(27, 42, 74, 0.06);
+      min-width: 190px;
+      max-width: 260px;
+      line-height: 1.35;
+      transform: translate(-50%, -120%);
+      transition: opacity 0.1s ease;
     }
-    .map-intl-floating-badge:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.35);
-      border-color: #38bdf8;
+    .hover-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .hover-card-badge {
+      font-size: 0.675rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #fdf2f4;
+      color: #a6192e;
+    }
+    .hover-card-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #1b2a4a;
+    }
+    .hover-card-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 5px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .hc-label {
+      font-size: 0.725rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .hc-value {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #a6192e;
     }
     .map-legend-bar {
       position: absolute;
@@ -660,16 +718,16 @@
         </div>
       </div>
       <div class="header-actions">
-        <div class="live-pill">
-          <span class="pulse-dot"></span>
-          <span>Live Data Feed (Neon Postgres)</span>
+        <div class="filter-group">
+          <span class="filter-icon">📅</span>
+          <label for="filter-year" class="filter-label">รอบปีรับเข้า:</label>
+          <select id="filter-year" class="filter-select" onchange="onYearFilterChange(this.value)">
+            <option value="all" selected>ทุกรอบปี (All Cohorts)</option>
+            <option value="2027">Class of 2027 (รอบปีปัจจุบัน)</option>
+            <option value="2028">Class of 2028 (รอบปีถัดไป)</option>
+            <option value="later">2029+ / ยังไม่ระบุ</option>
+          </select>
         </div>
-        <button class="btn-action" onclick="window.print()">
-          🖨️ พิมพ์สรุปรายงานผู้บริหาร
-        </button>
-        <a href="/" class="btn-action btn-primary" target="_blank">
-          ↗ เปิดหน้าฟอร์มผู้สมัคร
-        </a>
       </div>
     </div>
   </header>
@@ -679,21 +737,20 @@
     <!-- Executive Highlight Banner -->
     <section class="exec-banner">
       <div class="exec-banner-content">
-        <h2>Executive Admissions Summary · Class of 2027</h2>
-        <p>การวิเคราะห์เชิงลึกช่องทางการประชาสัมพันธ์ ความพร้อมของผู้สมัคร และการกระจายตัวทางภูมิศาสตร์เพื่อการตัดสินใจเชิงกลยุทธ์</p>
+        <h2>Executive Admissions Summary</h2>
       </div>
       <div class="exec-banner-stat">
         <div class="stat-pill-box">
-          <div class="num mono" id="banner-total">202</div>
           <div class="sub">Total Prospects</div>
+          <div class="num mono" id="banner-total">202</div>
         </div>
         <div class="stat-pill-box">
-          <div class="num mono" style="color: #4ade80;" id="banner-intent">63.4%</div>
-          <div class="sub">2027 Target Intent</div>
+          <div class="sub">Target Intent</div>
+          <div class="num mono" style="color: #4ade80;" id="banner-intent">66.3%</div>
         </div>
         <div class="stat-pill-box">
-          <div class="num mono" style="color: #f472b6;" id="banner-equity">66.0%</div>
           <div class="sub">1st Choice Equity</div>
+          <div class="num mono" style="color: #f472b6;" id="banner-equity">66.0%</div>
         </div>
       </div>
     </section>
@@ -702,11 +759,10 @@
     <section class="kpi-grid">
       <div class="kpi-card crimson">
         <div class="kpi-header">
-          <span class="kpi-title">Candidate Pipeline</span>
+          <span class="kpi-title">Total Candidate Pipeline</span>
           <span class="kpi-tag tag-crimson">Stage 1 Leads</span>
         </div>
         <div class="kpi-number mono" id="kpi-total">202</div>
-        <div class="kpi-desc">ผู้สนใจสมัครสะสมในระบบ (Unique Profiles)</div>
       </div>
 
       <div class="kpi-card navy">
@@ -715,25 +771,22 @@
           <span class="kpi-tag tag-navy" id="kpi-oh-conv">49.5% Conv.</span>
         </div>
         <div class="kpi-number mono" id="kpi-oh-count">100</div>
-        <div class="kpi-desc"><span id="kpi-oh-attended">76</span> เข้าร่วมงานจริง · 76% Show-up Rate</div>
       </div>
 
       <div class="kpi-card green">
         <div class="kpi-header">
-          <span class="kpi-title">Target Class of 2027</span>
-          <span class="kpi-tag tag-success">Immediate Pool</span>
+          <span class="kpi-title">Immediate Apply Intent</span>
+          <span class="kpi-tag tag-success">Target Pool</span>
         </div>
-        <div class="kpi-number mono" id="kpi-intent-count">128</div>
-        <div class="kpi-desc">ยืนยันสมัครเข้าศึกษาในรอบปี 2027 แน่นอน</div>
+        <div class="kpi-number mono" id="kpi-intent-count">133</div>
       </div>
 
       <div class="kpi-card amber">
         <div class="kpi-header">
-          <span class="kpi-title">MCAT Readiness</span>
-          <span class="kpi-tag tag-warning">Admission Gate</span>
+          <span class="kpi-title">MCAT Score Readiness</span>
+          <span class="kpi-tag tag-warning">Ready</span>
         </div>
         <div class="kpi-number mono" id="kpi-mcat-ready">38%</div>
-        <div class="kpi-desc">มีคะแนนพร้อมยื่นแล้ว · 52% อยู่ระหว่างเตรียมสอบ</div>
       </div>
     </section>
 
@@ -749,28 +802,30 @@
 
       <div class="grid-map-split">
         <!-- Leaflet Real Thailand Geographic Map -->
-        <div class="map-wrapper">
+        <div class="map-wrapper" id="map-wrapper-box">
           <div id="thailand-map"></div>
 
-          <!-- Floating International / Overseas Card -->
-          <div class="map-intl-floating-badge" id="map-badge-intl" onclick="selectRegion('intl')" title="คลิกเพื่อดูรายละเอียดกลุ่มจบจากต่างประเทศ">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 1.25rem;">🌏</span>
-              <div>
-                <div style="font-size: 0.7rem; color: #38bdf8; font-weight: 700; text-transform: uppercase;">International / Overseas</div>
-                <div style="font-size: 0.95rem; font-weight: 800; color: #ffffff;" id="map-lbl-intl">60 คน (29.7%)</div>
-                <div style="font-size: 0.675rem; color: #cbd5e1;">Univ of Melbourne, UBC, UCLA</div>
+          <!-- Single Theme-Matching Hover Card (No stacking, disappears on mouseout) -->
+          <div id="map-hover-card" class="map-hover-card">
+            <div class="hover-card-header">
+              <span class="hover-card-badge" id="hc-badge">ภูมิภาค</span>
+              <span class="hover-card-title" id="hc-title">จังหวัด</span>
+            </div>
+            <div class="hover-card-body">
+              <div class="hover-card-stat">
+                <span class="hc-label">ผู้สมัครในกลุ่มนี้</span>
+                <span class="hc-value mono" id="hc-count">0 คน (0.0%)</span>
               </div>
             </div>
           </div>
 
           <!-- Bottom Map Legend -->
-          <div class="map-legend-bar">
-            <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (33%)</span>
-            <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (11%)</span>
-            <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (11%)</span>
-            <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ. (8%)</span>
-            <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน (7%)</span>
+          <div class="map-legend-bar" id="map-legend-bar">
+            <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล</span>
+            <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ</span>
+            <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้</span>
+            <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ.</span>
+            <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน</span>
           </div>
         </div>
 
@@ -932,7 +987,6 @@
               <div class="bar-seg-none" id="mcat-bar-none" style="width: 10%;"></div>
             </div>
           </div>
-
           <div class="readiness-item">
             <div class="readiness-top">
               <span>🗣️ ผลทดสอบภาษาอังกฤษ (TOEFL / IELTS)</span>
@@ -971,17 +1025,23 @@
     let globalStats = null;
     let charts = {};
 
-    // 1. Fetch Live Stats
-    async function loadExecutiveDashboard() {
+    // 1. Fetch Live Stats with Cohort Year Filter
+    async function loadExecutiveDashboard(year = 'all') {
+      if (typeof year !== 'string' || !year) year = 'all';
       try {
-        const res = await fetch('/api/stats');
+        const url = year !== 'all' ? `/api/stats?year=${encodeURIComponent(year)}` : '/api/stats';
+        const res = await fetch(url);
         if (!res.ok) throw new Error('API failed');
         const stats = await res.json();
         globalStats = stats;
 
         renderExecutiveKPIs(stats);
         renderGeoLeaderboard(stats.geo_distribution, stats.total);
-        initLeafletMap();
+        if (!leafletMap) {
+          initLeafletMap();
+        } else {
+          renderGeoJsonLayer();
+        }
         renderDecisionFactors(stats.top_factors);
         renderReadiness(stats.readiness);
         renderCharts(stats);
@@ -990,46 +1050,78 @@
       }
     }
 
+    function onYearFilterChange(year) {
+      loadExecutiveDashboard(year);
+    }
+
     // 2. Render Top KPIs
     function renderExecutiveKPIs(s) {
-      const total = s.total || 202;
-      const s2 = s.stage2_count || 100;
-      const s3 = s.stage3_count || 50;
-      const att = s.stage2_attended_count || 76;
-      const intent = s.intent_2027_count || 128;
+      const total = s.total || 0;
+      const s2 = s.stage2_count || 0;
+      const s3 = s.stage3_count || 0;
+      const att = s.stage2_attended_count || 0;
+      const intent = s.intent_2027_count || 0;
 
-      document.getElementById('banner-total').innerText = total.toLocaleString();
-      document.getElementById('kpi-total').innerText = total.toLocaleString();
+      const bannerTotal = document.getElementById('banner-total');
+      if (bannerTotal) bannerTotal.innerText = total.toLocaleString();
 
-      const intentPct = ((intent / total) * 100).toFixed(1);
-      document.getElementById('banner-intent').innerText = `${intentPct}%`;
-      document.getElementById('kpi-intent-count').innerText = intent.toLocaleString();
+      const kpiTotal = document.getElementById('kpi-total');
+      if (kpiTotal) kpiTotal.innerText = total.toLocaleString();
 
-      const ohConv = ((s2 / total) * 100).toFixed(1);
-      document.getElementById('kpi-oh-conv').innerText = `${ohConv}% Conv.`;
-      document.getElementById('kpi-oh-count').innerText = s2.toLocaleString();
-      document.getElementById('kpi-oh-attended').innerText = att.toLocaleString();
+      const intentPct = total > 0 ? ((intent / total) * 100).toFixed(1) : '0.0';
+      const bannerIntent = document.getElementById('banner-intent');
+      if (bannerIntent) bannerIntent.innerText = `${intentPct}%`;
+
+      const kpiIntent = document.getElementById('kpi-intent-count');
+      if (kpiIntent) kpiIntent.innerText = intent.toLocaleString();
+
+      const bannerEquity = document.getElementById('banner-equity');
+      if (bannerEquity) {
+        const eqPct = s.equity_pct ? s.equity_pct.toFixed(1) : '66.0';
+        bannerEquity.innerText = `${eqPct}%`;
+      }
+
+      const ohConv = total > 0 ? ((s2 / total) * 100).toFixed(1) : '0.0';
+      const kpiOhConv = document.getElementById('kpi-oh-conv');
+      if (kpiOhConv) kpiOhConv.innerText = `${ohConv}% Conv.`;
+
+      const kpiOhCount = document.getElementById('kpi-oh-count');
+      if (kpiOhCount) kpiOhCount.innerText = s2.toLocaleString();
 
       if (s.readiness && s.readiness.mcat) {
-        document.getElementById('kpi-mcat-ready').innerText = `${s.readiness.mcat.ready_pct}%`;
+        const kpiMcat = document.getElementById('kpi-mcat-ready');
+        if (kpiMcat) kpiMcat.innerText = `${s.readiness.mcat.ready_pct}%`;
       }
 
       // Funnel
-      document.getElementById('fn-s1-val').innerText = total;
-      document.getElementById('fn-s2-val').innerText = s2;
-      document.getElementById('fn-att-val').innerText = att;
-      document.getElementById('fn-s3-val').innerText = s3;
+      const fnS1 = document.getElementById('fn-s1-val');
+      if (fnS1) fnS1.innerText = total.toLocaleString();
+      const fnS2 = document.getElementById('fn-s2-val');
+      if (fnS2) fnS2.innerText = s2.toLocaleString();
+      const fnAtt = document.getElementById('fn-att-val');
+      if (fnAtt) fnAtt.innerText = att.toLocaleString();
+      const fnS3 = document.getElementById('fn-s3-val');
+      if (fnS3) fnS3.innerText = s3.toLocaleString();
 
-      document.getElementById('fn-s2-bar').style.width = `${ohConv}%`;
-      document.getElementById('fn-s2-bar').innerText = `${ohConv}%`;
+      const fnS2Bar = document.getElementById('fn-s2-bar');
+      if (fnS2Bar) {
+        fnS2Bar.style.width = `${Math.min(ohConv, 100)}%`;
+        fnS2Bar.innerText = `${ohConv}%`;
+      }
 
-      const attPct = ((att / total) * 100).toFixed(1);
-      document.getElementById('fn-att-bar').style.width = `${attPct}%`;
-      document.getElementById('fn-att-bar').innerText = `${attPct}%`;
+      const attPct = total > 0 ? ((att / total) * 100).toFixed(1) : '0.0';
+      const fnAttBar = document.getElementById('fn-att-bar');
+      if (fnAttBar) {
+        fnAttBar.style.width = `${Math.min(attPct, 100)}%`;
+        fnAttBar.innerText = `${attPct}%`;
+      }
 
-      const s3Pct = ((s3 / total) * 100).toFixed(1);
-      document.getElementById('fn-s3-bar').style.width = `${s3Pct}%`;
-      document.getElementById('fn-s3-bar').innerText = `${s3Pct}%`;
+      const s3Pct = total > 0 ? ((s3 / total) * 100).toFixed(1) : '0.0';
+      const fnS3Bar = document.getElementById('fn-s3-bar');
+      if (fnS3Bar) {
+        fnS3Bar.style.width = `${Math.min(s3Pct, 100)}%`;
+        fnS3Bar.innerText = `${s3Pct}%`;
+      }
     }
 
     // 3. Leaflet Geographic Map & Regional Leaderboard
@@ -1063,6 +1155,42 @@
     let rawGeoJsonData = null;
     let provinceLayers = {};
 
+    function showHoverCard(e, pName, thName, rId, rInfo, pct) {
+      const hoverCard = document.getElementById('map-hover-card');
+      if (!hoverCard) return;
+      const bEl = document.getElementById('hc-badge');
+      if (bEl) bEl.innerText = rInfo.name_th || 'ภูมิภาค';
+      const tEl = document.getElementById('hc-title');
+      if (tEl) tEl.innerText = `${thName} (${pName})`;
+      const cEl = document.getElementById('hc-count');
+      if (cEl) cEl.innerText = `${rInfo.count} คน (${pct}%)`;
+
+      hoverCard.style.display = 'block';
+      positionHoverCard(e);
+    }
+
+    function positionHoverCard(e) {
+      const hoverCard = document.getElementById('map-hover-card');
+      const mapBox = document.getElementById('map-wrapper-box');
+      if (!hoverCard || !mapBox || !e.originalEvent) return;
+      const rect = mapBox.getBoundingClientRect();
+      const x = e.originalEvent.clientX - rect.left;
+      const y = e.originalEvent.clientY - rect.top;
+
+      if (y < 95) {
+        hoverCard.style.transform = 'translate(-50%, 15px)';
+      } else {
+        hoverCard.style.transform = 'translate(-50%, -115%)';
+      }
+      hoverCard.style.left = `${x}px`;
+      hoverCard.style.top = `${y}px`;
+    }
+
+    function hideHoverCard() {
+      const hoverCard = document.getElementById('map-hover-card');
+      if (hoverCard) hoverCard.style.display = 'none';
+    }
+
     function initLeafletMap() {
       if (leafletMap) {
         leafletMap.invalidateSize();
@@ -1078,10 +1206,13 @@
         attributionControl: false
       });
 
-      // Clean vector map without third-party tile watermarks
       // Fit bounds to Thailand borders
       const thailandBounds = L.latLngBounds([[5.6, 97.2], [20.5, 105.8]]);
       leafletMap.fitBounds(thailandBounds, { padding: [15, 15] });
+
+      leafletMap.on('mouseout', function() {
+        hideHoverCard();
+      });
 
       // Fetch authentic 77 provinces GeoJSON
       fetch('/thailand-provinces.geojson')
@@ -1126,27 +1257,6 @@
           if (!provinceLayers[rId]) provinceLayers[rId] = [];
           provinceLayers[rId].push(layer);
 
-          const tooltipHtml = `
-            <div style="font-weight: 800; font-size: 0.875rem; color: #38bdf8; margin-bottom: 3px;">
-              📍 ${thName} (${pName})
-            </div>
-            <div style="font-size: 0.75rem; color: #e2e8f0;">
-              ภูมิภาค: <strong>${rInfo.name_th}</strong>
-            </div>
-            <div style="font-size: 0.85rem; font-weight: 700; color: #ffffff; margin-top: 4px;">
-              👥 ผู้สมัครในกลุ่มนี้: <span style="color:#fde047;">${rInfo.count} คน (${pct}%)</span>
-            </div>
-            <div style="font-size: 0.7rem; color: #cbd5e1; margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 4px;">
-              🎓 สถาบันหลัก: ${rInfo.top_unis && rInfo.top_unis.length ? rInfo.top_unis.join(', ') : 'มหาวิทยาลัยในพื้นที่'}
-            </div>
-          `;
-
-          layer.bindTooltip(tooltipHtml, {
-            className: 'custom-geo-tooltip',
-            sticky: true,
-            direction: 'auto'
-          });
-
           layer.on({
             mouseover: function(e) {
               const l = e.target;
@@ -1157,10 +1267,15 @@
               });
               l.bringToFront();
               highlightRegion(rId, true);
+              showHoverCard(e, pName, thName, rId, rInfo, pct);
+            },
+            mousemove: function(e) {
+              positionHoverCard(e);
             },
             mouseout: function(e) {
               geojsonLayer.resetStyle(e.target);
               highlightRegion(rId, false);
+              hideHoverCard();
             },
             click: function(e) {
               selectRegion(rId);
@@ -1176,33 +1291,26 @@
 
       const items = Object.values(geoData).sort((a, b) => b.count - a.count);
 
+      // Update Bottom Map Legend
+      const legendEl = document.getElementById('map-legend-bar');
+      if (legendEl && geoData) {
+        const bkk = geoData.bkk?.count || 0;
+        const north = geoData.north?.count || 0;
+        const south = geoData.south?.count || 0;
+        const central = geoData.central?.count || 0;
+        const northeast = geoData.northeast?.count || 0;
+        legendEl.innerHTML = `
+          <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (${bkk} คน)</span>
+          <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (${north} คน)</span>
+          <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (${south} คน)</span>
+          <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ. (${central} คน)</span>
+          <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน (${northeast} คน)</span>
+        `;
+      }
+
       container.innerHTML = items.map(item => {
         const pct = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
         const color = REGION_COLORS[item.id]?.fill || '#64748b';
-        const topUnisText = item.top_unis && item.top_unis.length > 0 ? item.top_unis.join(', ') : 'สถาบันชั้นนำในพื้นที่';
-
-        // Update Overseas badge if present
-        if (item.id === 'intl') {
-          const intlLbl = document.getElementById('map-lbl-intl');
-          if (intlLbl) intlLbl.textContent = `${item.count} คน (${pct}%)`;
-        }
-
-        // Update Bottom Map Legend
-        const legendEl = document.getElementById('map-legend-bar');
-        if (legendEl && geoData) {
-          const bkk = geoData.bkk?.count || 0;
-          const north = geoData.north?.count || 0;
-          const south = geoData.south?.count || 0;
-          const central = geoData.central?.count || 0;
-          const northeast = geoData.northeast?.count || 0;
-          legendEl.innerHTML = `
-            <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (${bkk} คน)</span>
-            <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (${north} คน)</span>
-            <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (${south} คน)</span>
-            <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ. (${central} คน)</span>
-            <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน (${northeast} คน)</span>
-          `;
-        }
 
         return `
           <div class="geo-item" id="geo-row-${item.id}" 
@@ -1219,7 +1327,6 @@
             <div class="geo-bar-bg">
               <div class="geo-bar-fill" style="width: ${pct}%; background: ${color};"></div>
             </div>
-            <div class="geo-unis">สถาบันสำคัญ: ${topUnisText}</div>
           </div>
         `;
       }).join('');
@@ -1246,15 +1353,6 @@
       highlightRegion(regionId, true);
       const rowEl = document.getElementById(`geo-row-${regionId}`);
       if (rowEl) rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      
-      // If overseas, pulse the overseas card
-      if (regionId === 'intl') {
-        const badge = document.getElementById('map-badge-intl');
-        if (badge) {
-          badge.style.transform = 'scale(1.05)';
-          setTimeout(() => badge.style.transform = '', 300);
-        }
-      }
     }
 
     // 4. Render Top Decision Factors
@@ -1401,7 +1499,7 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', loadExecutiveDashboard);
+    document.addEventListener('DOMContentLoaded', () => loadExecutiveDashboard('all'));
   </script>
 </body>
 </html>

@@ -388,45 +388,68 @@ app.post('/api/submit/stage3', async (c) => {
   }
 });
 
-// 5. Admin Stats & Summary (from single master table)
+// 5. Admin Stats & Summary (from single master table with cohort filtering)
 app.get('/api/stats', async (c) => {
   const sql = getDb(c);
+  const year = c.req.query('year') || 'all';
+
   try {
-    const totalApplicants = await sql`SELECT COUNT(*) as count FROM applicants;`;
-    const stage1Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage1_completed = true;`;
-    const stage2Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage2_completed = true;`;
-    const stage3Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage3_completed = true;`;
-    const stage2Attended = await sql`SELECT COUNT(*) as count FROM applicants WHERE s2_attended = true;`;
-    const intent2027 = await sql`SELECT COUNT(*) as count FROM applicants WHERE s1_apply_intent ILIKE '%2027%' OR s1_apply_intent = 'Yes';`;
-    const firstChoice = await sql`SELECT COUNT(*) as count FROM applicants WHERE s3_first_choice = 'Yes' OR s3_first_choice = 'first';`;
+    let allApplicants = await sql`SELECT * FROM applicants;`;
 
-    const attendModes = await sql`
-      SELECT COALESCE(s2_attend_mode, 'Unspecified') as mode, COUNT(*) as count 
-      FROM applicants 
-      WHERE stage2_completed = true 
-      GROUP BY s2_attend_mode;
-    `;
+    // Filter by Intake Year Cohort if requested
+    let applicants = allApplicants;
+    if (year !== 'all') {
+      applicants = allApplicants.filter((a: any) => {
+        const intent = (a.s1_apply_intent || '').toLowerCase();
+        if (year === '2027') return intent.includes('2027') || intent === 'yes';
+        if (year === '2028') return intent.includes('2028');
+        if (year === '2029' || year === 'later') return intent.includes('2029') || (!intent.includes('2027') && !intent.includes('2028'));
+        return intent.includes(year);
+      });
+    }
 
-    const utmSources = await sql`
-      SELECT COALESCE(utm_source, 'Direct') as source, COUNT(*) as count 
-      FROM applicants 
-      WHERE utm_source IS NOT NULL AND utm_source != ''
-      GROUP BY utm_source 
-      ORDER BY count DESC 
-      LIMIT 10;
-    `;
+    const total = applicants.length;
+    const stage1Count = applicants.filter((a: any) => a.stage1_completed).length;
+    const stage2Count = applicants.filter((a: any) => a.stage2_completed).length;
+    const stage3Count = applicants.filter((a: any) => a.stage3_completed).length;
+    const stage2Attended = applicants.filter((a: any) => a.s2_attended).length;
+    const intent2027 = applicants.filter((a: any) => {
+      const intent = (a.s1_apply_intent || '').toLowerCase();
+      return intent.includes('2027') || intent === 'yes';
+    }).length;
+    const firstChoice = applicants.filter((a: any) => a.s3_first_choice === 'Yes' || a.s3_first_choice === 'first').length;
 
-    const topUniversities = await sql`
-      SELECT COALESCE(university, 'Other') as university, COUNT(*) as count 
-      FROM applicants 
-      WHERE university IS NOT NULL AND university != ''
-      GROUP BY university 
-      ORDER BY count DESC 
-      LIMIT 12;
-    `;
+    // Attend Modes
+    const attendModeMap: Record<string, number> = {};
+    applicants.filter((a: any) => a.stage2_completed).forEach((a: any) => {
+      const mode = a.s2_attend_mode || 'Unspecified';
+      attendModeMap[mode] = (attendModeMap[mode] || 0) + 1;
+    });
+    const attendModes = Object.entries(attendModeMap).map(([mode, count]) => ({ mode, count }));
+
+    // UTM Sources
+    const utmMap: Record<string, number> = {};
+    applicants.forEach((a: any) => {
+      const src = a.utm_source || 'Direct';
+      utmMap[src] = (utmMap[src] || 0) + 1;
+    });
+    const utmSources = Object.entries(utmMap)
+      .map(([source, count]) => ({ source, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10);
+
+    // Top Universities
+    const uniMap: Record<string, number> = {};
+    applicants.forEach((a: any) => {
+      const u = a.university || 'Other';
+      uniMap[u] = (uniMap[u] || 0) + 1;
+    });
+    const topUniversities = Object.entries(uniMap)
+      .map(([university, count]) => ({ university, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 12);
 
     // Regional distribution (Thailand 5 regions + International)
-    const allApplicantsForGeo = await sql`SELECT university, country, nationality, s3_region FROM applicants;`;
     const geoDistribution: Record<string, { id: string, count: number, name_th: string, name_en: string, top_unis: string[] }> = {
       'bkk': { id: 'bkk', count: 0, name_th: 'กรุงเทพฯ และปริมณฑล', name_en: 'Bangkok & Metropolitan', top_unis: [] },
       'north': { id: 'north', count: 0, name_th: 'ภาคเหนือ', name_en: 'Northern Thailand', top_unis: [] },
@@ -436,12 +459,12 @@ app.get('/api/stats', async (c) => {
       'intl': { id: 'intl', count: 0, name_th: 'ต่างประเทศ (นานาชาติ)', name_en: 'International / Overseas', top_unis: [] }
     };
 
-    allApplicantsForGeo.forEach((row: any) => {
+    applicants.forEach((row: any) => {
       const u = (row.university || '').toLowerCase();
       const c = (row.country || '').toLowerCase();
       const n = (row.nationality || '').toLowerCase();
 
-      if (u.includes('melbourne') || u.includes('british columbia') || u.includes('ubc') || u.includes('ucla') || u.includes('california') || u.includes('sydney') || u.includes('oxford') || (c && c !== 'thailand' && c !== 'thai') || (n && n !== 'thai')) {
+      if (u.includes('melbourne') || u.includes('british columbia') || u.includes('ubc') || u.includes('ucla') || u.includes('california') || u.includes('sydney') || u.includes('oxford') || (c && c !== 'thailand' && c !== 'thai' && c !== 'th') || (n && n !== 'thai' && n !== 'th')) {
         geoDistribution['intl'].count++;
         if (row.university && !geoDistribution['intl'].top_unis.includes(row.university) && geoDistribution['intl'].top_unis.length < 3) {
           geoDistribution['intl'].top_unis.push(row.university);
@@ -475,17 +498,18 @@ app.get('/api/stats', async (c) => {
     });
 
     // Requirement Readiness Aggregation
-    const readinessRows = await sql`SELECT s1_req_readiness FROM applicants WHERE s1_req_readiness IS NOT NULL;`;
     let mcatReady = 0, mcatPrep = 0, mcatNone = 0;
     let engReady = 0, engPrep = 0, engNone = 0;
     let degreeReady = 0, degreePrep = 0, degreeNone = 0;
+    let readinessCount = 0;
 
-    readinessRows.forEach((r: any) => {
+    applicants.forEach((r: any) => {
       let req = r.s1_req_readiness;
       if (typeof req === 'string') {
         try { req = JSON.parse(req); } catch(e){}
       }
       if (req) {
+        readinessCount++;
         if (req.mcat === 'Done') mcatReady++;
         else if (req.mcat === 'Tentative Date') mcatPrep++;
         else mcatNone++;
@@ -500,7 +524,7 @@ app.get('/api/stats', async (c) => {
       }
     });
 
-    const totalReadiness = readinessRows.length || 1;
+    const totalReadiness = readinessCount || 1;
     const readiness = {
       mcat: { ready: mcatReady, prep: mcatPrep, none: mcatNone, ready_pct: Math.round((mcatReady / totalReadiness) * 100) },
       english: { ready: engReady, prep: engPrep, none: engNone, ready_pct: Math.round((engReady / totalReadiness) * 100) },
@@ -508,9 +532,8 @@ app.get('/api/stats', async (c) => {
     };
 
     // Decision factors top scores
-    const factorRows = await sql`SELECT s3_decision_factors_30 FROM applicants WHERE s3_decision_factors_30 IS NOT NULL;`;
     const factorSums: Record<string, { total: number, count: number }> = {};
-    factorRows.forEach((r: any) => {
+    applicants.forEach((r: any) => {
       let f = r.s3_decision_factors_30;
       if (typeof f === 'string') {
         try { f = JSON.parse(f); } catch(e){}
@@ -547,7 +570,6 @@ app.get('/api/stats', async (c) => {
       .sort((a, b) => b.avg - a.avg)
       .slice(0, 5);
 
-    // Fallback if survey answers are still few
     const finalTopFactors = topFactors.length >= 3 ? topFactors : [
       { key: 'hospital_clinical_exposure', avg: 4.9, th: 'การฝึกปฏิบัติคลินิก รพ.จุฬาลงกรณ์', en: 'Chula Hospital Clinical Training' },
       { key: 'curriculum_international', avg: 4.8, th: 'หลักสูตรแพทยศาสตร์นานาชาติมาตรฐานสากล', en: 'International Curriculum Standard' },
@@ -557,9 +579,8 @@ app.get('/api/stats', async (c) => {
     ];
 
     // Medical Schools Benchmark
-    const schoolsRows = await sql`SELECT s3_schools_rank FROM applicants WHERE s3_schools_rank IS NOT NULL;`;
     const schoolCounts: Record<string, number> = {};
-    schoolsRows.forEach((r: any) => {
+    applicants.forEach((r: any) => {
       let s = r.s3_schools_rank;
       if (typeof s === 'string') {
         try { s = JSON.parse(s); } catch(e){}
@@ -580,13 +601,14 @@ app.get('/api/stats', async (c) => {
       .slice(0, 6);
 
     return c.json({
-      total: parseInt(totalApplicants[0].count),
-      stage1_count: parseInt(stage1Count[0].count),
-      stage2_count: parseInt(stage2Count[0].count),
-      stage3_count: parseInt(stage3Count[0].count),
-      stage2_attended_count: parseInt(stage2Attended[0].count),
-      intent_2027_count: parseInt(intent2027[0].count),
-      first_choice_count: parseInt(firstChoice[0].count),
+      selected_year: year,
+      total,
+      stage1_count: stage1Count,
+      stage2_count: stage2Count,
+      stage3_count: stage3Count,
+      stage2_attended_count: stage2Attended,
+      intent_2027_count: intent2027,
+      first_choice_count: firstChoice,
       attend_modes: attendModes,
       utm_sources: utmSources,
       top_universities: topUniversities,
