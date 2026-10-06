@@ -517,12 +517,10 @@
       border: 1px solid var(--border);
       background: var(--surface);
       transition: all 0.2s ease;
-      cursor: pointer;
     }
-    .geo-item:hover, .geo-item.active {
-      border-color: var(--primary);
-      background: var(--primary-light);
-      transform: translateX(3px);
+    .geo-item:hover {
+      background: var(--surface-subtle);
+      border-color: #cbd5e1;
     }
     .geo-row-header {
       display: flex;
@@ -726,7 +724,6 @@
       </div>
       <div class="header-actions">
         <div class="filter-group">
-          <span class="filter-icon">📅</span>
           <label for="filter-year" class="filter-label">รอบปีรับเข้า:</label>
           <select id="filter-year" class="filter-select" onchange="onYearFilterChange(this.value)">
             <option value="all" selected>ทุกรอบปี (All Cohorts)</option>
@@ -801,7 +798,7 @@
     <section class="card" style="margin-bottom: 1.5rem;">
       <div class="card-header">
         <div class="card-title">
-          <h3>🗺️ การกระจายตัวทางภูมิศาสตร์ของผู้สมัคร (Geographic Distribution Heatmap)</h3>
+          <h3>การกระจายตัวทางภูมิศาสตร์ของผู้สมัคร (Geographic Distribution Heatmap)</h3>
           <p>วิเคราะห์ความหนาแน่นของผู้สมัครตามภูมิภาคและสถาบันต้นทาง ชี้เป้าหมายการขยายกิจกรรม Roadshow</p>
         </div>
         <span class="card-badge">Interactive Regional Map</span>
@@ -859,7 +856,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <h3>📈 ยอด Source ที่คนกดมาเยอะสุด (Acquisition Attribution)</h3>
+            <h3>ช่องทางที่มาของผู้สมัคร (Acquisition Attribution)</h3>
             <p>วิเคราะห์ช่องทางที่ดึงดูดผู้สมัครที่มีคุณภาพสูงสุด (UTM Source &amp; Referrals)</p>
           </div>
           <span class="card-badge">Top Channels</span>
@@ -873,7 +870,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <h3>🎓 สถาบัน / มหาวิทยาลัยที่คนมาสมัครเยอะสุด (Top Feeder Institutions)</h3>
+            <h3>สถาบันการศึกษาเดิมของผู้สมัคร (Top Feeder Institutions)</h3>
             <p>แหล่งที่มาของผู้สมัครระดับปริญญาตรีและโรงเรียนมัธยมชั้นนำ</p>
           </div>
           <span class="card-badge">Top Feeders</span>
@@ -890,7 +887,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <h3>⭐ 5 ปัจจัยสำคัญที่สุดในการตัดสินใจเลือก CU-MEDi</h3>
+            <h3>5 ปัจจัยสำคัญที่สุดในการตัดสินใจเลือก CU-MEDi</h3>
             <p>จากการประเมินเกณฑ์ 30 Decision Factors (คะแนนเต็ม 5.0)</p>
           </div>
           <span class="card-badge">Scale 1–5</span>
@@ -904,7 +901,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <h3>🏛️ สถาบันแพทย์ในใจผู้สมัคร (Medical Schools Benchmark)</h3>
+            <h3>สถาบันแพทย์เปรียบเทียบ (Medical Schools Benchmark)</h3>
             <p>สัดส่วนอันดับโรงเรียนแพทย์ที่ผู้สมัครยื่นควบคู่ (1st, 2nd, 3rd Rank Choice)</p>
           </div>
           <span class="card-badge">Competitor Matrix</span>
@@ -921,7 +918,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <h3>🔻 Conversion Funnel ข้ามแต่ละสเตจ</h3>
+            <h3>Conversion Funnel แต่ละขั้นตอน</h3>
             <p>สถิติการแปลงสภาพจาก Lead สู่การลงทะเบียนงาน และการทำแบบสำรวจเจาะลึก</p>
           </div>
           <span class="card-badge">Journey Funnel</span>
@@ -977,7 +974,7 @@
       <div class="card">
         <div class="card-header">
           <div class="card-title">
-            <h3>📋 ความพร้อมของเกณฑ์สำคัญ (Readiness Diagnostic)</h3>
+            <h3>ความพร้อมด้านคุณสมบัติ (Readiness Diagnostic)</h3>
             <p>ประเมินความพร้อมเอกสารเพื่อวางแผนการสนับสนุนผู้สมัคร</p>
           </div>
           <span class="card-badge">Admission Readiness</span>
@@ -985,7 +982,7 @@
         <div class="readiness-list">
           <div class="readiness-item">
             <div class="readiness-top">
-              <span>🧬 คะแนนผลสอบ MCAT (Medical College Admission Test)</span>
+              <span>คะแนนผลสอบ MCAT (Medical College Admission Test)</span>
               <span class="mono" style="color: var(--primary);" id="txt-mcat-diag">38% Ready · 52% กำลังเตรียมสอบ</span>
             </div>
             <div class="readiness-bar-box">
@@ -996,7 +993,7 @@
           </div>
           <div class="readiness-item">
             <div class="readiness-top">
-              <span>🗣️ ผลทดสอบภาษาอังกฤษ (TOEFL / IELTS)</span>
+              <span>ผลทดสอบภาษาอังกฤษ (TOEFL / IELTS)</span>
               <span class="mono" style="color: var(--navy);" id="txt-eng-diag">58% Ready · 32% กำลังเตรียมสอบ</span>
             </div>
             <div class="readiness-bar-box">
@@ -1008,7 +1005,7 @@
 
           <div class="readiness-item">
             <div class="readiness-top">
-              <span>🎓 วุฒิการศึกษาปริญญาตรี (Bachelor's Degree Transcript)</span>
+              <span>วุฒิการศึกษาปริญญาตรี (Bachelor's Degree Transcript)</span>
               <span class="mono" style="color: var(--navy);" id="txt-deg-diag">82% Ready · 18% รอสำเร็จการศึกษา</span>
             </div>
             <div class="readiness-bar-box">
@@ -1206,16 +1203,21 @@
       const mapEl = document.getElementById('thailand-map');
       if (!mapEl) return;
 
-      // Initialize Leaflet Map centered on Thailand
+      // Initialize Leaflet Map locked in place (no dragging, no zooming)
       leafletMap = L.map('thailand-map', {
-        zoomControl: true,
+        zoomControl: false,
+        dragging: false,
+        touchZoom: false,
         scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        keyboard: false,
         attributionControl: false
       });
 
-      // Fit bounds to Thailand borders
+      // Fit bounds to Thailand borders snugly
       const thailandBounds = L.latLngBounds([[5.6, 97.2], [20.5, 105.8]]);
-      leafletMap.fitBounds(thailandBounds, { padding: [15, 15] });
+      leafletMap.fitBounds(thailandBounds, { padding: [10, 10] });
 
       leafletMap.on('mouseout', function() {
         hideHoverCard();
@@ -1245,13 +1247,27 @@
         style: function(feature) {
           const pName = feature.properties?.name;
           const rId = PROVINCE_TO_REGION[pName] || 'central';
+          const rInfo = geoDist[rId] || { count: 0 };
+          const hasData = (rInfo.count || 0) > 0;
+
+          // Provinces with NO data -> muted grey, non-clickable
+          if (!hasData) {
+            return {
+              fillColor: '#cbd5e1',
+              weight: 0.8,
+              opacity: 0.6,
+              color: '#ffffff',
+              fillOpacity: 0.45
+            };
+          }
+
           const regColor = REGION_COLORS[rId]?.fill || '#64748b';
           return {
             fillColor: regColor,
             weight: 1.2,
             opacity: 0.95,
             color: '#ffffff',
-            fillOpacity: 0.72
+            fillOpacity: 0.75
           };
         },
         onEachFeature: function(feature, layer) {
@@ -1259,21 +1275,28 @@
           const thName = PROVINCE_TH_NAMES[pName] || pName;
           const rId = PROVINCE_TO_REGION[pName] || 'central';
           const rInfo = geoDist[rId] || { name_th: 'ภูมิภาค', name_en: 'Region', count: 0, top_unis: [] };
-          const pct = total > 0 ? ((rInfo.count / total) * 100).toFixed(1) : 0;
+          const hasData = (rInfo.count || 0) > 0;
 
           if (!provinceLayers[rId]) provinceLayers[rId] = [];
           provinceLayers[rId].push(layer);
+
+          // If no applicant data for this province/region, disable interactivity completely
+          if (!hasData) {
+            layer.options.interactive = false;
+            return;
+          }
+
+          const pct = total > 0 ? ((rInfo.count / total) * 100).toFixed(1) : 0;
 
           layer.on({
             mouseover: function(e) {
               const l = e.target;
               l.setStyle({
-                weight: 2.8,
+                weight: 2.2,
                 color: '#a6192e',
                 fillOpacity: 0.95
               });
               l.bringToFront();
-              highlightRegion(rId, true);
               showHoverCard(e, pName, thName, rId, rInfo, pct);
             },
             mousemove: function(e) {
@@ -1281,11 +1304,7 @@
             },
             mouseout: function(e) {
               geojsonLayer.resetStyle(e.target);
-              highlightRegion(rId, false);
               hideHoverCard();
-            },
-            click: function(e) {
-              selectRegion(rId);
             }
           });
         }
@@ -1310,20 +1329,17 @@
           <span class="legend-chip" style="--chip-c: #a6192e;">กทม. & ปริมณฑล (${bkk} คน)</span>
           <span class="legend-chip" style="--chip-c: #2c3e66;">ภาคเหนือ (${north} คน)</span>
           <span class="legend-chip" style="--chip-c: #059669;">ภาคใต้ (${south} คน)</span>
-          <span class="legend-chip" style="--chip-c: #64748b;">ภาคกลาง & ต.อ. (${central} คน)</span>
-          <span class="legend-chip" style="--chip-c: #d97706;">ภาคอีสาน (${northeast} คน)</span>
+          <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคกลาง & ต.อ. (${central} คน)</span>
+          <span class="legend-chip" style="--chip-c: #cbd5e1;">ภาคอีสาน (${northeast} คน)</span>
         `;
       }
 
       container.innerHTML = items.map(item => {
         const pct = total > 0 ? ((item.count / total) * 100).toFixed(1) : 0;
-        const color = REGION_COLORS[item.id]?.fill || '#64748b';
+        const color = item.count > 0 ? (REGION_COLORS[item.id]?.fill || '#64748b') : '#94a3b8';
 
         return `
-          <div class="geo-item" id="geo-row-${item.id}" 
-               onmouseenter="highlightRegion('${item.id}', true)" 
-               onmouseleave="highlightRegion('${item.id}', false)"
-               onclick="selectRegion('${item.id}')">
+          <div class="geo-item" id="geo-row-${item.id}">
             <div class="geo-row-header">
               <span class="geo-name">
                 <span class="geo-dot" style="background: ${color};"></span>
@@ -1340,26 +1356,16 @@
     }
 
     function highlightRegion(regionId, isActive) {
-      const rowEl = document.getElementById(`geo-row-${regionId}`);
-      if (rowEl) rowEl.classList.toggle('active', isActive);
-
-      // Highlight provinces on Leaflet map
       if (provinceLayers[regionId]) {
         provinceLayers[regionId].forEach(l => {
           if (isActive) {
-            l.setStyle({ weight: 2.5, color: '#a6192e', fillOpacity: 0.95 });
+            l.setStyle({ weight: 2.2, color: '#a6192e', fillOpacity: 0.95 });
             l.bringToFront();
           } else {
             if (geojsonLayer) geojsonLayer.resetStyle(l);
           }
         });
       }
-    }
-
-    function selectRegion(regionId) {
-      highlightRegion(regionId, true);
-      const rowEl = document.getElementById(`geo-row-${regionId}`);
-      if (rowEl) rowEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
     // 4. Render Top Decision Factors
