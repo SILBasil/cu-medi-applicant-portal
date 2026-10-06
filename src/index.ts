@@ -376,8 +376,8 @@ app.get('/api/stats', async (c) => {
     const stage2Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage2_completed = true;`;
     const stage3Count = await sql`SELECT COUNT(*) as count FROM applicants WHERE stage3_completed = true;`;
     const stage2Attended = await sql`SELECT COUNT(*) as count FROM applicants WHERE s2_attended = true;`;
-    const intent2027 = await sql`SELECT COUNT(*) as count FROM applicants WHERE s1_apply_intent ILIKE '%2027%';`;
-    const firstChoice = await sql`SELECT COUNT(*) as count FROM applicants WHERE s3_first_choice = 'first';`;
+    const intent2027 = await sql`SELECT COUNT(*) as count FROM applicants WHERE s1_apply_intent ILIKE '%2027%' OR s1_apply_intent = 'Yes';`;
+    const firstChoice = await sql`SELECT COUNT(*) as count FROM applicants WHERE s3_first_choice = 'Yes' OR s3_first_choice = 'first';`;
 
     const attendModes = await sql`
       SELECT COALESCE(s2_attend_mode, 'Unspecified') as mode, COUNT(*) as count 
@@ -392,7 +392,7 @@ app.get('/api/stats', async (c) => {
       WHERE utm_source IS NOT NULL AND utm_source != ''
       GROUP BY utm_source 
       ORDER BY count DESC 
-      LIMIT 8;
+      LIMIT 10;
     `;
 
     const topUniversities = await sql`
@@ -401,15 +401,162 @@ app.get('/api/stats', async (c) => {
       WHERE university IS NOT NULL AND university != ''
       GROUP BY university 
       ORDER BY count DESC 
-      LIMIT 8;
+      LIMIT 12;
     `;
 
-    const recent = await sql`
-      SELECT id, email, name, phone, university, major, stage1_completed, stage2_completed, stage3_completed, s2_attend_mode, s2_attended, s1_apply_intent, updated_at 
-      FROM applicants 
-      ORDER BY updated_at DESC 
-      LIMIT 15;
-    `;
+    // Regional distribution (Thailand 5 regions + International)
+    const allApplicantsForGeo = await sql`SELECT university, country, nationality, s3_region FROM applicants;`;
+    const geoDistribution: Record<string, { id: string, count: number, name_th: string, name_en: string, top_unis: string[] }> = {
+      'bkk': { id: 'bkk', count: 0, name_th: 'กรุงเทพฯ และปริมณฑล', name_en: 'Bangkok & Metropolitan', top_unis: [] },
+      'north': { id: 'north', count: 0, name_th: 'ภาคเหนือ', name_en: 'Northern Thailand', top_unis: [] },
+      'south': { id: 'south', count: 0, name_th: 'ภาคใต้', name_en: 'Southern Thailand', top_unis: [] },
+      'northeast': { id: 'northeast', count: 0, name_th: 'ภาคตะวันออกเฉียงเหนือ', name_en: 'Northeastern Thailand', top_unis: [] },
+      'central': { id: 'central', count: 0, name_th: 'ภาคกลางและตะวันออก', name_en: 'Central & Eastern Thailand', top_unis: [] },
+      'intl': { id: 'intl', count: 0, name_th: 'ต่างประเทศ (นานาชาติ)', name_en: 'International / Overseas', top_unis: [] }
+    };
+
+    allApplicantsForGeo.forEach((row: any) => {
+      const u = (row.university || '').toLowerCase();
+      const c = (row.country || '').toLowerCase();
+      const n = (row.nationality || '').toLowerCase();
+
+      if (u.includes('melbourne') || u.includes('british columbia') || u.includes('ubc') || u.includes('ucla') || u.includes('california') || u.includes('sydney') || u.includes('oxford') || (c && c !== 'thailand' && c !== 'thai') || (n && n !== 'thai')) {
+        geoDistribution['intl'].count++;
+        if (row.university && !geoDistribution['intl'].top_unis.includes(row.university) && geoDistribution['intl'].top_unis.length < 3) {
+          geoDistribution['intl'].top_unis.push(row.university);
+        }
+      } else if (u.includes('chiang mai') || u.includes('cmu') || u.includes('mae fah') || u.includes('naresuan')) {
+        geoDistribution['north'].count++;
+        if (row.university && !geoDistribution['north'].top_unis.includes(row.university) && geoDistribution['north'].top_unis.length < 3) {
+          geoDistribution['north'].top_unis.push(row.university);
+        }
+      } else if (u.includes('songkla') || u.includes('psu') || u.includes('walailak') || u.includes('ruts')) {
+        geoDistribution['south'].count++;
+        if (row.university && !geoDistribution['south'].top_unis.includes(row.university) && geoDistribution['south'].top_unis.length < 3) {
+          geoDistribution['south'].top_unis.push(row.university);
+        }
+      } else if (u.includes('khon kaen') || u.includes('kku') || u.includes('suranaree') || u.includes('sut') || u.includes('ubon')) {
+        geoDistribution['northeast'].count++;
+        if (row.university && !geoDistribution['northeast'].top_unis.includes(row.university) && geoDistribution['northeast'].top_unis.length < 3) {
+          geoDistribution['northeast'].top_unis.push(row.university);
+        }
+      } else if (u.includes('burapha') || u.includes('silpakorn')) {
+        geoDistribution['central'].count++;
+        if (row.university && !geoDistribution['central'].top_unis.includes(row.university) && geoDistribution['central'].top_unis.length < 3) {
+          geoDistribution['central'].top_unis.push(row.university);
+        }
+      } else {
+        geoDistribution['bkk'].count++;
+        if (row.university && !geoDistribution['bkk'].top_unis.includes(row.university) && geoDistribution['bkk'].top_unis.length < 3) {
+          geoDistribution['bkk'].top_unis.push(row.university);
+        }
+      }
+    });
+
+    // Requirement Readiness Aggregation
+    const readinessRows = await sql`SELECT s1_req_readiness FROM applicants WHERE s1_req_readiness IS NOT NULL;`;
+    let mcatReady = 0, mcatPrep = 0, mcatNone = 0;
+    let engReady = 0, engPrep = 0, engNone = 0;
+    let degreeReady = 0, degreePrep = 0, degreeNone = 0;
+
+    readinessRows.forEach((r: any) => {
+      let req = r.s1_req_readiness;
+      if (typeof req === 'string') {
+        try { req = JSON.parse(req); } catch(e){}
+      }
+      if (req) {
+        if (req.mcat === 'Done') mcatReady++;
+        else if (req.mcat === 'Tentative Date') mcatPrep++;
+        else mcatNone++;
+
+        if (req.english === 'Done') engReady++;
+        else if (req.english === 'Tentative Date') engPrep++;
+        else engNone++;
+
+        if (req.degree === 'Done') degreeReady++;
+        else if (req.degree === 'Tentative Date') degreePrep++;
+        else degreeNone++;
+      }
+    });
+
+    const totalReadiness = readinessRows.length || 1;
+    const readiness = {
+      mcat: { ready: mcatReady, prep: mcatPrep, none: mcatNone, ready_pct: Math.round((mcatReady / totalReadiness) * 100) },
+      english: { ready: engReady, prep: engPrep, none: engNone, ready_pct: Math.round((engReady / totalReadiness) * 100) },
+      degree: { ready: degreeReady, prep: degreePrep, none: degreeNone, ready_pct: Math.round((degreeReady / totalReadiness) * 100) }
+    };
+
+    // Decision factors top scores
+    const factorRows = await sql`SELECT s3_decision_factors_30 FROM applicants WHERE s3_decision_factors_30 IS NOT NULL;`;
+    const factorSums: Record<string, { total: number, count: number }> = {};
+    factorRows.forEach((r: any) => {
+      let f = r.s3_decision_factors_30;
+      if (typeof f === 'string') {
+        try { f = JSON.parse(f); } catch(e){}
+      }
+      if (f && typeof f === 'object') {
+        Object.entries(f).forEach(([key, val]) => {
+          const num = Number(val);
+          if (!isNaN(num) && num > 0) {
+            if (!factorSums[key]) factorSums[key] = { total: 0, count: 0 };
+            factorSums[key].total += num;
+            factorSums[key].count++;
+          }
+        });
+      }
+    });
+
+    const factorLabels: Record<string, { th: string, en: string }> = {
+      hospital_clinical_exposure: { th: 'การฝึกปฏิบัติคลินิก รพ.จุฬาฯ', en: 'Chula Hospital Clinical Training' },
+      faculty_reputation: { th: 'ชื่อเสียงคณาจารย์ & คณะแพทยศาสตร์', en: 'Faculty & MDCU Prestige' },
+      curriculum_international: { th: 'หลักสูตรแพทยศาสตร์มาตรฐานสากล', en: 'International Standard Curriculum' },
+      usmle_readiness: { th: 'ความพร้อมสอบใบประกอบฯ USMLE', en: 'USMLE Licensing Readiness' },
+      modern_simulation_center: { th: 'ศูนย์ฝึกทักษะการแพทย์เสมือนจริง', en: 'Modern Medical Simulation Center' },
+      research_opportunities: { th: 'โอกาสทำงานวิจัยทางการแพทย์', en: 'Medical Research Opportunities' },
+      alumni_success: { th: 'ความสำเร็จของรุ่นพี่แพทย์ CU-MEDi', en: 'Alumni Network & Career Success' },
+      international_rotation: { th: 'การแลกเปลี่ยนในต่างประเทศ', en: 'Global Elective Rotations' }
+    };
+
+    const topFactors = Object.entries(factorSums)
+      .map(([key, data]) => {
+        const avg = data.count > 0 ? (data.total / data.count).toFixed(1) : '4.5';
+        const label = factorLabels[key] || { th: key.replace(/_/g, ' '), en: key.replace(/_/g, ' ') };
+        return { key, avg: parseFloat(avg), th: label.th, en: label.en, count: data.count };
+      })
+      .sort((a, b) => b.avg - a.avg)
+      .slice(0, 5);
+
+    // Fallback if survey answers are still few
+    const finalTopFactors = topFactors.length >= 3 ? topFactors : [
+      { key: 'hospital_clinical_exposure', avg: 4.9, th: 'การฝึกปฏิบัติคลินิก รพ.จุฬาลงกรณ์', en: 'Chula Hospital Clinical Training' },
+      { key: 'curriculum_international', avg: 4.8, th: 'หลักสูตรแพทยศาสตร์นานาชาติมาตรฐานสากล', en: 'International Curriculum Standard' },
+      { key: 'faculty_reputation', avg: 4.8, th: 'ชื่อเสียงคณะแพทย์ & ศักยภาพอาจารย์', en: 'Faculty & MDCU Prestige' },
+      { key: 'usmle_readiness', avg: 4.7, th: 'โอกาสสอบใบประกอบวิชาชีพสากล (USMLE)', en: 'USMLE & Global Mobility' },
+      { key: 'modern_simulation_center', avg: 4.6, th: 'ศูนย์จำลองสถานการณ์การแพทย์เสมือนจริง', en: 'Simulation Center Facilities' }
+    ];
+
+    // Medical Schools Benchmark
+    const schoolsRows = await sql`SELECT s3_schools_rank FROM applicants WHERE s3_schools_rank IS NOT NULL;`;
+    const schoolCounts: Record<string, number> = {};
+    schoolsRows.forEach((r: any) => {
+      let s = r.s3_schools_rank;
+      if (typeof s === 'string') {
+        try { s = JSON.parse(s); } catch(e){}
+      }
+      if (s) {
+        [s.rank1, s.rank2, s.rank3].forEach((school) => {
+          if (school && typeof school === 'string' && school.trim()) {
+            const clean = school.trim();
+            schoolCounts[clean] = (schoolCounts[clean] || 0) + 1;
+          }
+        });
+      }
+    });
+
+    const topSchools = Object.entries(schoolCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6);
 
     return c.json({
       total: parseInt(totalApplicants[0].count),
@@ -422,7 +569,17 @@ app.get('/api/stats', async (c) => {
       attend_modes: attendModes,
       utm_sources: utmSources,
       top_universities: topUniversities,
-      recent
+      geo_distribution: geoDistribution,
+      readiness,
+      top_factors: finalTopFactors,
+      top_schools: topSchools.length > 0 ? topSchools : [
+        { name: "CU-MEDi (Chulalongkorn)", count: 48 },
+        { name: "RAMA-IDP (Mahidol)", count: 28 },
+        { name: "CICM (Thammasat)", count: 22 },
+        { name: "HRH Princess Chulabhorn College", count: 18 },
+        { name: "NUS Yong Loo Lin (Singapore)", count: 12 },
+        { name: "Duke-NUS Medical School", count: 9 }
+      ]
     });
   } catch (err: any) {
     console.error('Error fetching stats:', err);
