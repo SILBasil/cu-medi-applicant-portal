@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS applicants (
     nationality VARCHAR(100),
     phone VARCHAR(50),
     country VARCHAR(100),
+    province VARCHAR(100),
     university VARCHAR(255),
     major VARCHAR(255),
 

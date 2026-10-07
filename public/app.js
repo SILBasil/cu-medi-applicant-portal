@@ -127,6 +127,7 @@ const I18N = {
     lbl_phone: "Phone Number",
     lbl_nationality: "Nationality",
     lbl_country: "Current Address (Country)",
+    lbl_province: "Province / State",
     lbl_degree: "Bachelor's Degree",
     lbl_university: "University / Institution",
     lbl_apply_intent: "Will you apply for CU-MEDi 2027 admission?",
@@ -266,7 +267,8 @@ const I18N = {
     lbl_fullname: "ชื่อ - นามสกุล",
     lbl_phone: "เบอร์โทรศัพท์มือถือ",
     lbl_nationality: "สัญชาติ",
-    lbl_country: "ประเทศที่พำนักปัจจุบัน",
+    lbl_country: "ประเทศที่พำนักปัจจุบัน (Country)",
+    lbl_province: "จังหวัด / รัฐ (Province / State)",
     lbl_degree: "วุฒิการศึกษาปริญญาตรี / สาขาวิชา",
     lbl_university: "สถาบันการศึกษา / มหาวิทยาลัย",
     lbl_apply_intent: "คุณตั้งใจจะสมัครเข้าศึกษา CU-MEDi รอบปี 2027 หรือไม่?",
@@ -369,6 +371,362 @@ let factorRatings = {};
 let currentStage = 1;
 let activeStep = 1;
 let verifiedApplicant = null;
+
+// ==========================================
+// Country & Province Datasets
+// ==========================================
+const COUNTRIES_DATASET = [
+  { en: "Thailand", th: "ไทย", priority: true, aliases: ["ไทย", "ประเทศไทย", "thai", "thailand", "th"] },
+  { en: "United States", th: "สหรัฐอเมริกา", priority: true, aliases: ["us", "usa", "america", "อเมริกา", "สหรัฐ", "united states"] },
+  { en: "United Kingdom", th: "สหราชอาณาจักร", priority: true, aliases: ["uk", "britain", "england", "อังกฤษ", "united kingdom"] },
+  { en: "Singapore", th: "สิงคโปร์", priority: true, aliases: ["sg", "singapore", "สิงคโปร์"] },
+  { en: "Australia", th: "ออสเตรเลีย", priority: true, aliases: ["au", "australia", "ออสเตรเลีย"] },
+  { en: "Canada", th: "แคนาดา", priority: true, aliases: ["ca", "canada", "แคนาดา"] },
+  { en: "China", th: "จีน", priority: true, aliases: ["cn", "china", "จีน"] },
+  { en: "Japan", th: "ญี่ปุ่น", priority: true, aliases: ["jp", "japan", "ญี่ปุ่น"] },
+  { en: "South Korea", th: "เกาหลีใต้", priority: true, aliases: ["kr", "korea", "เกาหลี", "เกาหลีใต้"] },
+  { en: "Taiwan", th: "ไต้หวัน", priority: true, aliases: ["tw", "taiwan", "ไต้หวัน"] },
+  { en: "Hong Kong", th: "ฮ่องกง", priority: true, aliases: ["hk", "hong kong", "ฮ่องกง"] },
+  { en: "India", th: "อินเดีย", priority: true, aliases: ["in", "india", "อินเดีย"] },
+  { en: "Malaysia", th: "มาเลเซีย", priority: true, aliases: ["my", "malaysia", "มาเลเซีย"] },
+  { en: "Myanmar", th: "เมียนมา (พม่า)", priority: true, aliases: ["mm", "myanmar", "burma", "พม่า", "เมียนมา"] },
+  { en: "Vietnam", th: "เวียดนาม", priority: true, aliases: ["vn", "vietnam", "เวียดนาม"] },
+  { en: "Indonesia", th: "อินโดนีเซีย", aliases: ["id", "indonesia", "อินโด"] },
+  { en: "Philippines", th: "ฟิลิปปินส์", aliases: ["ph", "philippines", "ฟิลิปปินส์"] },
+  { en: "Germany", th: "เยอรมนี", aliases: ["de", "germany", "เยอรมัน", "เยอรมนี"] },
+  { en: "France", th: "ฝรั่งเศส", aliases: ["fr", "france", "ฝรั่งเศส"] },
+  { en: "New Zealand", th: "นิวซีแลนด์", aliases: ["nz", "new zealand", "นิวซีแลนด์"] },
+  { en: "Ireland", th: "ไอร์แลนด์", aliases: ["ie", "ireland", "ไอร์แลนด์"] },
+  { en: "Switzerland", th: "สวิตเซอร์แลนด์", aliases: ["ch", "switzerland", "สวิส"] },
+  { en: "Netherlands", th: "เนเธอร์แลนด์", aliases: ["nl", "netherlands", "ฮอลแลนด์", "เนเธอร์แลนด์"] },
+  { en: "Sweden", th: "สวีเดน", aliases: ["se", "sweden", "สวีเดน"] },
+  { en: "Norway", th: "นอร์เวย์", aliases: ["no", "norway", "นอร์เวย์"] },
+  { en: "Italy", th: "อิตาลี", aliases: ["it", "italy", "อิตาลี"] },
+  { en: "Spain", th: "สเปน", aliases: ["es", "spain", "สเปน"] },
+  { en: "Russia", th: "รัสเซีย", aliases: ["ru", "russia", "รัสเซีย"] },
+  { en: "Brazil", th: "บราซิล", aliases: ["br", "brazil", "บราซิล"] },
+  { en: "South Africa", th: "แอฟริกาใต้", aliases: ["za", "south africa", "แอฟริกาใต้"] },
+  { en: "Other", th: "อื่นๆ (Other)", aliases: ["other", "อื่นๆ", "อื่น"] }
+];
+
+const THAI_PROVINCES_DATASET = [
+  // กทม. & ปริมณฑล
+  { en: "Bangkok Metropolis", th: "กรุงเทพมหานคร", region: "bkk", regionTh: "กทม. & ปริมณฑล" },
+  { en: "Nonthaburi", th: "นนทบุรี", region: "bkk", regionTh: "กทม. & ปริมณฑล" },
+  { en: "Pathum Thani", th: "ปทุมธานี", region: "bkk", regionTh: "กทม. & ปริมณฑล" },
+  { en: "Samut Prakan", th: "สมุทรปราการ", region: "bkk", regionTh: "กทม. & ปริมณฑล" },
+  { en: "Samut Sakhon", th: "สมุทรสาคร", region: "bkk", regionTh: "กทม. & ปริมณฑล" },
+  { en: "Nakhon Pathom", th: "นครปฐม", region: "bkk", regionTh: "กทม. & ปริมณฑล" },
+
+  // ภาคเหนือ
+  { en: "Chiang Mai", th: "เชียงใหม่", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Chiang Rai", th: "เชียงราย", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Lampang", th: "ลำปาง", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Lamphun", th: "ลำพูน", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Mae Hong Son", th: "แม่ฮ่องสอน", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Nan", th: "น่าน", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Phayao", th: "พะเยา", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Phrae", th: "แพร่", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Uttaradit", th: "อุตรดิตถ์", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Tak", th: "ตาก", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Sukhothai", th: "สุโขทัย", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Phitsanulok", th: "พิษณุโลก", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Phichit", th: "พิจิตร", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Kamphaeng Phet", th: "กำแพงเพชร", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Phetchabun", th: "เพชรบูรณ์", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Nakhon Sawan", th: "นครสวรรค์", region: "north", regionTh: "ภาคเหนือ" },
+  { en: "Uthai Thani", th: "อุทัยธานี", region: "north", regionTh: "ภาคเหนือ" },
+
+  // ภาคอีสาน (ตะวันออกเฉียงเหนือ)
+  { en: "Nakhon Ratchasima", th: "นครราชสีมา", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Khon Kaen", th: "ขอนแก่น", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Udon Thani", th: "อุดรธานี", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Ubon Ratchathani", th: "อุบลราชธานี", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Buri Ram", th: "บุรีรัมย์", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Surin", th: "สุรินทร์", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Si Sa Ket", th: "ศรีสะเกษ", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Roi Et", th: "ร้อยเอ็ด", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Chaiyaphum", th: "ชัยภูมิ", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Sakon Nakhon", th: "สกลนคร", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Kalasin", th: "กาฬสินธุ์", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Maha Sarakham", th: "มหาสารคาม", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Nong Khai", th: "หนองคาย", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Loei", th: "เลย", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Yasothon", th: "ยโสธร", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Mukdahan", th: "มุกดาหาร", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Bueng Kan", th: "บึงกาฬ", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Amnat Charoen", th: "อำนาจเจริญ", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Nong Bua Lam Phu", th: "หนองบัวลำภู", region: "northeast", regionTh: "ภาคอีสาน" },
+  { en: "Nakhon Phanom", th: "นครพนม", region: "northeast", regionTh: "ภาคอีสาน" },
+
+  // ภาคกลาง & ตะวันออก
+  { en: "Phra Nakhon Si Ayutthaya", th: "พระนครศรีอยุธยา", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Saraburi", th: "สระบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Lop Buri", th: "ลพบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Sing Buri", th: "สิงห์บุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Chai Nat", th: "ชัยนาท", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Ang Thong", th: "อ่างทอง", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Suphan Buri", th: "สุพรรณบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Kanchanaburi", th: "กาญจนบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Ratchaburi", th: "ราชบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Samut Songkhram", th: "สมุทรสงคราม", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Phetchaburi", th: "เพชรบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Prachuap Khiri Khan", th: "ประจวบคีรีขันธ์", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Nakhon Nayok", th: "นครนายก", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Prachin Buri", th: "ปราจีนบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Sa Kaeo", th: "สระแก้ว", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Chachoengsao", th: "ฉะเชิงเทรา", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Chon Buri", th: "ชลบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Rayong", th: "ระยอง", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Chanthaburi", th: "จันทบุรี", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+  { en: "Trat", th: "ตราด", region: "central", regionTh: "ภาคกลาง & ต.อ." },
+
+  // ภาคใต้
+  { en: "Chumphon", th: "ชุมพร", region: "south", regionTh: "ภาคใต้" },
+  { en: "Ranong", th: "ระนอง", region: "south", regionTh: "ภาคใต้" },
+  { en: "Surat Thani", th: "สุราษฎร์ธานี", region: "south", regionTh: "ภาคใต้" },
+  { en: "Phangnga", th: "พังงา", region: "south", regionTh: "ภาคใต้" },
+  { en: "Phuket", th: "ภูเก็ต", region: "south", regionTh: "ภาคใต้" },
+  { en: "Krabi", th: "กระบี่", region: "south", regionTh: "ภาคใต้" },
+  { en: "Nakhon Si Thammarat", th: "นครศรีธรรมราช", region: "south", regionTh: "ภาคใต้" },
+  { en: "Trang", th: "ตรัง", region: "south", regionTh: "ภาคใต้" },
+  { en: "Phatthalung", th: "พัทลุง", region: "south", regionTh: "ภาคใต้" },
+  { en: "Satun", th: "สตูล", region: "south", regionTh: "ภาคใต้" },
+  { en: "Songkhla", th: "สงขลา", region: "south", regionTh: "ภาคใต้" },
+  { en: "Pattani", th: "ปัตตานี", region: "south", regionTh: "ภาคใต้" },
+  { en: "Yala", th: "ยะลา", region: "south", regionTh: "ภาคใต้" },
+  { en: "Narathiwat", th: "นราธิวาส", region: "south", regionTh: "ภาคใต้" }
+];
+
+// Setup Combobox Component for Country & Province
+function setupCombobox(stageNum) {
+  const cSearch = document.getElementById(`f${stageNum}-country-search`);
+  const cHidden = document.getElementById(`f${stageNum}-country`);
+  const cMenu = document.getElementById(`f${stageNum}-country-menu`);
+  const cBox = document.getElementById(`f${stageNum}-country-combobox`);
+
+  const pSearch = document.getElementById(`f${stageNum}-province-search`);
+  const pHidden = document.getElementById(`f${stageNum}-province`);
+  const pMenu = document.getElementById(`f${stageNum}-province-menu`);
+  const pBox = document.getElementById(`f${stageNum}-province-combobox`);
+  const pArrow = document.getElementById(`f${stageNum}-province-arrow`);
+
+  if (!cSearch || !cHidden || !cMenu) return;
+
+  function renderCountryOptions(filterText = '') {
+    const q = filterText.trim().toLowerCase();
+    const matched = COUNTRIES_DATASET.filter(c => {
+      if (!q) return true;
+      if (c.en.toLowerCase().includes(q)) return true;
+      if (c.th.toLowerCase().includes(q)) return true;
+      if (c.aliases && c.aliases.some(a => a.toLowerCase().includes(q))) return true;
+      return false;
+    });
+
+    if (matched.length === 0) {
+      cMenu.innerHTML = `<li class="combobox-empty">${currentLang === 'th' ? 'ไม่พบชื่อประเทศที่ค้นหา' : 'No countries found'}</li>`;
+      return;
+    }
+
+    cMenu.innerHTML = matched.map(c => {
+      const isSelected = cHidden.value.toLowerCase() === c.en.toLowerCase();
+      const displayTh = c.th;
+      const displayEn = c.en;
+      const label = currentLang === 'th' ? `${displayTh} (${displayEn})` : `${displayEn} (${displayTh})`;
+      return `
+        <li class="combobox-item ${isSelected ? 'selected' : ''}" data-country-en="${c.en}" data-country-th="${c.th}">
+          <span class="combobox-item-text">${label}</span>
+          ${c.priority ? '<span class="combobox-badge">Popular</span>' : ''}
+        </li>
+      `;
+    }).join('');
+
+    cMenu.querySelectorAll('.combobox-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const en = item.getAttribute('data-country-en');
+        const th = item.getAttribute('data-country-th');
+        selectCountry(en, th);
+      });
+    });
+  }
+
+  function selectCountry(en, th) {
+    cHidden.value = en;
+    cSearch.value = currentLang === 'th' ? `${th} (${en})` : `${en} (${th})`;
+    cMenu.style.display = 'none';
+    if (cBox) cBox.classList.remove('open');
+    updateProvinceMode();
+  }
+
+  function updateProvinceMode() {
+    if (!pSearch || !pHidden) return;
+    const isThai = (cHidden.value || '').toLowerCase() === 'thailand';
+
+    if (isThai) {
+      if (pArrow) pArrow.style.display = 'inline-block';
+      pSearch.setAttribute('placeholder', currentLang === 'th' ? 'พิมพ์หรือเลือกจังหวัด (เช่น กรุงเทพฯ, สงขลา)...' : 'Type or select province (e.g. Bangkok, Songkhla)...');
+      pSearch.readOnly = false;
+      renderProvinceOptions();
+    } else {
+      if (pArrow) pArrow.style.display = 'none';
+      if (pMenu) pMenu.style.display = 'none';
+      if (pBox) pBox.classList.remove('open');
+      pSearch.setAttribute('placeholder', currentLang === 'th' ? 'ระบุจังหวัด / รัฐ / เมือง (เช่น California, Ontario)...' : 'Enter State / Province / City (e.g. California, Ontario)...');
+      pSearch.oninput = () => { pHidden.value = pSearch.value.trim(); };
+    }
+  }
+
+  function renderProvinceOptions(filterText = '') {
+    if (!pMenu) return;
+    const q = filterText.trim().toLowerCase();
+    const matched = THAI_PROVINCES_DATASET.filter(p => {
+      if (!q) return true;
+      if (p.en.toLowerCase().includes(q)) return true;
+      if (p.th.toLowerCase().includes(q)) return true;
+      return false;
+    });
+
+    if (matched.length === 0) {
+      pMenu.innerHTML = `<li class="combobox-empty">${currentLang === 'th' ? 'ไม่พบชื่อจังหวัด' : 'No provinces found'}</li>`;
+      return;
+    }
+
+    pMenu.innerHTML = matched.map(p => {
+      const isSelected = pHidden.value.toLowerCase() === p.en.toLowerCase();
+      const label = currentLang === 'th' ? `${p.th} (${p.en})` : `${p.en} (${p.th})`;
+      return `
+        <li class="combobox-item ${isSelected ? 'selected' : ''}" data-prov-en="${p.en}" data-prov-th="${p.th}">
+          <span class="combobox-item-text">${label}</span>
+          <span class="combobox-badge">${p.regionTh}</span>
+        </li>
+      `;
+    }).join('');
+
+    pMenu.querySelectorAll('.combobox-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const en = item.getAttribute('data-prov-en');
+        const th = item.getAttribute('data-prov-th');
+        pHidden.value = en;
+        pSearch.value = currentLang === 'th' ? `${th} (${en})` : `${en} (${th})`;
+        pMenu.style.display = 'none';
+        if (pBox) pBox.classList.remove('open');
+      });
+    });
+  }
+
+  // Country event listeners
+  cSearch.addEventListener('focus', () => {
+    renderCountryOptions(cSearch.value);
+    cMenu.style.display = 'block';
+    if (cBox) cBox.classList.add('open');
+  });
+
+  cSearch.addEventListener('input', () => {
+    renderCountryOptions(cSearch.value);
+    cMenu.style.display = 'block';
+    if (cBox) cBox.classList.add('open');
+  });
+
+  // Province event listeners
+  if (pSearch) {
+    pSearch.addEventListener('focus', () => {
+      const isThai = (cHidden.value || '').toLowerCase() === 'thailand';
+      if (isThai) {
+        renderProvinceOptions(pSearch.value);
+        if (pMenu) pMenu.style.display = 'block';
+        if (pBox) pBox.classList.add('open');
+      }
+    });
+
+    pSearch.addEventListener('input', () => {
+      const isThai = (cHidden.value || '').toLowerCase() === 'thailand';
+      if (isThai) {
+        renderProvinceOptions(pSearch.value);
+        if (pMenu) pMenu.style.display = 'block';
+        if (pBox) pBox.classList.add('open');
+      } else {
+        pHidden.value = pSearch.value.trim();
+      }
+    });
+  }
+
+  // Close when clicked outside
+  document.addEventListener('click', (e) => {
+    if (cBox && !cBox.contains(e.target)) {
+      cMenu.style.display = 'none';
+      cBox.classList.remove('open');
+    }
+    if (pBox && !pBox.contains(e.target)) {
+      if (pMenu) pMenu.style.display = 'none';
+      pBox.classList.remove('open');
+    }
+  });
+
+  // Default to Thailand
+  if (!cHidden.value) {
+    selectCountry('Thailand', 'ไทย');
+  } else {
+    updateProvinceMode();
+  }
+}
+
+// Global Combobox setters for prefill
+function setComboboxCountry(stageNum, countryVal) {
+  if (!countryVal) return;
+  const cSearch = document.getElementById(`f${stageNum}-country-search`);
+  const cHidden = document.getElementById(`f${stageNum}-country`);
+  const item = COUNTRIES_DATASET.find(c => 
+    c.en.toLowerCase() === countryVal.toLowerCase() || 
+    c.th.toLowerCase() === countryVal.toLowerCase() ||
+    (c.aliases && c.aliases.some(a => a.toLowerCase() === countryVal.toLowerCase()))
+  );
+  if (item && cHidden && cSearch) {
+    cHidden.value = item.en;
+    cSearch.value = currentLang === 'th' ? `${item.th} (${item.en})` : `${item.en} (${item.th})`;
+  } else if (cHidden && cSearch) {
+    cHidden.value = countryVal;
+    cSearch.value = countryVal;
+  }
+
+  // Trigger province mode change
+  const pSearch = document.getElementById(`f${stageNum}-province-search`);
+  const pHidden = document.getElementById(`f${stageNum}-province`);
+  const pArrow = document.getElementById(`f${stageNum}-province-arrow`);
+  const isThai = (countryVal || '').toLowerCase() === 'thailand' || (countryVal || '').toLowerCase() === 'ไทย';
+
+  if (pSearch) {
+    if (isThai) {
+      if (pArrow) pArrow.style.display = 'inline-block';
+      pSearch.setAttribute('placeholder', currentLang === 'th' ? 'พิมพ์หรือเลือกจังหวัด (เช่น กรุงเทพฯ, สงขลา)...' : 'Type or select province (e.g. Bangkok, Songkhla)...');
+    } else {
+      if (pArrow) pArrow.style.display = 'none';
+      pSearch.setAttribute('placeholder', currentLang === 'th' ? 'ระบุจังหวัด / รัฐ / เมือง (เช่น California, Ontario)...' : 'Enter State / Province / City (e.g. California, Ontario)...');
+      pSearch.oninput = () => { if (pHidden) pHidden.value = pSearch.value.trim(); };
+    }
+  }
+}
+
+function setComboboxProvince(stageNum, provinceVal) {
+  if (!provinceVal) return;
+  const pSearch = document.getElementById(`f${stageNum}-province-search`);
+  const pHidden = document.getElementById(`f${stageNum}-province`);
+  if (!pHidden || !pSearch) return;
+
+  pHidden.value = provinceVal;
+  const matched = THAI_PROVINCES_DATASET.find(p => 
+    p.en.toLowerCase() === provinceVal.toLowerCase() || 
+    p.th.toLowerCase() === provinceVal.toLowerCase()
+  );
+
+  if (matched) {
+    pHidden.value = matched.en;
+    pSearch.value = currentLang === 'th' ? `${matched.th} (${matched.en})` : `${matched.en} (${matched.th})`;
+  } else {
+    pSearch.value = provinceVal;
+  }
+}
 
 // Determine active stage from URL Path or Query parameter
 function detectStage() {
@@ -696,7 +1054,8 @@ function setLanguage(lang) {
   setText('lbl-f1-name', t.lbl_fullname + ' *');
   setText('lbl-f1-phone', t.lbl_phone + ' *');
   setText('lbl-f1-nat', t.lbl_nationality + ' *');
-  setText('lbl-f1-country', t.lbl_country);
+  setHtml('lbl-f1-country', t.lbl_country + ' <span class="req">*</span>');
+  setHtml('lbl-f1-province', t.lbl_province + ' <span class="req">*</span>');
   setText('lbl-f1-degree', t.lbl_degree);
   setText('lbl-f1-uni', t.lbl_university);
   setText('lbl-f1-apply', t.lbl_apply_intent + ' *');
@@ -752,6 +1111,8 @@ function setLanguage(lang) {
   setText('lbl-f2-email', t.lbl_email + ' *');
   setText('lbl-f2-name', t.lbl_fullname + ' *');
   setText('lbl-f2-nat', t.lbl_nationality);
+  setText('lbl-f2-country', t.lbl_country);
+  setText('lbl-f2-province', t.lbl_province);
   setText('lbl-f2-phone', t.lbl_phone + ' *');
   setText('lbl-f2-uni', t.lbl_university);
   setText('lbl-f2-major', t.lbl_major);
@@ -838,7 +1199,8 @@ function setLanguage(lang) {
     setPlaceholder('f1-name', 'เช่น สมชาย ใจดี');
     setPlaceholder('f1-phone', 'เช่น 081 234 5678');
     setPlaceholder('f1-nationality', 'เช่น ไทย, อเมริกัน, สิงคโปร์');
-    setPlaceholder('f1-country', 'เช่น ประเทศไทย');
+    setPlaceholder('f1-country-search', 'พิมพ์หรือเลือกประเทศ (เช่น ไทย, United States)...');
+    setPlaceholder('f1-province-search', 'พิมพ์หรือเลือกจังหวัด (เช่น กรุงเทพฯ, สงขลา)...');
     setPlaceholder('f1-degree', 'เช่น วท.บ. ชีววิทยาศาสตร์');
     setPlaceholder('f1-uni', 'เช่น จุฬาลงกรณ์มหาวิทยาลัย');
     setPlaceholder('f1-heard-other', 'โปรดระบุช่องทางอื่น');
@@ -846,6 +1208,8 @@ function setLanguage(lang) {
     setPlaceholder('f2-name', 'เช่น สมหญิง รักเรียน');
     setPlaceholder('f2-phone', 'เช่น 081 234 5678');
     setPlaceholder('f2-nationality', 'เช่น ไทย');
+    setPlaceholder('f2-country-search', 'พิมพ์หรือเลือกประเทศ (เช่น ไทย, United States)...');
+    setPlaceholder('f2-province-search', 'พิมพ์หรือเลือกจังหวัด (เช่น กรุงเทพฯ, สงขลา)...');
     setPlaceholder('f2-university', 'เช่น จุฬาลงกรณ์มหาวิทยาลัย');
     setPlaceholder('f2-major', 'เช่น วิทยาศาสตร์ชีวการแพทย์');
     setPlaceholder('f2-heard-other', 'โปรดระบุช่องทางอื่น');
@@ -856,7 +1220,8 @@ function setLanguage(lang) {
     setPlaceholder('f1-name', 'e.g. John Doe');
     setPlaceholder('f1-phone', 'e.g. 081 234 5678');
     setPlaceholder('f1-nationality', 'e.g. Thai, American, Singaporean');
-    setPlaceholder('f1-country', 'e.g. Thailand');
+    setPlaceholder('f1-country-search', 'Type or select country (e.g. Thailand, United States)...');
+    setPlaceholder('f1-province-search', 'Type or select province (e.g. Bangkok, Songkhla)...');
     setPlaceholder('f1-degree', 'e.g. B.Sc. in Biomedical Sciences');
     setPlaceholder('f1-uni', 'e.g. Chulalongkorn University');
     setPlaceholder('f1-heard-other', 'Please specify if Other');
@@ -864,6 +1229,8 @@ function setLanguage(lang) {
     setPlaceholder('f2-name', 'e.g. Jane Doe');
     setPlaceholder('f2-phone', 'e.g. 081 234 5678');
     setPlaceholder('f2-nationality', 'e.g. Thai');
+    setPlaceholder('f2-country-search', 'Type or select country (e.g. Thailand, United States)...');
+    setPlaceholder('f2-province-search', 'Type or select province (e.g. Bangkok, Songkhla)...');
     setPlaceholder('f2-university', 'e.g. Chulalongkorn University');
     setPlaceholder('f2-major', 'e.g. Biomedical Science');
     setPlaceholder('f2-heard-other', 'Please specify if Other');
@@ -998,7 +1365,8 @@ function prefillData(prefill) {
     if (prefill.name && f1.elements['name']) { f1.elements['name'].value = prefill.name; highlightField(f1.elements['name']); }
     if (prefill.phone && f1.elements['phone']) { f1.elements['phone'].value = prefill.phone; highlightField(f1.elements['phone']); }
     if (prefill.nationality && f1.elements['nationality']) { f1.elements['nationality'].value = prefill.nationality; highlightField(f1.elements['nationality']); }
-    if (prefill.country && f1.elements['country']) { f1.elements['country'].value = prefill.country; highlightField(f1.elements['country']); }
+    if (prefill.country) { setComboboxCountry(1, prefill.country); }
+    if (prefill.province) { setComboboxProvince(1, prefill.province); }
     if (prefill.university && f1.elements['university']) { f1.elements['university'].value = prefill.university; highlightField(f1.elements['university']); }
     if (prefill.bachelor_degree && f1.elements['bachelor_degree']) { f1.elements['bachelor_degree'].value = prefill.bachelor_degree; highlightField(f1.elements['bachelor_degree']); }
     if (prefill.req_readiness) {
@@ -1035,6 +1403,8 @@ function prefillData(prefill) {
     if (prefill.name && f2Name) { f2Name.value = prefill.name; highlightField(f2Name); }
     if (prefill.phone && f2Phone) { f2Phone.value = prefill.phone; highlightField(f2Phone); }
     if (prefill.nationality && f2Nat) { f2Nat.value = prefill.nationality; highlightField(f2Nat); }
+    if (prefill.country) { setComboboxCountry(2, prefill.country); }
+    if (prefill.province) { setComboboxProvince(2, prefill.province); }
     if (prefill.university && f2Uni) { f2Uni.value = prefill.university; highlightField(f2Uni); }
     if (prefill.major && f2Major) { f2Major.value = prefill.major; highlightField(f2Major); }
     if (prefill.education_level && document.getElementById('sel-f2-edu')) {
@@ -1302,6 +1672,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Setup conditional visibility for "Other" fields and session choice
   setupConditionalFields();
 
+  // Setup searchable country & province comboboxes
+  setupCombobox(1);
+  setupCombobox(2);
+
   // ==========================================
   // Form 1 Submit (Stage 1: Lead)
   // ==========================================
@@ -1318,12 +1692,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const infoWanted = formData.getAll('info_wanted');
       const utm = getUTMParams();
 
+      const countryVal = document.getElementById('f1-country')?.value || document.getElementById('f1-country-search')?.value || 'Thailand';
+      const provinceVal = document.getElementById('f1-province')?.value || document.getElementById('f1-province-search')?.value || '';
+
       const payload = {
         email: document.getElementById('f1-email').value,
         name: formData.get('name'),
         phone: formData.get('phone'),
         nationality: formData.get('nationality'),
-        country: formData.get('country'),
+        country: countryVal,
+        province: provinceVal,
         bachelor_degree: formData.get('bachelor_degree'),
         university: formData.get('university'),
         apply_intent: formData.get('apply_intent'),
@@ -1368,6 +1746,9 @@ document.addEventListener('DOMContentLoaded', () => {
           if (f2Uni && payload.university) f2Uni.value = payload.university;
           if (f3Name && payload.name) f3Name.value = payload.name;
 
+          setComboboxCountry(2, payload.country);
+          setComboboxProvince(2, payload.province);
+
           // Show verified pill
           const pill = document.getElementById('verified-user-pill');
           const pillText = document.getElementById('verified-email-text');
@@ -1409,10 +1790,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const heardFrom = formData.getAll('heard_from');
       const utm = getUTMParams();
 
+      const countryVal = document.getElementById('f2-country')?.value || document.getElementById('f2-country-search')?.value || '';
+      const provinceVal = document.getElementById('f2-province')?.value || document.getElementById('f2-province-search')?.value || '';
+
       const payload = {
         email: document.getElementById('f2-email').value,
         name: formData.get('name'),
         nationality: formData.get('nationality'),
+        country: countryVal,
+        province: provinceVal,
         phone: formData.get('phone'),
         university: formData.get('university') || '',
         major: formData.get('major') || '',

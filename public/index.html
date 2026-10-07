@@ -166,21 +166,40 @@
                 placeholder="e.g. Thai, American, Singaporean" required>
             </div>
             <div class="form-group">
-              <label class="form-label" id="lbl-f1-country">Current Address (Country)</label>
-              <input type="text" name="country" id="f1-country" class="form-input" placeholder="e.g. Thailand">
+              <label class="form-label" id="lbl-f1-country">Current Address (Country) <span class="req">*</span></label>
+              <div class="searchable-combobox" id="f1-country-combobox">
+                <div class="combobox-input-wrapper">
+                  <input type="text" id="f1-country-search" class="form-input combobox-search" placeholder="Type or select country (e.g. Thailand, ไทย)..." autocomplete="off" required>
+                  <span class="combobox-arrow">▾</span>
+                  <input type="hidden" name="country" id="f1-country" value="Thailand">
+                </div>
+                <div class="combobox-menu" id="f1-country-menu" style="display: none;"></div>
+              </div>
             </div>
           </div>
 
           <div class="form-grid-2">
             <div class="form-group">
+              <label class="form-label" id="lbl-f1-province">Province / State <span class="req" id="req-f1-province">*</span></label>
+              <div class="searchable-combobox" id="f1-province-combobox">
+                <div class="combobox-input-wrapper">
+                  <input type="text" id="f1-province-search" class="form-input combobox-search" placeholder="Type or select province (e.g. Bangkok, สงขลา)..." autocomplete="off" required>
+                  <span class="combobox-arrow" id="f1-province-arrow">▾</span>
+                  <input type="hidden" name="province" id="f1-province" value="">
+                </div>
+                <div class="combobox-menu" id="f1-province-menu" style="display: none;"></div>
+              </div>
+            </div>
+            <div class="form-group">
               <label class="form-label" id="lbl-f1-degree">Bachelor's Degree</label>
               <input type="text" name="bachelor_degree" class="form-input"
                 placeholder="e.g. B.Sc. in Biomedical Sciences">
             </div>
-            <div class="form-group">
-              <label class="form-label" id="lbl-f1-uni">University / Institution</label>
-              <input type="text" name="university" class="form-input" placeholder="e.g. Chulalongkorn University">
-            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="lbl-f1-uni">University / Institution</label>
+            <input type="text" name="university" class="form-input" placeholder="e.g. Chulalongkorn University">
           </div>
 
           <div class="form-group">
@@ -412,6 +431,31 @@
             <div class="form-group">
               <label class="form-label" id="lbl-f2-nat">Nationality</label>
               <input type="text" name="nationality" id="f2-nationality" class="form-input" placeholder="e.g. Thai">
+            </div>
+            <div class="form-group">
+              <label class="form-label" id="lbl-f2-country">Current Address (Country)</label>
+              <div class="searchable-combobox" id="f2-country-combobox">
+                <div class="combobox-input-wrapper">
+                  <input type="text" id="f2-country-search" class="form-input combobox-search" placeholder="Type or select country (e.g. Thailand, ไทย)..." autocomplete="off">
+                  <span class="combobox-arrow">▾</span>
+                  <input type="hidden" name="country" id="f2-country" value="">
+                </div>
+                <div class="combobox-menu" id="f2-country-menu" style="display: none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" id="lbl-f2-province">Province / State</label>
+              <div class="searchable-combobox" id="f2-province-combobox">
+                <div class="combobox-input-wrapper">
+                  <input type="text" id="f2-province-search" class="form-input combobox-search" placeholder="Type or select province (e.g. Bangkok, สงขลา)..." autocomplete="off">
+                  <span class="combobox-arrow" id="f2-province-arrow">▾</span>
+                  <input type="hidden" name="province" id="f2-province" value="">
+                </div>
+                <div class="combobox-menu" id="f2-province-menu" style="display: none;"></div>
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label" id="lbl-f2-uni">University / Institution</label>

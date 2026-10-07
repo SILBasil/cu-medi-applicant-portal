@@ -167,6 +167,7 @@ app.get('/api/applicant/status', async (c) => {
       nationality: appRecord.nationality,
       phone: appRecord.phone,
       country: appRecord.country,
+      province: appRecord.province,
       university: appRecord.university,
       major: appRecord.major,
       bachelor_degree: appRecord.s1_bachelor_degree,
@@ -206,7 +207,7 @@ app.post('/api/submit/stage1', async (c) => {
   try {
     const result = await sql`
       INSERT INTO applicants (
-        email, phone, name, nationality, country, university,
+        email, phone, name, nationality, country, province, university,
         stage1_completed, stage1_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s1_bachelor_degree, s1_apply_intent, s1_req_readiness,
@@ -214,7 +215,7 @@ app.post('/api/submit/stage1', async (c) => {
         s1_interest_reason, s1_suggestion_process, s1_suggestion_openhouse, s1_consent_pdpa,
         updated_at
       ) VALUES (
-        ${email}, ${body.phone || ''}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''}, ${body.university || ''},
+        ${email}, ${body.phone || ''}, ${body.name || ''}, ${body.nationality || ''}, ${body.country || ''}, ${body.province || ''}, ${body.university || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.bachelor_degree || ''}, ${body.apply_intent || ''}, ${JSON.stringify(body.req_readiness || {})},
@@ -227,6 +228,7 @@ app.post('/api/submit/stage1', async (c) => {
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
         nationality = COALESCE(NULLIF(EXCLUDED.nationality, ''), applicants.nationality),
         country = COALESCE(NULLIF(EXCLUDED.country, ''), applicants.country),
+        province = COALESCE(NULLIF(EXCLUDED.province, ''), applicants.province),
         university = COALESCE(NULLIF(EXCLUDED.university, ''), applicants.university),
         stage1_completed = true,
         stage1_completed_at = COALESCE(applicants.stage1_completed_at, CURRENT_TIMESTAMP),
@@ -269,14 +271,14 @@ app.post('/api/submit/stage2', async (c) => {
   try {
     const result = await sql`
       INSERT INTO applicants (
-        email, name, nationality, phone, university, major,
+        email, name, nationality, phone, country, province, university, major,
         stage2_completed, stage2_completed_at,
         utm_source, utm_medium, utm_campaign, utm_content, landing_page,
         s2_recipient_group, s2_education_level, s2_year_of_study, s2_apply_intent,
         s2_attend_mode, s2_session_choice, s2_heard_from, s2_heard_other, s2_comments, s2_consent_pdpa,
         updated_at
       ) VALUES (
-        ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''}, ${body.university || ''}, ${body.major || ''},
+        ${email}, ${body.name || ''}, ${body.nationality || ''}, ${body.phone || ''}, ${body.country || ''}, ${body.province || ''}, ${body.university || ''}, ${body.major || ''},
         true, CURRENT_TIMESTAMP,
         ${body.utm_source || ''}, ${body.utm_medium || ''}, ${body.utm_campaign || ''}, ${body.utm_content || ''}, ${body.landing_page || ''},
         ${body.recipient_group || ''}, ${body.education_level || ''}, ${body.year_of_study || ''}, ${body.apply_intent || ''},
@@ -287,6 +289,8 @@ app.post('/api/submit/stage2', async (c) => {
         name = COALESCE(NULLIF(EXCLUDED.name, ''), applicants.name),
         nationality = COALESCE(NULLIF(EXCLUDED.nationality, ''), applicants.nationality),
         phone = COALESCE(NULLIF(EXCLUDED.phone, ''), applicants.phone),
+        country = COALESCE(NULLIF(EXCLUDED.country, ''), applicants.country),
+        province = COALESCE(NULLIF(EXCLUDED.province, ''), applicants.province),
         university = COALESCE(NULLIF(EXCLUDED.university, ''), applicants.university),
         major = COALESCE(NULLIF(EXCLUDED.major, ''), applicants.major),
         utm_source = COALESCE(NULLIF(EXCLUDED.utm_source, ''), applicants.utm_source),
@@ -512,7 +516,24 @@ app.get('/api/stats', async (c) => {
       .sort((a, b) => b.count - a.count)
       .slice(0, 12);
 
-    // Regional distribution (Thailand 5 regions + International)
+    // Regional and Province distribution (Thailand 77 provinces + International)
+    const PROVINCE_TO_REGION: Record<string, string> = {
+      'Bangkok Metropolis': 'bkk', 'Nonthaburi': 'bkk', 'Pathum Thani': 'bkk', 'Samut Prakan': 'bkk', 'Samut Sakhon': 'bkk', 'Nakhon Pathom': 'bkk',
+      'Chiang Mai': 'north', 'Chiang Rai': 'north', 'Lampang': 'north', 'Lamphun': 'north', 'Mae Hong Son': 'north', 'Nan': 'north', 'Phayao': 'north', 'Phrae': 'north', 'Uttaradit': 'north', 'Tak': 'north', 'Sukhothai': 'north', 'Phitsanulok': 'north', 'Phichit': 'north', 'Kamphaeng Phet': 'north', 'Phetchabun': 'north', 'Nakhon Sawan': 'north', 'Uthai Thani': 'north',
+      'Nakhon Ratchasima': 'northeast', 'Khon Kaen': 'northeast', 'Udon Thani': 'northeast', 'Ubon Ratchathani': 'northeast', 'Buri Ram': 'northeast', 'Surin': 'northeast', 'Si Sa Ket': 'northeast', 'Roi Et': 'northeast', 'Chaiyaphum': 'northeast', 'Sakon Nakhon': 'northeast', 'Kalasin': 'northeast', 'Maha Sarakham': 'northeast', 'Nong Khai': 'northeast', 'Loei': 'northeast', 'Yasothon': 'northeast', 'Mukdahan': 'northeast', 'Bueng Kan': 'northeast', 'Amnat Charoen': 'northeast', 'Nong Bua Lam Phu': 'northeast', 'Nakhon Phanom': 'northeast',
+      'Phra Nakhon Si Ayutthaya': 'central', 'Saraburi': 'central', 'Lop Buri': 'central', 'Sing Buri': 'central', 'Chai Nat': 'central', 'Ang Thong': 'central', 'Suphan Buri': 'central', 'Kanchanaburi': 'central', 'Ratchaburi': 'central', 'Samut Songkhram': 'central', 'Phetchaburi': 'central', 'Prachuap Khiri Khan': 'central', 'Nakhon Nayok': 'central', 'Prachin Buri': 'central', 'Sa Kaeo': 'central', 'Chachoengsao': 'central', 'Chon Buri': 'central', 'Rayong': 'central', 'Chanthaburi': 'central', 'Trat': 'central',
+      'Chumphon': 'south', 'Ranong': 'south', 'Surat Thani': 'south', 'Phangnga': 'south', 'Phuket': 'south', 'Krabi': 'south', 'Nakhon Si Thammarat': 'south', 'Trang': 'south', 'Phatthalung': 'south', 'Satun': 'south', 'Songkhla': 'south', 'Pattani': 'south', 'Yala': 'south', 'Narathiwat': 'south'
+    };
+
+    const NORMALIZE_PROVINCE: Record<string, string> = {
+      'กรุงเทพมหานคร': 'Bangkok Metropolis', 'กรุงเทพฯ': 'Bangkok Metropolis', 'Bangkok': 'Bangkok Metropolis',
+      'นนทบุรี': 'Nonthaburi', 'ปทุมธานี': 'Pathum Thani', 'สมุทรปราการ': 'Samut Prakan', 'สมุทรสาคร': 'Samut Sakhon', 'นครปฐม': 'Nakhon Pathom',
+      'เชียงใหม่': 'Chiang Mai', 'เชียงราย': 'Chiang Rai', 'ลำปาง': 'Lampang', 'ลำพูน': 'Lamphun', 'แม่ฮ่องสอน': 'Mae Hong Son', 'น่าน': 'Nan', 'พะเยา': 'Phayao', 'แพร่': 'Phrae', 'อุตรดิตถ์': 'Uttaradit', 'ตาก': 'Tak', 'สุโขทัย': 'Sukhothai', 'พิษณุโลก': 'Phitsanulok', 'พิจิตร': 'Phichit', 'กำแพงเพชร': 'Kamphaeng Phet', 'เพชรบูรณ์': 'Phetchabun', 'นครสวรรค์': 'Nakhon Sawan', 'อุทัยธานี': 'Uthai Thani',
+      'นครราชสีมา': 'Nakhon Ratchasima', 'ขอนแก่น': 'Khon Kaen', 'อุดรธานี': 'Udon Thani', 'อุบลราชธานี': 'Ubon Ratchathani', 'บุรีรัมย์': 'Buri Ram', 'สุรินทร์': 'Surin', 'ศรีสะเกษ': 'Si Sa Ket', 'ร้อยเอ็ด': 'Roi Et', 'ชัยภูมิ': 'Chaiyaphum', 'สกลนคร': 'Sakon Nakhon', 'กาฬสินธุ์': 'Kalasin', 'มหาสารคาม': 'Maha Sarakham', 'หนองคาย': 'Nong Khai', 'เลย': 'Loei', 'ยโสธร': 'Yasothon', 'มุกดาหาร': 'Mukdahan', 'บึงกาฬ': 'Bueng Kan', 'อำนาจเจริญ': 'Amnat Charoen', 'หนองบัวลำภู': 'Nong Bua Lam Phu', 'นครพนม': 'Nakhon Phanom',
+      'พระนครศรีอยุธยา': 'Phra Nakhon Si Ayutthaya', 'สระบุรี': 'Saraburi', 'ลพบุรี': 'Lop Buri', 'สิงห์บุรี': 'Sing Buri', 'ชัยนาท': 'Chai Nat', 'อ่างทอง': 'Ang Thong', 'สุพรรณบุรี': 'Suphan Buri', 'กาญจนบุรี': 'Kanchanaburi', 'ราชบุรี': 'Ratchaburi', 'สมุทรสงคราม': 'Samut Songkhram', 'เพชรบุรี': 'Phetchaburi', 'ประจวบคีรีขันธ์': 'Prachuap Khiri Khan', 'นครนายก': 'Nakhon Nayok', 'ปราจีนบุรี': 'Prachin Buri', 'สระแก้ว': 'Sa Kaeo', 'ฉะเชิงเทรา': 'Chachoengsao', 'ชลบุรี': 'Chon Buri', 'ระยอง': 'Rayong', 'จันทบุรี': 'Chanthaburi', 'ตราด': 'Trat',
+      'ชุมพร': 'Chumphon', 'ระนอง': 'Ranong', 'สุราษฎร์ธานี': 'Surat Thani', 'พังงา': 'Phangnga', 'ภูเก็ต': 'Phuket', 'กระบี่': 'Krabi', 'นครศรีธรรมราช': 'Nakhon Si Thammarat', 'ตรัง': 'Trang', 'พัทลุง': 'Phatthalung', 'สตูล': 'Satun', 'สงขลา': 'Songkhla', 'ปัตตานี': 'Pattani', 'ยะลา': 'Yala', 'นราธิวาส': 'Narathiwat'
+    };
+
     const geoDistribution: Record<string, { id: string, count: number, name_th: string, name_en: string, top_unis: string[] }> = {
       'bkk': { id: 'bkk', count: 0, name_th: 'กรุงเทพฯ และปริมณฑล', name_en: 'Bangkok & Metropolitan', top_unis: [] },
       'north': { id: 'north', count: 0, name_th: 'ภาคเหนือ', name_en: 'Northern Thailand', top_unis: [] },
@@ -522,41 +543,59 @@ app.get('/api/stats', async (c) => {
       'intl': { id: 'intl', count: 0, name_th: 'ต่างประเทศ (นานาชาติ)', name_en: 'International / Overseas', top_unis: [] }
     };
 
+    const provinceDistribution: Record<string, number> = {};
+
     applicants.forEach((row: any) => {
       const u = (row.university || '').toLowerCase();
       const c = (row.country || '').toLowerCase();
       const n = (row.nationality || '').toLowerCase();
+      let prov = (row.province || '').trim();
 
-      if (u.includes('melbourne') || u.includes('british columbia') || u.includes('ubc') || u.includes('ucla') || u.includes('california') || u.includes('sydney') || u.includes('oxford') || (c && c !== 'thailand' && c !== 'thai' && c !== 'th') || (n && n !== 'thai' && n !== 'th')) {
-        geoDistribution['intl'].count++;
-        if (row.university && !geoDistribution['intl'].top_unis.includes(row.university) && geoDistribution['intl'].top_unis.length < 3) {
-          geoDistribution['intl'].top_unis.push(row.university);
-        }
-      } else if (u.includes('chiang mai') || u.includes('cmu') || u.includes('mae fah') || u.includes('naresuan')) {
-        geoDistribution['north'].count++;
-        if (row.university && !geoDistribution['north'].top_unis.includes(row.university) && geoDistribution['north'].top_unis.length < 3) {
-          geoDistribution['north'].top_unis.push(row.university);
-        }
-      } else if (u.includes('songkla') || u.includes('psu') || u.includes('walailak') || u.includes('ruts')) {
-        geoDistribution['south'].count++;
-        if (row.university && !geoDistribution['south'].top_unis.includes(row.university) && geoDistribution['south'].top_unis.length < 3) {
-          geoDistribution['south'].top_unis.push(row.university);
-        }
-      } else if (u.includes('khon kaen') || u.includes('kku') || u.includes('suranaree') || u.includes('sut') || u.includes('ubon')) {
-        geoDistribution['northeast'].count++;
-        if (row.university && !geoDistribution['northeast'].top_unis.includes(row.university) && geoDistribution['northeast'].top_unis.length < 3) {
-          geoDistribution['northeast'].top_unis.push(row.university);
-        }
-      } else if (u.includes('burapha') || u.includes('silpakorn')) {
-        geoDistribution['central'].count++;
-        if (row.university && !geoDistribution['central'].top_unis.includes(row.university) && geoDistribution['central'].top_unis.length < 3) {
-          geoDistribution['central'].top_unis.push(row.university);
-        }
+      prov = NORMALIZE_PROVINCE[prov] || prov;
+
+      const isIntl = (c && c !== 'thailand' && c !== 'thai' && c !== 'th') || 
+                     (n && n !== 'thai' && n !== 'th') ||
+                     u.includes('melbourne') || u.includes('british columbia') || u.includes('ubc') || u.includes('ucla') || u.includes('california') || u.includes('sydney') || u.includes('oxford');
+
+      let regionId = 'bkk';
+
+      if (isIntl) {
+        regionId = 'intl';
+      } else if (prov && PROVINCE_TO_REGION[prov]) {
+        regionId = PROVINCE_TO_REGION[prov];
+        provinceDistribution[prov] = (provinceDistribution[prov] || 0) + 1;
       } else {
-        geoDistribution['bkk'].count++;
-        if (row.university && !geoDistribution['bkk'].top_unis.includes(row.university) && geoDistribution['bkk'].top_unis.length < 3) {
-          geoDistribution['bkk'].top_unis.push(row.university);
+        // Fallback mapping for existing records without province
+        if (u.includes('songkla') || u.includes('psu')) {
+          regionId = 'south';
+          provinceDistribution['Songkhla'] = (provinceDistribution['Songkhla'] || 0) + 1;
+        } else if (u.includes('ruts') || u.includes('walailak')) {
+          regionId = 'south';
+          provinceDistribution['Nakhon Si Thammarat'] = (provinceDistribution['Nakhon Si Thammarat'] || 0) + 1;
+        } else if (u.includes('chiang mai') || u.includes('cmu')) {
+          regionId = 'north';
+          provinceDistribution['Chiang Mai'] = (provinceDistribution['Chiang Mai'] || 0) + 1;
+        } else if (u.includes('mae fah')) {
+          regionId = 'north';
+          provinceDistribution['Chiang Rai'] = (provinceDistribution['Chiang Rai'] || 0) + 1;
+        } else if (u.includes('naresuan')) {
+          regionId = 'north';
+          provinceDistribution['Phitsanulok'] = (provinceDistribution['Phitsanulok'] || 0) + 1;
+        } else if (u.includes('khon kaen') || u.includes('kku') || u.includes('suranaree') || u.includes('sut') || u.includes('ubon')) {
+          regionId = 'northeast';
+          provinceDistribution['Khon Kaen'] = (provinceDistribution['Khon Kaen'] || 0) + 1;
+        } else if (u.includes('burapha') || u.includes('silpakorn')) {
+          regionId = 'central';
+          provinceDistribution['Chon Buri'] = (provinceDistribution['Chon Buri'] || 0) + 1;
+        } else {
+          regionId = 'bkk';
+          provinceDistribution['Bangkok Metropolis'] = (provinceDistribution['Bangkok Metropolis'] || 0) + 1;
         }
+      }
+
+      geoDistribution[regionId].count++;
+      if (row.university && !geoDistribution[regionId].top_unis.includes(row.university) && geoDistribution[regionId].top_unis.length < 3) {
+        geoDistribution[regionId].top_unis.push(row.university);
       }
     });
 
@@ -680,6 +719,7 @@ app.get('/api/stats', async (c) => {
       utm_sources: utmSources,
       top_universities: topUniversities,
       geo_distribution: geoDistribution,
+      province_distribution: provinceDistribution,
       readiness,
       top_factors: finalTopFactors,
       cohort_trend: cohortTrend,
@@ -704,7 +744,7 @@ app.get('/api/applicants', async (c) => {
   try {
     const list = await sql`
       SELECT 
-        id, email, name, phone, nationality, country, university, major,
+        id, email, name, phone, nationality, country, province, university, major,
         stage1_completed, stage2_completed, stage3_completed,
         s1_apply_intent, s1_req_readiness, utm_source,
         s2_attend_mode, s2_session_choice, s2_attended,

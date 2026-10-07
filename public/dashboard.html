@@ -1214,15 +1214,22 @@
     let rawGeoJsonData = null;
     let provinceLayers = {};
 
-    function showHoverCard(e, pName, thName, rId, rInfo, pct) {
+    function showHoverCard(e, pName, thName, rId, rInfo, pCount, total) {
       const hoverCard = document.getElementById('map-hover-card');
       if (!hoverCard) return;
       const bEl = document.getElementById('hc-badge');
-      if (bEl) bEl.innerText = rInfo.name_th || 'ภูมิภาค';
+      if (bEl) bEl.innerText = `${rInfo.name_th || 'ภูมิภาค'} (รวมทั้งภาค ${rInfo.count || 0} คน)`;
       const tEl = document.getElementById('hc-title');
       if (tEl) tEl.innerText = `${thName} (${pName})`;
       const cEl = document.getElementById('hc-count');
-      if (cEl) cEl.innerText = `${rInfo.count} คน (${pct}%)`;
+      if (cEl) {
+        if (pCount > 0) {
+          const pPct = total > 0 ? ((pCount / total) * 100).toFixed(1) : 0;
+          cEl.innerHTML = `<span style="color: var(--primary); font-weight: 700;">${pCount} คน</span> (${pPct}% ของผู้สมัครทั้งหมด)`;
+        } else {
+          cEl.innerHTML = `<span style="color: #64748b;">0 คน (ยังไม่มีผู้สมัคร)</span>`;
+        }
+      }
 
       hoverCard.style.display = 'block';
       positionHoverCard(e);
@@ -1297,32 +1304,46 @@
 
       const total = globalStats?.total || 202;
       const geoDist = globalStats?.geo_distribution || {};
+      const provDist = globalStats?.province_distribution || {};
 
       geojsonLayer = L.geoJSON(rawGeoJsonData, {
         style: function(feature) {
           const pName = feature.properties?.name;
           const rId = PROVINCE_TO_REGION[pName] || 'central';
           const rInfo = geoDist[rId] || { count: 0 };
-          const hasData = (rInfo.count || 0) > 0;
+          const pCount = provDist[pName] || 0;
 
-          // Provinces with NO data -> muted grey, non-clickable
-          if (!hasData) {
+          // If this specific province has applicants -> vibrant regional color
+          if (pCount > 0) {
+            const regColor = REGION_COLORS[rId]?.fill || '#64748b';
             return {
-              fillColor: '#cbd5e1',
-              weight: 0.8,
-              opacity: 0.6,
+              fillColor: regColor,
+              weight: 1.2,
+              opacity: 0.95,
               color: '#ffffff',
-              fillOpacity: 0.45
+              fillOpacity: 0.85
             };
           }
 
-          const regColor = REGION_COLORS[rId]?.fill || '#64748b';
+          // If region has applicants but this province has 0 -> subtle tint so users can still see regional grouping
+          if ((rInfo.count || 0) > 0) {
+            const regColor = REGION_COLORS[rId]?.fill || '#cbd5e1';
+            return {
+              fillColor: regColor,
+              weight: 0.6,
+              opacity: 0.5,
+              color: '#ffffff',
+              fillOpacity: 0.22
+            };
+          }
+
+          // Regions with 0 data -> muted grey
           return {
-            fillColor: regColor,
-            weight: 1.2,
-            opacity: 0.95,
+            fillColor: '#cbd5e1',
+            weight: 0.6,
+            opacity: 0.5,
             color: '#ffffff',
-            fillOpacity: 0.75
+            fillOpacity: 0.35
           };
         },
         onEachFeature: function(feature, layer) {
@@ -1330,18 +1351,10 @@
           const thName = PROVINCE_TH_NAMES[pName] || pName;
           const rId = PROVINCE_TO_REGION[pName] || 'central';
           const rInfo = geoDist[rId] || { name_th: 'ภูมิภาค', name_en: 'Region', count: 0, top_unis: [] };
-          const hasData = (rInfo.count || 0) > 0;
+          const pCount = provDist[pName] || 0;
 
           if (!provinceLayers[rId]) provinceLayers[rId] = [];
           provinceLayers[rId].push(layer);
-
-          // If no applicant data for this province/region, disable interactivity completely
-          if (!hasData) {
-            layer.options.interactive = false;
-            return;
-          }
-
-          const pct = total > 0 ? ((rInfo.count / total) * 100).toFixed(1) : 0;
 
           layer.on({
             mouseover: function(e) {
@@ -1349,10 +1362,10 @@
               l.setStyle({
                 weight: 2.2,
                 color: '#a6192e',
-                fillOpacity: 0.95
+                fillOpacity: pCount > 0 ? 0.95 : 0.5
               });
               l.bringToFront();
-              showHoverCard(e, pName, thName, rId, rInfo, pct);
+              showHoverCard(e, pName, thName, rId, rInfo, pCount, total);
             },
             mousemove: function(e) {
               positionHoverCard(e);
