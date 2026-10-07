@@ -80,7 +80,7 @@ const GROUP3_FACTORS_TH = [
 let currentLang = 'en';
 try {
   currentLang = localStorage.getItem('portal_lang') || 'en';
-} catch (e) {}
+} catch (e) { }
 
 const I18N = {
   en: {
@@ -121,7 +121,7 @@ const I18N = {
 
     f1_intro_tag: "Lead Capture",
     f1_intro_title: "The CU-MEDi Applications for 2027",
-    f1_intro_desc: "Sign up to get updates on the 2027 admission round. Learn more at <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a>. <i>Remark: this portal is not an official application process, but a reminder to ensure requirements are complete.</i>",
+    f1_intro_desc: "Sign up to get updates on the 2027 admission round. Learn more at <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a>.",
     lbl_email: "Email address",
     lbl_fullname: "Full Name",
     lbl_phone: "Phone Number",
@@ -160,7 +160,7 @@ const I18N = {
 
     f2_intro_tag: "Event Registration",
     f2_intro_title: "Pre-registration for CU-MEDi Open House",
-    f2_intro_desc: "Pre-register for the Open House · Room 1209, Fl.12 Bhumisiri Mangkhalanusorn Bldg. & Live via MDCU Facebook · <i>Limited Onsite seats.</i>",
+    f2_intro_desc: "",
     lbl_major: "Major / Area of Study",
     lbl_recipient_group: "You are:",
     recipient_applicant: "Prospective Applicant",
@@ -192,7 +192,7 @@ const I18N = {
 
     f3_intro_tag: "Stage 03 · Research & Insight",
     f3_intro_title: "CU-MEDi Applicant Survey",
-    f3_intro_desc: "A questionnaire about medical school applications (~3–5 min). Participation will not affect your application status. Data will be used to enhance the curriculum and faculty.",
+    f3_intro_desc: "A questionnaire about medical school applications. Participation will not affect your application status. Data will be used to enhance the curriculum and faculty.",
     lbl_applied_status: "Have you applied to CU-MEDi? *",
     lbl_gender_age: "Gender / Age",
     lbl_region: "Region of Citizenship",
@@ -261,7 +261,7 @@ const I18N = {
 
     f1_intro_tag: "ข้อมูลผู้สนใจ",
     f1_intro_title: "การเปิดรับสมัคร CU-MEDi ประจำปีการศึกษา 2027",
-    f1_intro_desc: "ลงทะเบียนเพื่อรับข่าวสารและอัปเดตการรับสมัครรอบปี 2027 ศึกษารายละเอียดเพิ่มเติมได้ที่ <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a> <i>หมายเหตุ: ระบบนี้มิใช่การสมัครอย่างเป็นทางการ แต่เป็นการติดตามเตรียมความพร้อมคุณสมบัติของผู้สมัคร</i>",
+    f1_intro_desc: "ลงทะเบียนเพื่อรับข่าวสารและอัปเดตการรับสมัครรอบปี 2027 ศึกษารายละเอียดเพิ่มเติมได้ที่ <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a>",
     lbl_email: "ที่อยู่อีเมล",
     lbl_fullname: "ชื่อ - นามสกุล",
     lbl_phone: "เบอร์โทรศัพท์มือถือ",
@@ -300,7 +300,7 @@ const I18N = {
 
     f2_intro_tag: "ลงทะเบียนกิจกรรม",
     f2_intro_title: "ลงทะเบียนล่วงหน้าเข้าร่วมงาน CU-MEDi Open House",
-    f2_intro_desc: "ลงทะเบียนเข้าร่วมงาน ณ ห้อง 1209 ชั้น 12 อาคารภูมิสิริมังคลานุสรณ์ รพ.จุฬาฯ และรับชมถ่ายทอดสดผ่าน Facebook Live MDCU · <i>ที่นั่ง Onsite มีจำนวนจำกัด</i>",
+    f2_intro_desc: "",
     lbl_major: "สาขาวิชา / สาขาที่กำลังศึกษา",
     lbl_recipient_group: "ท่านคือ:",
     recipient_applicant: "ผู้สนใจสมัครเข้าศึกษา",
@@ -332,7 +332,7 @@ const I18N = {
 
     f3_intro_tag: "แบบสำรวจ",
     f3_intro_title: "แบบสำรวจความคิดเห็นผู้สมัคร CU-MEDi",
-    f3_intro_desc: "แบบสอบถามเกี่ยวกับการเลือกสมัครเข้าศึกษาหลักสูตรแพทยศาสตรบัณฑิต (~3–5 นาที) การตอบแบบสำรวจไม่มีผลต่อการคัดเลือก ข้อมูลจะนำไปพัฒนาหลักสูตรและการเรียนการสอน",
+    f3_intro_desc: "แบบสอบถามเกี่ยวกับการเลือกสมัครเข้าศึกษาหลักสูตรแพทยศาสตรบัณฑิต การตอบแบบสำรวจไม่มีผลต่อการคัดเลือก ข้อมูลจะนำไปพัฒนาหลักสูตรและการเรียนการสอน",
     lbl_applied_status: "ท่านเคยยื่นใบสมัคร CU-MEDi แล้วหรือไม่? *",
     lbl_gender_age: "เพศ / อายุ",
     lbl_region: "ภูมิภาคของสัญชาติ",
@@ -437,7 +437,7 @@ function renderFactors() {
   renderList(g3, 'group3-factors', 'g3');
 }
 
-window.selectFactor = function(key, val, el) {
+window.selectFactor = function (key, val, el) {
   factorRatings[key] = val;
   const parent = el.closest('.scale-options');
   parent.querySelectorAll('.scale-btn').forEach(btn => btn.classList.remove('active'));
@@ -648,7 +648,7 @@ function setLanguage(lang) {
   currentLang = lang;
   try {
     localStorage.setItem('portal_lang', lang);
-  } catch (e) {}
+  } catch (e) { }
 
   const btnEn = document.getElementById('btn-lang-en');
   const btnTh = document.getElementById('btn-lang-th');
@@ -931,7 +931,7 @@ function showActiveStep(stepNum) {
 }
 
 // Accordion toggle to review or re-edit completed steps
-window.toggleReviewStep = function(stepNum) {
+window.toggleReviewStep = function (stepNum) {
   const formCard = document.getElementById(`form-stage-${stepNum}`);
   const btnToggle = document.getElementById(`btn-toggle-step${stepNum}`);
   if (!formCard) return;
@@ -955,11 +955,11 @@ window.toggleReviewStep = function(stepNum) {
   }
 };
 
-window.navigateToStep = function(stepNum) {
+window.navigateToStep = function (stepNum) {
   if (stepNum > currentStage) return;
-  const canGo = (stepNum === 1) || 
-                (stepNum === 2 && verifiedApplicant?.stage1_completed) ||
-                (stepNum === 3 && (verifiedApplicant?.stage2_completed || verifiedApplicant?.stage1_completed));
+  const canGo = (stepNum === 1) ||
+    (stepNum === 2 && verifiedApplicant?.stage1_completed) ||
+    (stepNum === 3 && (verifiedApplicant?.stage2_completed || verifiedApplicant?.stage1_completed));
   if (canGo) {
     showActiveStep(stepNum);
   } else {
@@ -967,7 +967,7 @@ window.navigateToStep = function(stepNum) {
   }
 };
 
-window.skipToStep3 = function() {
+window.skipToStep3 = function () {
   showToast('Skipped Open House. Proceeding to Survey...');
   showActiveStep(3);
 };
@@ -1004,7 +1004,7 @@ function prefillData(prefill) {
     if (prefill.req_readiness) {
       let r = prefill.req_readiness;
       if (typeof r === 'string') {
-        try { r = JSON.parse(r); } catch(e){}
+        try { r = JSON.parse(r); } catch (e) { }
       }
       if (r) {
         if (r.mcat) {
@@ -1215,16 +1215,16 @@ async function checkFormEmail(stageNum) {
       if (isAlreadyDone) {
         if (statusBanner) {
           statusBanner.className = 'email-status-banner already-done';
-          statusBanner.innerHTML = `<span>📌 ${currentLang === 'th' 
-            ? `คุณเคยส่งฟอร์มนี้เรียบร้อยแล้ว (${email}) หากต้องการแก้ไขข้อมูล สามารถปรับปรุงด้านล่างแล้วกดส่งอีกครั้งได้ครับ` 
+          statusBanner.innerHTML = `<span>📌 ${currentLang === 'th'
+            ? `คุณเคยส่งฟอร์มนี้เรียบร้อยแล้ว (${email}) หากต้องการแก้ไขข้อมูล สามารถปรับปรุงด้านล่างแล้วกดส่งอีกครั้งได้ครับ`
             : `You have previously submitted this stage (${email}). You can review or update the details below and submit again.`}</span>`;
         }
         showToast(currentLang === 'th' ? 'พบข้อมูลเดิมที่เคยส่งไว้เรียบร้อยแล้ว' : 'Found existing submission record.');
       } else {
         if (statusBanner) {
           statusBanner.className = 'email-status-banner success';
-          statusBanner.innerHTML = `<span>✨ ${currentLang === 'th' 
-            ? `ยินดีต้อนรับกลับมา <b>${applicantName || email}</b>! ระบบดึงข้อมูลชื่อ เบอร์โทร และประวัติเดิมให้เรียบร้อยแล้ว` 
+          statusBanner.innerHTML = `<span>✨ ${currentLang === 'th'
+            ? `ยินดีต้อนรับกลับมา <b>${applicantName || email}</b>! ระบบดึงข้อมูลชื่อ เบอร์โทร และประวัติเดิมให้เรียบร้อยแล้ว`
             : `Welcome back <b>${applicantName || email}</b>! Your profile details have been auto-filled.`}</span>`;
         }
         showToast(currentLang === 'th' ? `ยินดีต้อนรับกลับมา ${applicantName || email}! ดึงข้อมูลเดิมแล้ว` : `Welcome back, ${applicantName || email}! Profile auto-filled.`);
@@ -1233,8 +1233,8 @@ async function checkFormEmail(stageNum) {
       // New applicant
       if (statusBanner) {
         statusBanner.className = 'email-status-banner new-user';
-        statusBanner.innerHTML = `<span>✨ ${currentLang === 'th' 
-          ? `บันทึกอีเมลเรียบร้อยแล้ว ท่านสามารถกรอกข้อมูลด้านล่างต่อได้เลยครับ` 
+        statusBanner.innerHTML = `<span>✨ ${currentLang === 'th'
+          ? `บันทึกอีเมลเรียบร้อยแล้ว ท่านสามารถกรอกข้อมูลด้านล่างต่อได้เลยครับ`
           : `Email confirmed! Please complete the form details below.`}</span>`;
       }
     }
