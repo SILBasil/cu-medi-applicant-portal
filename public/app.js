@@ -728,6 +728,182 @@ function setComboboxProvince(stageNum, provinceVal) {
   }
 }
 
+// ========================================================
+// Reusable Custom Select Dropdown Component
+// Transforms standard <select class="form-select"> elements
+// into a polished, accessible custom dropdown component
+// matching the Country & Province combobox aesthetics.
+// ========================================================
+function setupAllCustomSelects() {
+  document.querySelectorAll('select.form-select').forEach(sel => {
+    enhanceSelectToCustom(sel);
+  });
+}
+
+function enhanceSelectToCustom(sel) {
+  if (!sel) return;
+
+  if (sel._customWrapper) {
+    refreshCustomSelect(sel);
+    return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'custom-select-component';
+  if (sel.id) wrapper.id = 'custom-wrap-' + sel.id;
+
+  sel.parentNode.insertBefore(wrapper, sel);
+  wrapper.appendChild(sel);
+
+  sel.style.display = 'none';
+
+  const trigger = document.createElement('button');
+  trigger.type = 'button';
+  trigger.className = 'custom-select-trigger';
+  trigger.setAttribute('aria-haspopup', 'listbox');
+  trigger.setAttribute('aria-expanded', 'false');
+
+  const labelSpan = document.createElement('span');
+  labelSpan.className = 'custom-select-label';
+
+  const arrowSpan = document.createElement('span');
+  arrowSpan.className = 'combobox-arrow';
+  arrowSpan.textContent = '▾';
+
+  trigger.appendChild(labelSpan);
+  trigger.appendChild(arrowSpan);
+  wrapper.appendChild(trigger);
+
+  const menu = document.createElement('div');
+  menu.className = 'custom-select-menu';
+  menu.style.display = 'none';
+  wrapper.appendChild(menu);
+
+  sel._customWrapper = wrapper;
+  sel._customTrigger = trigger;
+  sel._customLabel = labelSpan;
+  sel._customMenu = menu;
+  sel.refreshCustomSelect = () => refreshCustomSelect(sel);
+
+  trigger.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const isOpen = wrapper.classList.contains('open');
+    closeAllCustomSelects();
+    if (!isOpen) {
+      openCustomSelect(sel);
+    }
+  });
+
+  refreshCustomSelect(sel);
+
+  sel.addEventListener('change', () => {
+    updateCustomSelectLabel(sel);
+  });
+}
+
+function openCustomSelect(sel) {
+  if (!sel || !sel._customWrapper) return;
+  sel._customWrapper.classList.add('open');
+  sel._customMenu.style.display = 'block';
+  sel._customTrigger.setAttribute('aria-expanded', 'true');
+
+  const rect = sel._customMenu.getBoundingClientRect();
+  if (rect.bottom > window.innerHeight && rect.top > 250) {
+    sel._customMenu.style.top = 'auto';
+    sel._customMenu.style.bottom = 'calc(100% + 5px)';
+  } else {
+    sel._customMenu.style.top = 'calc(100% + 5px)';
+    sel._customMenu.style.bottom = 'auto';
+  }
+}
+
+function closeAllCustomSelects() {
+  document.querySelectorAll('.custom-select-component.open').forEach(w => {
+    w.classList.remove('open');
+    const m = w.querySelector('.custom-select-menu');
+    if (m) m.style.display = 'none';
+    const t = w.querySelector('.custom-select-trigger');
+    if (t) t.setAttribute('aria-expanded', 'false');
+  });
+}
+
+function updateCustomSelectLabel(sel) {
+  if (!sel || !sel._customLabel) return;
+  const selectedOpt = sel.selectedOptions && sel.selectedOptions[0];
+  const placeholderText = sel.options[0]?.text || '-- Select --';
+
+  if (selectedOpt && selectedOpt.value !== "") {
+    sel._customLabel.textContent = selectedOpt.text;
+    sel._customLabel.classList.remove('is-placeholder');
+  } else {
+    sel._customLabel.textContent = placeholderText;
+    sel._customLabel.classList.add('is-placeholder');
+  }
+
+  if (sel._customMenu) {
+    sel._customMenu.querySelectorAll('.custom-select-option').forEach(optEl => {
+      const isSel = optEl.getAttribute('data-value') === sel.value;
+      optEl.classList.toggle('selected', isSel);
+      const checkEl = optEl.querySelector('.custom-select-check');
+      if (checkEl) checkEl.style.display = (isSel && sel.value !== "") ? 'inline-block' : 'none';
+    });
+  }
+}
+
+function refreshCustomSelect(sel) {
+  if (!sel || !sel._customMenu) return;
+  const menu = sel._customMenu;
+  menu.innerHTML = '';
+
+  Array.from(sel.options).forEach((opt, idx) => {
+    if (opt.value === "" && idx === 0) {
+      return;
+    }
+
+    const item = document.createElement('div');
+    const isSelected = opt.value === sel.value;
+    item.className = 'custom-select-option' + (isSelected ? ' selected' : '');
+    item.setAttribute('data-value', opt.value);
+
+    const textSpan = document.createElement('span');
+    textSpan.className = 'custom-select-opt-text';
+    textSpan.textContent = opt.text;
+
+    const checkSpan = document.createElement('span');
+    checkSpan.className = 'custom-select-check';
+    checkSpan.textContent = '✓';
+    checkSpan.style.display = (isSelected && opt.value !== "") ? 'inline-block' : 'none';
+
+    item.appendChild(textSpan);
+    item.appendChild(checkSpan);
+
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      sel.value = opt.value;
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      sel.dispatchEvent(new Event('input', { bubbles: true }));
+      closeAllCustomSelects();
+    });
+
+    menu.appendChild(item);
+  });
+
+  updateCustomSelectLabel(sel);
+}
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.custom-select-component')) {
+    closeAllCustomSelects();
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    closeAllCustomSelects();
+  }
+});
+
 // Determine active stage from URL Path or Query parameter
 function detectStage() {
   const path = window.location.pathname.toLowerCase();
@@ -808,16 +984,17 @@ function setupStageHeader() {
   const gateTitle = document.getElementById('gate-title');
   const gateDesc = document.getElementById('gate-desc');
   const t = I18N[currentLang] || I18N.en;
+  const currentStep = activeStep || currentStage || 1;
 
-  if (currentStage === 1) {
+  if (currentStep === 1) {
     if (title) title.textContent = t.stage1_header_title;
     if (gateTitle) gateTitle.textContent = t.gate_stage1_title;
     if (gateDesc) gateDesc.textContent = t.gate_stage1_desc;
-  } else if (currentStage === 2) {
+  } else if (currentStep === 2) {
     if (title) title.textContent = t.stage2_header_title;
     if (gateTitle) gateTitle.textContent = t.gate_stage2_title;
     if (gateDesc) gateDesc.textContent = t.gate_stage2_desc;
-  } else if (currentStage === 3) {
+  } else if (currentStep === 3) {
     if (title) title.textContent = t.stage3_header_title;
     if (gateTitle) gateTitle.textContent = t.gate_stage3_title;
     if (gateDesc) gateDesc.textContent = t.gate_stage3_desc;
@@ -865,15 +1042,13 @@ const DROPDOWN_OPTIONS = {
       { value: "", text: "-- Select Status --" },
       { value: "Applied", text: "Applied" },
       { value: "Preparing", text: "Preparing to Apply" },
-      { value: "Not yet", text: "Not yet" },
-      { value: "Decided not to apply", text: "Decided not to apply" }
+      { value: "Not yet", text: "Not yet" }
     ],
     th: [
       { value: "", text: "-- สถานะการสมัคร --" },
       { value: "Applied", text: "ยื่นใบสมัครเรียบร้อยแล้ว (Applied)" },
       { value: "Preparing", text: "กำลังเตรียมตัวสมัคร (Preparing to Apply)" },
-      { value: "Not yet", text: "ยังไม่ได้สมัคร (Not yet)" },
-      { value: "Decided not to apply", text: "ตัดสินใจไม่สมัคร (Decided not to apply)" }
+      { value: "Not yet", text: "ยังไม่ได้สมัคร (Not yet)" }
     ]
   },
   'sel-f3-intake': {
@@ -985,21 +1160,12 @@ function updateDropdownTranslations(lang) {
   ['f3-dest-r1', 'f3-dest-r2', 'f3-dest-r3'].forEach(id => {
     updateSelect(id, DROPDOWN_OPTIONS['f3-dest-rank'][currentLangCode]);
   });
+
+  document.querySelectorAll('select.form-select').forEach(sel => {
+    if (sel.refreshCustomSelect) sel.refreshCustomSelect();
+  });
 }
 
-// Helper to sync Header Title with Active Form and Language
-function setupStageHeader() {
-  const headerTitle = document.getElementById('header-stage-title');
-  if (!headerTitle) return;
-  const t = I18N[currentLang] || I18N.en;
-  if (activeStep === 1) {
-    headerTitle.textContent = t.stage1_header_title;
-  } else if (activeStep === 2) {
-    headerTitle.textContent = t.stage2_header_title;
-  } else if (activeStep === 3) {
-    headerTitle.textContent = t.stage3_header_title;
-  }
-}
 
 // Language Switcher Function
 function setLanguage(lang) {
@@ -1431,6 +1597,10 @@ function prefillData(prefill) {
     }
   }
 
+  document.querySelectorAll('select.form-select').forEach(sel => {
+    if (sel._customLabel) updateCustomSelectLabel(sel);
+  });
+
   syncConditionalDisplay();
 }
 
@@ -1675,6 +1845,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Setup searchable country & province comboboxes
   setupCombobox(1);
   setupCombobox(2);
+
+  // Setup polished Custom Select dropdown components
+  setupAllCustomSelects();
 
   // ==========================================
   // Form 1 Submit (Stage 1: Lead)

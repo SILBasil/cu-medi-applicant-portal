@@ -630,7 +630,6 @@
                 <option value="Applied">Applied</option>
                 <option value="Preparing">Preparing to Apply</option>
                 <option value="Not yet">Not yet</option>
-                <option value="Decided not to apply">Decided not to apply</option>
               </select>
             </div>
           </div>
@@ -638,14 +637,18 @@
           <div class="form-grid-2">
             <div class="form-group">
               <label class="form-label" id="lbl-f3-gender">Gender / Age</label>
-              <div style="display: flex; gap: 8px;">
-                <select name="gender" class="form-select" id="sel-f3-gender">
-                  <option value="" selected disabled>-- Gender / เพศ --</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Prefer not to say</option>
-                </select>
-                <input type="number" name="age" class="form-input" placeholder="Age" min="15" max="60">
+              <div style="display: flex; gap: 8px; align-items: stretch;">
+                <div style="flex: 1.6; min-width: 0;">
+                  <select name="gender" class="form-select" id="sel-f3-gender">
+                    <option value="" selected disabled>-- Gender / เพศ --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Prefer not to say</option>
+                  </select>
+                </div>
+                <div style="flex: 1; min-width: 75px;">
+                  <input type="number" name="age" class="form-input" placeholder="Age" min="15" max="60" style="width: 100%; height: 100%;">
+                </div>
               </div>
             </div>
           </div>
@@ -691,8 +694,7 @@
           <div class="form-group">
             <label class="form-label" id="lbl-f3-dest-rank">Apart from Thailand, where do you wish to apply for medical
               school? (rank 1–3) <span class="req">*</span></label>
-            <div class="form-grid-3"
-              style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+            <div class="form-grid-3 dest-rank-grid">
               <div>
                 <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);" id="lbl-f3-dest-r1">First
                   rank *</label>

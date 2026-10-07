@@ -703,20 +703,24 @@ header {
 
 @media (max-width: 600px) {
   header {
-    padding: 0.6rem 0.75rem;
-    min-height: 56px;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    padding: 0.5rem 0.75rem !important;
+    min-height: 54px !important;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06) !important;
   }
   .header-container {
-    gap: 8px;
+    gap: 6px;
   }
   .logo-group {
-    gap: 8px;
+    gap: 6px;
     flex: 1;
     min-width: 0;
   }
   .brand-badge {
-    font-size: 0.85rem;
-    padding: 5px 8px;
+    font-size: 0.8rem;
+    padding: 4px 7px;
     border-radius: 6px;
     flex-shrink: 0;
     white-space: nowrap;
@@ -726,7 +730,7 @@ header {
     flex: 1;
   }
   .brand-text h1 {
-    font-size: 0.825rem;
+    font-size: 0.8rem;
     line-height: 1.25;
     word-break: break-word;
     display: -webkit-box;
@@ -744,14 +748,44 @@ header {
     padding: 2px;
   }
   .lang-btn {
-    min-width: 44px;
-    padding: 3px 6px;
-    font-size: 0.725rem;
+    min-width: 38px;
+    padding: 3px 5px;
+    font-size: 0.7rem;
+  }
+  #verified-user-pill {
+    max-width: 105px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    font-size: 0.7rem !important;
+    padding: 3px 6px !important;
   }
 
   .container {
-    padding: 0 0.5rem;
-    margin: 0.75rem auto;
+    padding: 0 0.5rem !important;
+    margin: 0.5rem auto 1.5rem auto !important;
+  }
+
+  .form-card {
+    padding: 1.25rem 0.875rem !important;
+    border-radius: 14px !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .form-group {
+    margin-bottom: 1.15rem;
+    scroll-margin-top: 76px;
+  }
+
+  .form-grid-3 {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .step-node-label {
+    font-size: 0.68rem !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
   }
 
   #verification-gate,
@@ -1063,6 +1097,7 @@ header {
     box-shadow: none !important;
     overflow: visible !important;
     margin-top: 10px;
+    scroll-margin-top: 76px;
   }
 
   .req-grid-table {
@@ -1078,21 +1113,22 @@ header {
   .req-grid-table tbody {
     display: flex !important;
     flex-direction: column !important;
-    gap: 14px !important;
+    gap: 12px !important;
     width: 100% !important;
   }
 
   .req-grid-table tbody tr {
-    display: flex !important;
-    flex-direction: column !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
     background: #ffffff !important;
     border: 1px solid var(--border) !important;
     border-radius: 12px !important;
-    padding: 14px !important;
+    padding: 12px 14px !important;
     box-shadow: var(--shadow-sm) !important;
-    gap: 8px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    scroll-margin-top: 76px;
   }
 
   .req-grid-table tbody tr:hover {
@@ -1100,35 +1136,43 @@ header {
   }
 
   .req-grid-table td:nth-child(1),
+  .req-grid-table td.req-title-cell {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    padding: 0 0 8px 0 !important;
+    border-bottom: 1px dashed var(--border) !important;
+    margin-bottom: 2px !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+
+  .req-grid-table td.req-option-cell,
   .req-grid-table td:nth-child(2),
   .req-grid-table td:nth-child(3),
   .req-grid-table td:nth-child(4) {
     width: 100% !important;
     padding: 0 !important;
-    text-align: left !important;
+    text-align: center !important;
     border: none !important;
-  }
-
-  .req-grid-table td.req-title-cell,
-  .req-grid-table td:first-child {
-    padding-bottom: 10px !important;
-    border-bottom: 1px dashed var(--border) !important;
-    margin-bottom: 4px;
   }
 
   .grid-cell-label {
     display: flex !important;
+    flex-direction: column !important;
     align-items: center !important;
-    gap: 12px !important;
+    justify-content: center !important;
+    text-align: center !important;
+    gap: 5px !important;
     width: 100% !important;
-    padding: 11px 14px !important;
+    padding: 8px 4px !important;
     border: 1.5px solid var(--border) !important;
     border-radius: 8px !important;
     background: var(--surface-subtle) !important;
     cursor: pointer !important;
     transition: all 0.15s ease !important;
     box-sizing: border-box !important;
-    min-height: 44px;
+    min-height: 52px !important;
   }
 
   .grid-cell-label:hover {
@@ -1144,23 +1188,38 @@ header {
 
   .grid-radio {
     margin: 0 !important;
-    width: 18px !important;
-    height: 18px !important;
+    width: 16px !important;
+    height: 16px !important;
     flex-shrink: 0 !important;
     display: inline-block !important;
   }
 
   .grid-opt-text {
-    display: inline-block !important;
-    font-size: 0.875rem !important;
+    display: block !important;
+    font-size: 0.775rem !important;
     font-weight: 600 !important;
     color: var(--navy) !important;
-    line-height: 1.3 !important;
+    line-height: 1.25 !important;
+    text-align: center !important;
   }
 
   .grid-cell-label:has(input:checked) .grid-opt-text {
     color: var(--primary) !important;
     font-weight: 700 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .req-grid-table tbody tr {
+    padding: 10px 8px !important;
+    gap: 6px !important;
+  }
+  .grid-cell-label {
+    padding: 6px 2px !important;
+    min-height: 48px !important;
+  }
+  .grid-opt-text {
+    font-size: 0.72rem !important;
   }
 }
 
@@ -1310,3 +1369,141 @@ header {
   text-align: center;
   font-style: italic;
 }
+
+/* ========================================================
+   Custom Select Dropdown Component
+   ======================================================== */
+.custom-select-component {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 0.925rem;
+  color: var(--navy);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  user-select: none;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.custom-select-trigger:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.custom-select-trigger:focus,
+.custom-select-component.open .custom-select-trigger {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(166, 25, 46, 0.12);
+  background: #ffffff;
+}
+
+.custom-select-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 8px;
+  font-weight: 500;
+}
+
+.custom-select-label.is-placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.custom-select-component .combobox-arrow {
+  position: static;
+  transform: none;
+  margin-left: 6px;
+  transition: transform 0.2s ease, color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.custom-select-component.open .combobox-arrow {
+  transform: rotate(180deg);
+  color: var(--primary);
+}
+
+.custom-select-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  z-index: 1060;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  animation: comboboxFadeIn 0.15s ease-out;
+}
+
+.custom-select-option {
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: background 0.12s ease, color 0.12s ease;
+  user-select: none;
+}
+
+.custom-select-option:hover,
+.custom-select-option.highlighted {
+  background: #f1f5f9;
+  color: var(--navy);
+}
+
+.custom-select-option.selected {
+  background: #fdf2f4;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.custom-select-option.is-placeholder {
+  color: #94a3b8;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.custom-select-check {
+  font-size: 0.825rem;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+/* Destination Medical School Rank Grid */
+.dest-rank-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .dest-rank-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
