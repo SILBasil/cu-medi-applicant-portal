@@ -81,6 +81,17 @@ async function seed() {
     const nationality = isEn ? (Math.random() < 0.5 ? "American" : "Singaporean") : "Thai";
     const country = isEn ? "International" : "Thailand";
 
+    let province = null;
+    if (!isEn) {
+      if (university.includes("Songkla") || university.includes("PSU")) province = "Songkhla";
+      else if (university.includes("Chiang Mai") || university.includes("CMU")) province = "Chiang Mai";
+      else if (university.includes("Kasetsart")) province = Math.random() < 0.7 ? "Bangkok Metropolis" : "Nakhon Pathom";
+      else if (university.includes("Mahidol")) province = Math.random() < 0.6 ? "Bangkok Metropolis" : "Nakhon Pathom";
+      else if (university.includes("Thammasat")) province = Math.random() < 0.7 ? "Pathum Thani" : "Bangkok Metropolis";
+      else if (university.includes("Chulalongkorn") || university.includes("KMUTT") || university.includes("KMITL")) province = "Bangkok Metropolis";
+      else province = getRandomItem(["Bangkok Metropolis", "Nonthaburi", "Chiang Mai", "Songkhla", "Khon Kaen", "Chon Buri", "Nakhon Si Thammarat"]);
+    }
+
     // Stage determinations
     // First 50: Stage 1 + 2 + 3
     // Next 50 (51-100): Stage 1 + 2
@@ -183,7 +194,7 @@ async function seed() {
 
     await sql`
       INSERT INTO applicants (
-        email, name, nationality, phone, country, university, major,
+        email, name, nationality, phone, country, province, university, major,
         stage1_completed, stage1_completed_at,
         stage2_completed, stage2_completed_at,
         stage3_completed, stage3_completed_at,
@@ -196,7 +207,7 @@ async function seed() {
         s3_decision_factors_30, s3_first_choice, s3_why_cumedi,
         created_at, updated_at
       ) VALUES (
-        ${email}, ${name}, ${nationality}, ${phone}, ${country}, ${university}, ${major},
+        ${email}, ${name}, ${nationality}, ${phone}, ${country}, ${province}, ${university}, ${major},
         ${hasStage1}, ${createdAt},
         ${hasStage2}, ${stage2At},
         ${hasStage3}, ${stage3At},
