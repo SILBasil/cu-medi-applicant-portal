@@ -160,7 +160,7 @@ const I18N = {
 
     f2_intro_tag: "Event Registration",
     f2_intro_title: "CU-MEDi Open House Registration",
-    f2_intro_desc: `<p style="margin-bottom: 0.75rem;">Thank you for your interest in the Chulalongkorn University International Medical Program (CU-MEDi). Please fill out the following information to pre-register for the upcoming open house. Limited seats are available for onsite participation.</p><a href="javascript:void(0)" onclick="openEventDetailsModal()" class="event-details-link">Event Details & Schedule →</a>`,
+    f2_intro_desc: `<p style="margin-bottom: 0.75rem;">Thank you for your interest in the Chulalongkorn University International Medical Program (CU-MEDi). Please fill out the following information to pre-register for the upcoming open house. Limited seats are available for onsite participation.</p><a href="javascript:void(0)" onclick="openEventDetailsModal()" class="event-details-link">Details</a>`,
     lbl_major: "Major / Area of Study",
     lbl_recipient_group: "You are:",
     recipient_applicant: "Prospective Applicant",
@@ -677,8 +677,8 @@ function setComboboxCountry(stageNum, countryVal) {
   if (!countryVal) return;
   const cSearch = document.getElementById(`f${stageNum}-country-search`);
   const cHidden = document.getElementById(`f${stageNum}-country`);
-  const item = COUNTRIES_DATASET.find(c => 
-    c.en.toLowerCase() === countryVal.toLowerCase() || 
+  const item = COUNTRIES_DATASET.find(c =>
+    c.en.toLowerCase() === countryVal.toLowerCase() ||
     c.th.toLowerCase() === countryVal.toLowerCase() ||
     (c.aliases && c.aliases.some(a => a.toLowerCase() === countryVal.toLowerCase()))
   );
@@ -715,8 +715,8 @@ function setComboboxProvince(stageNum, provinceVal) {
   if (!pHidden || !pSearch) return;
 
   pHidden.value = provinceVal;
-  const matched = THAI_PROVINCES_DATASET.find(p => 
-    p.en.toLowerCase() === provinceVal.toLowerCase() || 
+  const matched = THAI_PROVINCES_DATASET.find(p =>
+    p.en.toLowerCase() === provinceVal.toLowerCase() ||
     p.th.toLowerCase() === provinceVal.toLowerCase()
   );
 
