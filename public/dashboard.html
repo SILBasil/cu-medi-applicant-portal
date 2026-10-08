@@ -40,7 +40,7 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
     body {
       font-family: 'Plus Jakarta Sans', 'Sarabun', sans-serif;
       background-color: var(--bg);
@@ -48,6 +48,8 @@
       line-height: 1.5;
       padding-bottom: 60px;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      width: 100%;
     }
 
     .mono { font-family: 'JetBrains Mono', monospace; }
@@ -330,6 +332,9 @@
       gap: 1.25rem;
       margin-bottom: 1.5rem;
     }
+    .grid-2 > *, .grid-3 > *, .grid-map-split > * {
+      min-width: 0;
+    }
     @media (max-width: 1024px) {
       .grid-2, .grid-3, .grid-map-split {
         grid-template-columns: 1fr;
@@ -537,6 +542,7 @@
       position: relative;
       height: 250px;
       width: 100%;
+      min-width: 0;
     }
 
     /* Funnel Stages */
@@ -1244,9 +1250,16 @@
       if (hoverCard) hoverCard.style.display = 'none';
     }
 
+    function refitLeafletMap() {
+      if (!leafletMap) return;
+      leafletMap.invalidateSize();
+      const thailandBounds = L.latLngBounds([[5.6, 97.2], [20.5, 105.8]]);
+      leafletMap.fitBounds(thailandBounds, { padding: [10, 10], animate: false });
+    }
+
     function initLeafletMap() {
       if (leafletMap) {
-        leafletMap.invalidateSize();
+        refitLeafletMap();
         return;
       }
       const mapEl = document.getElementById('thailand-map');
@@ -1265,8 +1278,7 @@
       });
 
       // Fit bounds to Thailand borders snugly
-      const thailandBounds = L.latLngBounds([[5.6, 97.2], [20.5, 105.8]]);
-      leafletMap.fitBounds(thailandBounds, { padding: [10, 10] });
+      refitLeafletMap();
 
       leafletMap.on('mouseout', function() {
         hideHoverCard();
@@ -1278,6 +1290,7 @@
         .then(geoData => {
           rawGeoJsonData = geoData;
           renderGeoJsonLayer();
+          refitLeafletMap();
         })
         .catch(err => {
           console.error('Failed to load Thailand GeoJSON:', err);
@@ -1589,7 +1602,34 @@
       }
     }
 
-    document.addEventListener('DOMContentLoaded', () => loadExecutiveDashboard('all'));
+    // Automatic Responsive Resize Handling (No manual refresh needed)
+    let resizeTimer = null;
+    function onWindowOrContainerResize() {
+      refitLeafletMap();
+      Object.values(charts).forEach(chart => {
+        if (chart && typeof chart.resize === 'function') {
+          chart.resize();
+        }
+      });
+    }
+
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(onWindowOrContainerResize, 80);
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadExecutiveDashboard('all');
+
+      // ResizeObserver on Map Wrapper for immediate auto-refit whenever layout shifts
+      const mapWrapper = document.getElementById('map-wrapper-box');
+      if (mapWrapper && window.ResizeObserver) {
+        const ro = new ResizeObserver(() => {
+          onWindowOrContainerResize();
+        });
+        ro.observe(mapWrapper);
+      }
+    });
   </script>
 </body>
 </html>
