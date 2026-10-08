@@ -119,7 +119,7 @@ const I18N = {
     degree_sub: "Graduation status / Transcript",
 
     f1_intro_tag: "Lead Capture",
-    f1_intro_title: "The CU-MEDi Applications for 2027",
+    f1_intro_title: "CU-MEDI Registration Form",
     f1_intro_desc: `<p style="margin-bottom: 0.75rem;">Please sign up here to get updated information on the next admission round for the academic year 2027</p><p style="margin-bottom: 0.75rem;">To learn more about the Chulalongkorn University International Medical Program or CU-MEDi program, please visit <a href="https://cu-medi.md.chula.ac.th/" target="_blank" style="color: var(--primary); text-decoration: underline;">https://cu-medi.md.chula.ac.th/</a></p><p style="font-size: 0.875rem; color: var(--text-muted); font-style: italic;">Remark: This portal is not an official application process but a reminder for those who want to apply to ensure that all of the requirements are complete.</p>`,
     lbl_email: "Email address",
     lbl_fullname: "Full Name",
