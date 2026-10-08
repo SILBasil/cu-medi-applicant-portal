@@ -693,13 +693,13 @@
           <label for="filter-year" class="filter-label">รอบปีรับเข้า:</label>
           <select id="filter-year" class="filter-select" onchange="onYearFilterChange(this.value)">
             <option value="all" selected>ทุกรอบปี (All Years)</option>
-            <option value="2568">ปี 2568 (2025)</option>
-            <option value="2569">ปี 2569 (2026)</option>
-            <option value="2570">ปี 2570 (2027)</option>
-            <option value="2571">ปี 2571 (2028)</option>
-            <option value="2572">ปี 2572 (2029)</option>
-            <option value="2573">ปี 2573 (2030)</option>
-            <option value="2574">ปี 2574 (2031)</option>
+            <option value="2025">ปี 2025</option>
+            <option value="2026">ปี 2026</option>
+            <option value="2027">ปี 2027</option>
+            <option value="2028">ปี 2028</option>
+            <option value="2029">ปี 2029</option>
+            <option value="2030">ปี 2030</option>
+            <option value="2031">ปี 2031</option>
           </select>
         </div>
       </div>
@@ -714,20 +714,7 @@
         <h2>ภาพรวมสถิติการรับสมัคร (Admissions Intelligence)</h2>
         <p>ข้อมูลวิเคราะห์เชิงลึกสำหรับการวางแผนยุทธศาสตร์ คณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</p>
       </div>
-      <div class="exec-banner-stat">
-        <div class="stat-pill-box">
-          <div class="sub" id="banner-intent-label">ความตั้งใจยื่นรอบปี 2570</div>
-          <div class="num mono" id="banner-intent" style="color: var(--primary);">66.3%</div>
-        </div>
-        <div class="stat-pill-box">
-          <div class="sub">เลือกเป็นอันดับ 1 (First Choice)</div>
-          <div class="num mono" id="banner-equity">66.0%</div>
-        </div>
-        <div class="stat-pill-box">
-          <div class="sub">ผู้สนใจสะสมทั้งหมด</div>
-          <div class="num mono" id="banner-total">202</div>
-        </div>
-      </div>
+
     </section>
 
     <!-- 1. Top-Level Executive KPI Grid -->
@@ -745,9 +732,9 @@
       </div>
 
       <div class="kpi-card">
-        <div class="kpi-title">กลุ่มตั้งใจยื่นรอบปี 2027</div>
-        <div class="kpi-number mono" id="kpi-intent-count" style="color: var(--primary);">133</div>
-        <div class="kpi-desc">กลุ่มเป้าหมายหลักที่มีความตั้งใจยื่นในรอบนี้</div>
+        <div class="kpi-title" id="kpi-intent-title">ยอดรวมกลุ่มตั้งใจยื่น</div>
+        <div class="kpi-number mono" id="kpi-intent-count" style="color: var(--primary);">202</div>
+        <div class="kpi-desc" id="kpi-intent-desc">ผลรวมจำนวนผู้สนใจที่มีเป้าหมายยื่นทุกรอบปี</div>
       </div>
 
       <div class="kpi-card">
@@ -758,7 +745,8 @@
     </section>
 
     
-    <!-- 5-Year Candidate Pipeline Roadmap -->
+    <!-- 5-Year Candidate Pipeline Roadmap (คอมเมนต์ไว้ก่อน) -->
+    <!--
     <section class="card" style="margin-bottom: 1.5rem; padding: 1.25rem 1.5rem;">
       <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
         <div>
@@ -773,6 +761,7 @@
         <!-- Rendered dynamically -->
       </div>
     </section>
+    -->
 
     <!-- 2. Thailand Geographic Heatmap & Regional Feeder Breakdown -->
     <section class="card" style="margin-bottom: 1.5rem;">
@@ -836,7 +825,7 @@
         <div class="card-header">
           <div class="card-title">
             <h3>ช่องทางที่มาของผู้สมัคร (Acquisition Attribution)</h3>
-            <p>วิเคราะห์ช่องทางที่ดึงดูดผู้สมัครที่มีคุณภาพสูงสุด (UTM Source &amp; Referrals)</p>
+            <p>สัดส่วนผู้สมัครจำแนกตามช่องทางประชาสัมพันธ์และลิงก์ที่เข้าถึงฟอร์ม</p>
           </div>
         </div>
         <div class="chart-box">
@@ -1054,17 +1043,15 @@
 
       if (selectedYear !== 'all') {
         const parsed = parseInt(selectedYear, 10);
-        const yBE = parsed > 2400 ? parsed : parsed + 543;
         const yCE = parsed > 2400 ? parsed - 543 : parsed;
-        const yearLabel = `ปี ${yBE} (${yCE})`;
 
-        if (bannerIntentLabel) bannerIntentLabel.innerText = `ความตั้งใจยื่น ${yearLabel}`;
-        if (kpiIntentTitle) kpiIntentTitle.innerText = `กลุ่มเป้าหมาย ${yearLabel}`;
-        if (kpiIntentDesc) kpiIntentDesc.innerText = `จำนวนผู้สนใจที่มีเป้าหมายยื่นรอบ ${yearLabel}`;
+        if (bannerIntentLabel) bannerIntentLabel.innerText = `ความตั้งใจยื่นรอบปี ${yCE}`;
+        if (kpiIntentTitle) kpiIntentTitle.innerText = `กลุ่มตั้งใจยื่นรอบปี ${yCE}`;
+        if (kpiIntentDesc) kpiIntentDesc.innerText = `จำนวนผู้สนใจที่มีเป้าหมายยื่นรอบปี ${yCE}`;
       } else {
-        if (bannerIntentLabel) bannerIntentLabel.innerText = 'ความตั้งใจยื่นรอบปี 2570';
-        if (kpiIntentTitle) kpiIntentTitle.innerText = 'กลุ่มตั้งใจยื่นรอบปี 2570';
-        if (kpiIntentDesc) kpiIntentDesc.innerText = 'กลุ่มเป้าหมายหลักที่มีความตั้งใจยื่นในรอบนี้';
+        if (bannerIntentLabel) bannerIntentLabel.innerText = 'ยอดรวมกลุ่มตั้งใจยื่น';
+        if (kpiIntentTitle) kpiIntentTitle.innerText = 'ยอดรวมกลุ่มตั้งใจยื่น';
+        if (kpiIntentDesc) kpiIntentDesc.innerText = 'ผลรวมจำนวนผู้สนใจที่มีเป้าหมายยื่นทุกรอบปี';
       }
 
       const intentPct = baseTotal > 0 ? ((intent / baseTotal) * 100).toFixed(1) : '0.0';
@@ -1487,19 +1474,16 @@
         charts.channels = new Chart(channelCtx, {
           type: 'bar',
           data: {
-            labels: labels.length ? labels : ['Direct/Line', 'Instagram', 'Dek-D TCAS', 'Facebook Ads', 'Referral', 'Google Search'],
+            labels: labels.length ? labels : ['CU MEDI website / facebook', 'MDCU website / facebook', 'Other Social / Academic page', 'Roadshow / Event', 'Direct / Other'],
             datasets: [{
               label: 'ผู้สมัคร (คน)',
-              data: data.length ? data : [35, 31, 31, 28, 28, 26],
+              data: data.length ? data : [65, 45, 55, 25, 12],
               backgroundColor: [
-                '#059669', // Line OA (Emerald)
-                '#d97706', // Dek-D (Amber)
-                '#be185d', // Instagram (Rose)
-                '#4f46e5', // Referral (Indigo)
-                '#2563eb', // Facebook Ads (Royal Blue)
-                '#0284c7', // Google Search (Sky Blue)
-                '#334155', // TikTok Organic (Slate)
-                '#64748b'  // Direct/Other (Muted Slate)
+                '#00885a', // 1. CU MEDI (Green)
+                '#1b2a4a', // 2. MDCU (Navy)
+                '#2563eb', // 3. Other Social (Royal Blue)
+                '#d97706', // 4. Roadshow / Event (Amber)
+                '#64748b'  // 5. Direct / Other (Slate)
               ],
               borderRadius: 6
             }]

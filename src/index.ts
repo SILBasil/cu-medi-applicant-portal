@@ -481,8 +481,8 @@ app.get('/api/stats', async (c) => {
     const intentCount = targetYearCE !== null
       ? applicants.length
       : allApplicants.filter((a: any) => {
-          const intent = (a.s1_apply_intent || '').toLowerCase();
-          return intent.includes('2027') || intent === 'yes';
+          const intent = (a.s1_apply_intent || '').toLowerCase().trim();
+          return intent.length > 0 && intent !== 'no' && intent !== 'none';
         }).length;
     const firstChoice = applicants.filter((a: any) => a.s3_first_choice === 'Yes' || a.s3_first_choice === 'first').length;
 
@@ -494,16 +494,53 @@ app.get('/api/stats', async (c) => {
     });
     const attendModes = Object.entries(attendModeMap).map(([mode, count]) => ({ mode, count }));
 
-    // UTM Sources
-    const utmMap: Record<string, number> = {};
+    // UTM Sources mapped to 4 Client Tag Sets
+    const mapToTagSet = (rawSource: string): string => {
+      const s = (rawSource || '').toLowerCase().trim();
+      if (!s || s === 'direct' || s === 'none' || s === 'unspecified') {
+        return 'Direct / Other';
+      }
+      if (s.includes('cu_medi') || s.includes('cu-medi') || s.includes('cumedi') || s.includes('cu medi')) {
+        return 'CU MEDI website / facebook';
+      }
+      if (s.includes('mdcu') || s.includes('chula_med') || s.includes('faculty_med')) {
+        return 'MDCU website / facebook';
+      }
+      if (s.includes('roadshow') || s.includes('event') || s.includes('onsite') || s.includes('booth') || s.includes('fair') || s.includes('school_visit')) {
+        return 'Roadshow / Event';
+      }
+      if (s.includes('dek') || s.includes('social') || s.includes('instagram') || s.includes('ig') || s.includes('tiktok') || s.includes('search') || s.includes('google') || s.includes('academic') || s.includes('referral') || s.includes('senior') || s.includes('facebook') || s.includes('fb')) {
+        return 'Other Social / Academic page';
+      }
+      return 'Other Social / Academic page';
+    };
+
+    const tagSetCounts: Record<string, number> = {
+      'CU MEDI website / facebook': 0,
+      'MDCU website / facebook': 0,
+      'Other Social / Academic page': 0,
+      'Roadshow / Event': 0
+    };
+    let directCount = 0;
+
     applicants.forEach((a: any) => {
-      const src = a.utm_source || 'Direct';
-      utmMap[src] = (utmMap[src] || 0) + 1;
+      const tag = mapToTagSet(a.utm_source);
+      if (tag === 'Direct / Other') {
+        directCount++;
+      } else if (tagSetCounts[tag] !== undefined) {
+        tagSetCounts[tag]++;
+      } else {
+        tagSetCounts['Other Social / Academic page']++;
+      }
     });
-    const utmSources = Object.entries(utmMap)
+
+    const utmSources = Object.entries(tagSetCounts)
       .map(([source, count]) => ({ source, count }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 10);
+      .sort((a, b) => b.count - a.count);
+
+    if (directCount > 0) {
+      utmSources.push({ source: 'Direct / Other', count: directCount });
+    }
 
     // Top Universities
     const uniMap: Record<string, number> = {};

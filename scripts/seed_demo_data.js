@@ -31,13 +31,16 @@ const universities = [
 ];
 
 const utmSources = [
-  { source: "Facebook Ads", medium: "cpc", campaign: "cumedi_openhouse_2027" },
-  { source: "Instagram", medium: "paid_social", campaign: "cumedi_doctor_journey" },
-  { source: "Dek-D TCAS", medium: "banner", campaign: "medical_direct_2027" },
-  { source: "TikTok Organic", medium: "video", campaign: "life_at_cumedi" },
-  { source: "Senior Referral", medium: "word_of_mouth", campaign: "alumni_network" },
-  { source: "Google Search", medium: "organic", campaign: "mcat_thailand" },
-  { source: "Direct / Line OA", medium: "broadcast", campaign: "openhouse_vip" }
+  { source: "cu_medi_web", medium: "website_banner", campaign: "cumedi_admissions_2027" },
+  { source: "cu_medi_fb", medium: "social_post", campaign: "cumedi_facebook_official" },
+  { source: "mdcu_web", medium: "faculty_portal", campaign: "mdcu_admission_announcement" },
+  { source: "mdcu_fb", medium: "social_share", campaign: "mdcu_life_doctor" },
+  { source: "other_social_dekd", medium: "tcas_forum", campaign: "dekd_medical_board" },
+  { source: "other_social_ig", medium: "instagram_story", campaign: "doctor_journey_reels" },
+  { source: "other_academic_page", medium: "partner_page", campaign: "premed_thailand_network" },
+  { source: "roadshow_school", medium: "school_visit", campaign: "triam_udom_roadshow" },
+  { source: "event_openhouse", medium: "event_booth", campaign: "chula_expo_2027" },
+  { source: "direct", medium: "direct_access", campaign: "direct_url" }
 ];
 
 function getRandomItem(arr) {
