@@ -153,7 +153,7 @@ const I18N = {
     opt_iw_5: "Other",
     lbl_sugg_process: "Suggestion for the CU-MEDi application process",
     lbl_sugg_openhouse: "Suggestion for the upcoming open house",
-    lbl_consent_pdpa: "ข้าพเจ้ายินยอมให้เก็บรวบรวมและประมวลผลข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) เพื่อประโยชน์ในการรับสมัครและประชาสัมพันธ์หลักสูตร CU-MEDi",
+    lbl_consent_pdpa: "I consent to the collection and processing of my personal data under the Personal Data Protection Act (PDPA) for CU-MEDi admissions and program communications.",
     btn_submit_s1: "Submit",
     btn_s1_to_s2: "Save & Continue to Open House (Step 2) →",
     btn_s1_to_s3: "Save & Continue to Next Step →",
@@ -185,7 +185,7 @@ const I18N = {
     opt_f2_hf_5: "Word of Mouth",
     opt_f2_hf_6: "Other",
     lbl_f2_heard_other: "For other sources, please specify",
-    lbl_f2_pdpa: "ข้าพเจ้ายินยอมให้เก็บรวบรวมและประมวลผลข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) และรับทราบว่าข้อมูลจะถูกนำไปใช้สำหรับการลงทะเบียนเข้าร่วมงานและติดต่อสื่อสารสำหรับกิจกรรม CU-MEDi Open House",
+    lbl_f2_pdpa: "I consent to the collection and processing of my personal data under the PDPA, and acknowledge that my information will be used for event registration, check-in, and communications for the CU-MEDi Open House.",
     btn_submit_s2: "Submit",
     btn_s2_to_s3: "Save & Continue to Survey (Step 3) →",
     btn_skip_s2: "Skip Open House & Go to Survey (Step 3) →",
@@ -224,7 +224,7 @@ const I18N = {
     lbl_f3_intake: "Application Intake Round",
     lbl_why_cumedi: "Why did you choose to apply to CU-MEDi?",
     lbl_f3_roadshow: "What information or activities would you like to see from our Roadshow?",
-    lbl_f3_pdpa: "ข้าพเจ้ายินยอมให้ใช้ข้อมูลแบบสำรวจเพื่อการวิเคราะห์และพัฒนาหลักสูตรของคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
+    lbl_f3_pdpa: "I consent to the use of my survey responses for academic research, analysis, and curriculum development by the Faculty of Medicine, Chulalongkorn University.",
     btn_submit_s3: "Submit"
   },
   th: {
