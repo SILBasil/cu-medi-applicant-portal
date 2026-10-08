@@ -6,30 +6,98 @@ const sql = neon(databaseUrl);
 const firstNamesTh = [
   "กานต์", "ณภัทร", "ภูริช", "สิรดา", "ธนภัทร", "ณัฐมน", "ชญานิศ", "วริศ", "ปิยพัทธ์", "ปัณณธร",
   "ศุภิสรา", "พิชญุตม์", "พิมพ์ลภัส", "อนันดา", "กิตติภพ", "ชิดชนก", "เตชินท์", "นภัสสร", "ธนาคาร", "เกวลิน",
-  "รวิภา", "กษิดิศ", "ปรีดี", "ชวัลนุช", "จิรายุ", "ญาณิศา", "พงศ์พิชญ์", "สรชา", "อัครินทร์", "ลลิตา"
+  "รวิภา", "กษิดิศ", "ปรีดี", "ชวัลนุช", "จิรายุ", "ญาณิศา", "พงศ์พิชญ์", "สรชา", "อัครินทร์", "ลลิตา",
+  "ศุภณัฐ", "กานต์พิชชา", "ชนิกานต์", "ปัณณวิชญ์", "ฐิติกร", "พชร", "อภิชญา", "ปัญญพัฒน์", "รวิสรา", "ชลธิชา"
 ];
 
 const lastNamesTh = [
   "วิริยะกุล", "รัตนไพศาล", "สิริวัฒนา", "โสภณพนิช", "โชติช่วง", "จรัสแสง", "ตันติพาณิชย์", "บุญยรัตกลิน", "เตชะณรงค์", "มังกรพันธ์",
-  "ศรีสวัสดิ์", "อัศวบำรุง", "จินดารัตน์", "วรโชติ", "พัฒนาการ", "เกียรติวงศ์", "ชัยเจริญ", "พงษ์พาณิชย์", "ธนสาร", "ศิริโภคา"
+  "ศรีสวัสดิ์", "อัศวบำรุง", "จินดารัตน์", "วรโชติ", "พัฒนาการ", "เกียรติวงศ์", "ชัยเจริญ", "พงษ์พาณิชย์", "ธนสาร", "ศิริโภคา",
+  "สุขเกษม", "วงษ์สุวรรณ", "เจริญกิจ", "พิทักษ์ธรรม", "เลิศวิริยะ", "ประเสริฐยิ่ง", "มโนธรรม", "อนันตชัย", "กิตติคุณ", "จงสถิตย์"
 ];
 
-const firstNamesEn = ["Alex", "Michael", "Sophia", "Chloe", "Benjamin", "Lucas", "Emma", "Daniel", "Kevin", "Grace"];
-const lastNamesEn = ["Chen", "Wong", "Smith", "Taylor", "Tanaka", "Lim", "Patel", "Kim", "Davies", "Lee"];
+const firstNamesEn = ["Alex", "Michael", "Sophia", "Chloe", "Benjamin", "Lucas", "Emma", "Daniel", "Kevin", "Grace", "Oliver", "Emily", "James", "Lily", "Ethan"];
+const lastNamesEn = ["Chen", "Wong", "Smith", "Taylor", "Tanaka", "Lim", "Patel", "Kim", "Davies", "Lee", "Anderson", "Wilson", "Johnson", "Brown", "Miller"];
 
-const universities = [
-  { name: "Chulalongkorn University (CU)", majors: ["Biomedical Science", "Biotechnology", "Bioengineering", "Chemistry", "Pharmacy"] },
-  { name: "Mahidol University (MU / MUIC)", majors: ["Biological Sciences", "Medical Technology", "Physical Therapy", "Chemistry", "Public Health"] },
-  { name: "Thammasat University (TU)", majors: ["Biotechnology", "Health Science", "Chemical Engineering", "Computer Science"] },
-  { name: "Kasetsart University (KU)", majors: ["Genetics", "Microbiology", "Veterinary Sciences", "Food Science"] },
-  { name: "King Mongkut's (KMUTT/KMITL)", majors: ["Biomedical Engineering", "Chemical Engineering", "Data Science"] },
-  { name: "Prince of Songkla University (PSU)", majors: ["Biology", "Medical Technology", "Pharmacy"] },
-  { name: "Chiang Mai University (CMU)", majors: ["Biological Science", "Medical Technology", "Microbiology"] },
-  { name: "University of Melbourne", majors: ["Biomedicine", "Biochemistry"] },
-  { name: "University of British Columbia (UBC)", majors: ["Biology", "Physiology"] },
-  { name: "University of California, Los Angeles (UCLA)", majors: ["Molecular Biology", "Neuroscience"] }
+// Regional Profiles with Universities & Provinces for balanced nationwide distribution
+const REGION_POOLS = [
+  // 1. Bangkok & Metropolitan (35% -> ~70 applicants)
+  {
+    regionId: "bkk",
+    weight: 35,
+    country: "Thailand",
+    provinces: ["Bangkok Metropolis", "Nonthaburi", "Pathum Thani", "Samut Prakan", "Nakhon Pathom"],
+    universities: [
+      { name: "Chulalongkorn University (CU)", majors: ["Biomedical Science", "Biotechnology", "Bioengineering", "Chemistry", "Pharmacy"] },
+      { name: "Mahidol University (MU / MUIC)", majors: ["Biological Sciences", "Medical Technology", "Physical Therapy", "Chemistry", "Public Health"] },
+      { name: "Thammasat University (TU)", majors: ["Biotechnology", "Health Science", "Chemical Engineering", "Computer Science"] },
+      { name: "Kasetsart University (KU)", majors: ["Genetics", "Microbiology", "Veterinary Sciences", "Food Science"] },
+      { name: "King Mongkut's (KMUTT/KMITL)", majors: ["Biomedical Engineering", "Chemical Engineering", "Data Science"] }
+    ]
+  },
+  // 2. Northern Thailand (15% -> ~30 applicants)
+  {
+    regionId: "north",
+    weight: 15,
+    country: "Thailand",
+    provinces: ["Chiang Mai", "Chiang Rai", "Phitsanulok", "Lampang", "Nan"],
+    universities: [
+      { name: "Chiang Mai University (CMU)", majors: ["Biological Science", "Medical Technology", "Microbiology", "Biochemistry"] },
+      { name: "Mae Fah Luang University", majors: ["Biotechnology", "Public Health", "Applied Biological Science"] },
+      { name: "Naresuan University", majors: ["Medical Technology", "Pharmacy", "Biomedical Science"] }
+    ]
+  },
+  // 3. Northeastern Thailand / Isan (15% -> ~30 applicants)
+  {
+    regionId: "northeast",
+    weight: 15,
+    country: "Thailand",
+    provinces: ["Khon Kaen", "Nakhon Ratchasima", "Ubon Ratchathani", "Udon Thani", "Buri Ram"],
+    universities: [
+      { name: "Khon Kaen University (KKU)", majors: ["Biomedical Science", "Medical Technology", "Biotechnology", "Public Health"] },
+      { name: "Suranaree University of Technology", majors: ["Bioengineering", "Public Health", "Applied Biology"] },
+      { name: "Ubon Ratchathani University", majors: ["Pharmacy", "Biological Science", "Biotechnology"] }
+    ]
+  },
+  // 4. Central & Eastern Thailand (13% -> ~26 applicants)
+  {
+    regionId: "central",
+    weight: 13,
+    country: "Thailand",
+    provinces: ["Chon Buri", "Rayong", "Phra Nakhon Si Ayutthaya", "Chachoengsao", "Saraburi"],
+    universities: [
+      { name: "Burapha University", majors: ["Biomedical Science", "Marine Technology", "Medical Science"] },
+      { name: "Silpakorn University", majors: ["Biotechnology", "Pharmacy", "Chemistry"] }
+    ]
+  },
+  // 5. Southern Thailand (12% -> ~24 applicants)
+  {
+    regionId: "south",
+    weight: 12,
+    country: "Thailand",
+    provinces: ["Songkhla", "Phuket", "Nakhon Si Thammarat", "Surat Thani", "Krabi"],
+    universities: [
+      { name: "Prince of Songkla University (PSU)", majors: ["Biology", "Medical Technology", "Pharmacy", "Biochemistry"] },
+      { name: "Walailak University", majors: ["Biomedical Sciences", "Medical Technology", "Public Health"] }
+    ]
+  },
+  // 6. International / Overseas (10% -> ~20 applicants)
+  {
+    regionId: "intl",
+    weight: 10,
+    country: "International",
+    provinces: [null],
+    universities: [
+      { name: "University of Melbourne", majors: ["Biomedicine", "Biochemistry", "Physiology"] },
+      { name: "University of British Columbia (UBC)", majors: ["Biology", "Physiology", "Microbiology"] },
+      { name: "University of California, Los Angeles (UCLA)", majors: ["Molecular Biology", "Neuroscience"] },
+      { name: "National University of Singapore (NUS)", majors: ["Life Sciences", "Biomedical Engineering"] },
+      { name: "Imperial College London", majors: ["Biological Sciences", "Medical Biosciences"] }
+    ]
+  }
 ];
 
+// Acquisition UTM Sources matching the 4 Client Tag Sets
 const utmSources = [
   { source: "cu_medi_web", medium: "website_banner", campaign: "cumedi_admissions_2027" },
   { source: "cu_medi_fb", medium: "social_post", campaign: "cumedi_facebook_official" },
@@ -51,6 +119,17 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+// Pick regional pool based on weighted percentage
+function pickRegionPool() {
+  const rand = Math.random() * 100;
+  let cum = 0;
+  for (const pool of REGION_POOLS) {
+    cum += pool.weight;
+    if (rand <= cum) return pool;
+  }
+  return REGION_POOLS[0];
+}
+
 async function seed() {
   console.log("Starting Neon DB demo seed for CU-MEDi...");
   
@@ -59,43 +138,33 @@ async function seed() {
     await sql`TRUNCATE TABLE applicants RESTART IDENTITY CASCADE;`;
     console.log("Truncated applicants table.");
   } catch (err) {
-    console.log("Truncate warning (table might be fresh):", err.message);
+    console.log("Truncate warning:", err.message);
   }
 
-  const total = 200;      // 200 total applicants (Stage 1)
+  const total = 200;        // 200 total applicants (Stage 1)
   const stage2Target = 100; // 100 did Stage 2 (50%)
   const stage3Target = 50;  // 50 did Stage 3 (25% of total, 50% of Stage 2)
 
   let createdCount = 0;
 
   for (let i = 1; i <= total; i++) {
-    const isEn = Math.random() < 0.15;
+    const pool = pickRegionPool();
+    const isEn = pool.regionId === "intl";
+
     const firstName = isEn ? getRandomItem(firstNamesEn) : getRandomItem(firstNamesTh);
     const lastName = isEn ? getRandomItem(lastNamesEn) : getRandomItem(lastNamesTh);
     const name = `${firstName} ${lastName}`;
     const email = `applicant${i}_${firstName.toLowerCase()}${getRandomInt(10, 99)}@gmail.com`;
     const phone = `08${getRandomInt(1, 9)}${getRandomInt(1000000, 9999999)}`;
-    const uniObj = getRandomItem(universities);
+    
+    const uniObj = getRandomItem(pool.universities);
     const university = uniObj.name;
     const major = getRandomItem(uniObj.majors);
-    const nationality = isEn ? (Math.random() < 0.5 ? "American" : "Singaporean") : "Thai";
-    const country = isEn ? "International" : "Thailand";
-
-    let province = null;
-    if (!isEn) {
-      if (university.includes("Songkla") || university.includes("PSU")) province = "Songkhla";
-      else if (university.includes("Chiang Mai") || university.includes("CMU")) province = "Chiang Mai";
-      else if (university.includes("Kasetsart")) province = Math.random() < 0.7 ? "Bangkok Metropolis" : "Nakhon Pathom";
-      else if (university.includes("Mahidol")) province = Math.random() < 0.6 ? "Bangkok Metropolis" : "Nakhon Pathom";
-      else if (university.includes("Thammasat")) province = Math.random() < 0.7 ? "Pathum Thani" : "Bangkok Metropolis";
-      else if (university.includes("Chulalongkorn") || university.includes("KMUTT") || university.includes("KMITL")) province = "Bangkok Metropolis";
-      else province = getRandomItem(["Bangkok Metropolis", "Nonthaburi", "Chiang Mai", "Songkhla", "Khon Kaen", "Chon Buri", "Nakhon Si Thammarat"]);
-    }
+    const nationality = isEn ? (Math.random() < 0.4 ? "American" : (Math.random() < 0.5 ? "Singaporean" : "British")) : "Thai";
+    const country = isEn ? (Math.random() < 0.35 ? "United States" : (Math.random() < 0.5 ? "Singapore" : (Math.random() < 0.5 ? "United Kingdom" : "Australia"))) : "Thailand";
+    const province = isEn ? null : getRandomItem(pool.provinces);
 
     // Stage determinations
-    // First 50: Stage 1 + 2 + 3
-    // Next 50 (51-100): Stage 1 + 2
-    // Remaining 100 (101-200): Stage 1 only
     const hasStage3 = i <= stage3Target;
     const hasStage2 = i <= stage2Target;
     const hasStage1 = true;
@@ -105,9 +174,9 @@ async function seed() {
 
     // Stage 1 Fields
     const s1Intent = Math.random() < 0.65 ? "Class of 2027 (This Year)" : (Math.random() < 0.6 ? "Class of 2028 (Next Year)" : "Class of 2029+");
-    const mcatStatus = Math.random() < 0.38 ? "Ready / Taken (500+)" : (Math.random() < 0.52 ? "Preparing (Exam scheduled)" : "Not started yet");
-    const engStatus = Math.random() < 0.58 ? "Ready (IELTS 7.0+ / TOEFL 100+)" : (Math.random() < 0.32 ? "Preparing" : "Need to retake");
-    const degStatus = Math.random() < 0.82 ? "Graduated / Final Year" : "2nd-3rd Year Undergraduate";
+    const mcatStatus = Math.random() < 0.42 ? "Ready / Taken (500+)" : (Math.random() < 0.48 ? "Preparing (Exam scheduled)" : "Not started yet");
+    const engStatus = Math.random() < 0.62 ? "Ready (IELTS 7.0+ / TOEFL 100+)" : (Math.random() < 0.30 ? "Preparing" : "Need to retake");
+    const degStatus = Math.random() < 0.80 ? "Graduated / Final Year" : "2nd-3rd Year Undergraduate";
 
     const s1_req_readiness = {
       mcat: mcatStatus,
@@ -128,14 +197,14 @@ async function seed() {
     let s2_comments = null;
 
     if (hasStage2) {
-      s2_attend_mode = Math.random() < 0.62 ? "Onsite (Faculty of Medicine)" : "Online (Zoom Webinar)";
+      s2_attend_mode = Math.random() < 0.65 ? "Onsite (Faculty of Medicine)" : "Online (Zoom Webinar)";
       s2_session_choice = Math.random() < 0.5 ? "Morning Session (09:00 - 12:00)" : (Math.random() < 0.7 ? "Afternoon Session (13:00 - 16:00)" : "Full Day Pass");
       s2_recipient_group = Math.random() < 0.85 ? "Applicant (Self)" : "Parent / Guardian";
       s2_education_level = degStatus.includes("Graduated") ? "Bachelor Degree Graduate" : "University Undergraduate";
       s2_year_of_study = degStatus.includes("Graduated") ? "Graduated" : "Year 4";
       s2_apply_intent = s1Intent;
-      // ~76% show up rate
-      s2_attended = Math.random() < 0.76;
+      // ~78% show up rate
+      s2_attended = Math.random() < 0.78;
       s2_comments = Math.random() < 0.3 ? "Interested in clinical rotation abroad and USMLE pathway." : null;
     }
 
@@ -154,30 +223,49 @@ async function seed() {
 
     if (hasStage3) {
       s3_applied_status = Math.random() < 0.75 ? "First-time Applicant" : "Re-applicant";
-      s3_gender = Math.random() < 0.55 ? "Female" : "Male";
+      s3_gender = Math.random() < 0.58 ? "Female" : "Male";
       s3_age = getRandomInt(21, 27);
-      s3_region = Math.random() < 0.68 ? "Bangkok & Metropolitan" : (Math.random() < 0.5 ? "Central / Eastern" : "Southern / Northern");
+      s3_region = pool.regionId === "bkk" ? "Central & Bangkok" : (pool.regionId === "north" ? "Northern" : (pool.regionId === "northeast" ? "Northeastern" : (pool.regionId === "south" ? "Southern" : "International")));
+
+      const medSchools = [
+        "CU-MEDi (Chulalongkorn)",
+        "RAMA-IDP (Mahidol)",
+        "CICM (Thammasat)",
+        "HRH Princess Chulabhorn College",
+        "National University of Singapore (NUS)",
+        "Duke-NUS Medical School"
+      ];
+      
+      const shuffled = [...medSchools].sort(() => 0.5 - Math.random());
       s3_schools_rank = {
         rank1: "CU-MEDi (Chulalongkorn)",
-        rank2: Math.random() < 0.5 ? "CICM (Thammasat)" : "RAMA-IDP (Mahidol)",
-        rank3: "HRH Princess Chulabhorn College"
+        rank2: shuffled[1],
+        rank3: shuffled[2]
       };
+
+      const destinations = [
+        "None (Study in Thailand only)",
+        "Asia (outside Thailand)",
+        "Europe",
+        "Australia / New Zealand",
+        "North America"
+      ];
+      const dShuffled = [...destinations].sort(() => 0.5 - Math.random());
       s3_destination_rank = {
-        dest1: "Thailand (Public & Private Hospitals)",
-        dest2: Math.random() < 0.6 ? "United States (USMLE Residency)" : "United Kingdom (GMC / PLAB)",
-        dest3: "Singapore / Regional"
+        rank1: Math.random() < 0.45 ? "None (Study in Thailand only)" : dShuffled[0],
+        rank2: dShuffled[1],
+        rank3: dShuffled[2]
       };
-      s3_future_location = Math.random() < 0.7 ? "Thailand" : "Overseas (USA/UK)";
-      s3_postgrad_plan = Math.random() < 0.4 ? "Internal Medicine / Cardiology" : (Math.random() < 0.4 ? "General Surgery" : "Pediatrics / Neurology");
-      s3_first_choice = Math.random() < 0.66 ? "first" : "second";
-      s3_why_cumedi = "The 4-year US-style graduate entry curriculum, clinical training at King Chulalongkorn Memorial Hospital, and strong international residency pathways.";
-      
-      // 30 Factors rating (1-5 scale)
+
+      s3_future_location = Math.random() < 0.65 ? "Thailand" : "Abroad (US / UK / Singapore)";
+      s3_postgrad_plan = Math.random() < 0.5 ? "Specialist Residency in Thailand" : (Math.random() < 0.5 ? "US Residency (USMLE Pathway)" : "Clinical Fellowship Abroad");
+      s3_first_choice = Math.random() < 0.68 ? "Yes" : "Considering alongside others";
+      s3_why_cumedi = "Strong clinical network at King Chulalongkorn Memorial Hospital and internationally certified MD curriculum.";
+
       s3_decision_factors_30 = {
-        curriculum_international: getRandomInt(4, 5),
+        hospital_clinical_exposure: getRandomInt(4, 5),
         faculty_reputation: getRandomInt(4, 5),
-        hospital_clinical_exposure: 5,
-        international_rotation: getRandomInt(4, 5),
+        curriculum_international: getRandomInt(4, 5),
         usmle_readiness: getRandomInt(4, 5),
         tuition_cost_value: getRandomInt(3, 5),
         location_convenience: getRandomInt(3, 5),
@@ -228,11 +316,7 @@ async function seed() {
     }
   }
 
-  console.log(`\n🎉 Seed finished! Successfully inserted ${createdCount} applicants.`);
-  console.log(`Breakdown:`);
-  console.log(`- Stage 1 Leads: 200 (100%)`);
-  console.log(`- Stage 2 Open House: 100 (50% of Stage 1 - Ratio 2:1)`);
-  console.log(`- Stage 3 Deep Survey: 50 (50% of Stage 2 - Ratio 2:1)`);
+  console.log(`\n🎉 Seed finished! Successfully inserted ${createdCount} applicants across all Thai regions and overseas.`);
 }
 
 seed().catch(err => {
