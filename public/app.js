@@ -78,9 +78,8 @@ const GROUP3_FACTORS_TH = [
 ];
 
 let currentLang = 'en';
-try {
-  currentLang = localStorage.getItem('portal_lang') || 'en';
-} catch (e) { }
+// Enforce English UI for applicant portal forms
+localStorage.setItem('portal_lang', 'en');
 
 const I18N = {
   en: {
@@ -121,7 +120,7 @@ const I18N = {
 
     f1_intro_tag: "Lead Capture",
     f1_intro_title: "The CU-MEDi Applications for 2027",
-    f1_intro_desc: "Sign up to get updates on the 2027 admission round. Learn more at <a href=\"https://cu-medi.md.chula.ac.th\" target=\"_blank\" style=\"color: var(--primary);\">cu-medi.md.chula.ac.th</a>.",
+    f1_intro_desc: `<p style="margin-bottom: 0.75rem;">Please sign up here to get updated information on the next admission round for the academic year 2027</p><p style="margin-bottom: 0.75rem;">To learn more about the Chulalongkorn University International Medical Program or CU-MEDi program, please visit <a href="https://cu-medi.md.chula.ac.th/" target="_blank" style="color: var(--primary); text-decoration: underline;">https://cu-medi.md.chula.ac.th/</a></p><p style="font-size: 0.875rem; color: var(--text-muted); font-style: italic;">Remark: This portal is not an official application process but a reminder for those who want to apply to ensure that all of the requirements are complete.</p>`,
     lbl_email: "Email address",
     lbl_fullname: "Full Name",
     lbl_phone: "Phone Number",
@@ -154,14 +153,14 @@ const I18N = {
     opt_iw_5: "Other",
     lbl_sugg_process: "Suggestion for the CU-MEDi application process",
     lbl_sugg_openhouse: "Suggestion for the upcoming open house",
-    lbl_consent_pdLeave: "I acknowledge and consent to the collection and processing of my personal data under PDPA guidelines for CU-MEDi admissions purposes.",
+    lbl_consent_pdpa: "ข้าพเจ้ายินยอมให้เก็บรวบรวมและประมวลผลข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) เพื่อประโยชน์ในการรับสมัครและประชาสัมพันธ์หลักสูตร CU-MEDi",
     btn_submit_s1: "Submit",
     btn_s1_to_s2: "Save & Continue to Open House (Step 2) →",
     btn_s1_to_s3: "Save & Continue to Next Step →",
 
     f2_intro_tag: "Event Registration",
-    f2_intro_title: "Pre-registration for CU-MEDi Open House",
-    f2_intro_desc: "",
+    f2_intro_title: "CU-MEDi Open House Registration",
+    f2_intro_desc: `<p style="margin-bottom: 0.75rem;">Thank you for your interest in the Chulalongkorn University International Medical Program (CU-MEDi). Please fill out the following information to pre-register for the upcoming open house. Limited seats are available for onsite participation.</p><a href="javascript:void(0)" onclick="openEventDetailsModal()" class="event-details-link">Event Details & Schedule →</a>`,
     lbl_major: "Major / Area of Study",
     lbl_recipient_group: "You are:",
     recipient_applicant: "Prospective Applicant",
@@ -186,14 +185,14 @@ const I18N = {
     opt_f2_hf_5: "Word of Mouth",
     opt_f2_hf_6: "Other",
     lbl_f2_heard_other: "For other sources, please specify",
-    lbl_f2_pdpa: "I acknowledge that registration details will be used for event check-in and communication.",
+    lbl_f2_pdpa: "ข้าพเจ้ายินยอมให้เก็บรวบรวมและประมวลผลข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) และรับทราบว่าข้อมูลจะถูกนำไปใช้สำหรับการลงทะเบียนเข้าร่วมงานและติดต่อสื่อสารสำหรับกิจกรรม CU-MEDi Open House",
     btn_submit_s2: "Submit",
     btn_s2_to_s3: "Save & Continue to Survey (Step 3) →",
     btn_skip_s2: "Skip Open House & Go to Survey (Step 3) →",
 
     f3_intro_tag: "Stage 03 · Research & Insight",
     f3_intro_title: "CU-MEDi Applicant Survey",
-    f3_intro_desc: "A questionnaire about medical school applications. Participation will not affect your application status. Data will be used to enhance the curriculum and faculty.",
+    f3_intro_desc: `<p style="margin-bottom: 0.75rem;">The Faculty of Medicine, Chulalongkorn University would like to invite you to participate in a questionnaire about medical school applications. This online survey should take approximately 3-5 minutes to complete. Participation is voluntary and responses will be kept anonymous and confidential to the degree permitted by the technology used. Participation in this survey will not affect your application to the Faculty of Medicine in any way. Survey data will be used for the purposes of improving the Faculty.</p><p style="font-weight: 700; color: var(--navy); margin-top: 0.5rem;">Faculty of Medicine, Chulalongkorn University</p>`,
     lbl_applied_status: "Have you applied to CU-MEDi? *",
     lbl_gender_age: "Gender / Age",
     lbl_region: "Region of Citizenship",
@@ -220,8 +219,12 @@ const I18N = {
     group2_title: "Group 2 · Lifestyle & Campus Environment (11 Factors)",
     group3_title: "Group 3 · Cost, Support & Healthcare (4 Factors)",
     lbl_first_choice: "Did you choose CU-MEDi as your first choice?",
+    opt_f3_fc_yes: "Yes",
+    opt_f3_fc_no: "No",
+    lbl_f3_intake: "Application Intake Round",
     lbl_why_cumedi: "Why did you choose to apply to CU-MEDi?",
-    lbl_f3_pdpa: "I consent to providing survey responses for CU-MEDi academic research.",
+    lbl_f3_roadshow: "What information or activities would you like to see from our Roadshow?",
+    lbl_f3_pdpa: "ข้าพเจ้ายินยอมให้ใช้ข้อมูลแบบสำรวจเพื่อการวิเคราะห์และพัฒนาหลักสูตรของคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย",
     btn_submit_s3: "Submit"
   },
   th: {
@@ -530,9 +533,7 @@ function setupCombobox(stageNum) {
 
     cMenu.innerHTML = matched.map(c => {
       const isSelected = cHidden.value.toLowerCase() === c.en.toLowerCase();
-      const displayTh = c.th;
-      const displayEn = c.en;
-      const label = currentLang === 'th' ? `${displayTh} (${displayEn})` : `${displayEn} (${displayTh})`;
+      const label = c.en;
       return `
         <li class="combobox-item ${isSelected ? 'selected' : ''}" data-country-en="${c.en}" data-country-th="${c.th}">
           <span class="combobox-item-text">${label}</span>
@@ -553,7 +554,7 @@ function setupCombobox(stageNum) {
 
   function selectCountry(en, th) {
     cHidden.value = en;
-    cSearch.value = currentLang === 'th' ? `${th} (${en})` : `${en} (${th})`;
+    cSearch.value = en;
     cMenu.style.display = 'none';
     if (cBox) cBox.classList.remove('open');
     updateProvinceMode();
@@ -594,11 +595,10 @@ function setupCombobox(stageNum) {
 
     pMenu.innerHTML = matched.map(p => {
       const isSelected = pHidden.value.toLowerCase() === p.en.toLowerCase();
-      const label = currentLang === 'th' ? `${p.th} (${p.en})` : `${p.en} (${p.th})`;
+      const label = p.en;
       return `
         <li class="combobox-item ${isSelected ? 'selected' : ''}" data-prov-en="${p.en}" data-prov-th="${p.th}">
           <span class="combobox-item-text">${label}</span>
-          <span class="combobox-badge">${p.regionTh}</span>
         </li>
       `;
     }).join('');
@@ -609,7 +609,7 @@ function setupCombobox(stageNum) {
         const en = item.getAttribute('data-prov-en');
         const th = item.getAttribute('data-prov-th');
         pHidden.value = en;
-        pSearch.value = currentLang === 'th' ? `${th} (${en})` : `${en} (${th})`;
+        pSearch.value = en;
         pMenu.style.display = 'none';
         if (pBox) pBox.classList.remove('open');
       });
@@ -666,7 +666,7 @@ function setupCombobox(stageNum) {
 
   // Default to Thailand
   if (!cHidden.value) {
-    selectCountry('Thailand', 'ไทย');
+    selectCountry('Thailand', 'Thailand');
   } else {
     updateProvinceMode();
   }
@@ -684,7 +684,7 @@ function setComboboxCountry(stageNum, countryVal) {
   );
   if (item && cHidden && cSearch) {
     cHidden.value = item.en;
-    cSearch.value = currentLang === 'th' ? `${item.th} (${item.en})` : `${item.en} (${item.th})`;
+    cSearch.value = item.en;
   } else if (cHidden && cSearch) {
     cHidden.value = countryVal;
     cSearch.value = countryVal;
@@ -722,7 +722,7 @@ function setComboboxProvince(stageNum, provinceVal) {
 
   if (matched) {
     pHidden.value = matched.en;
-    pSearch.value = currentLang === 'th' ? `${matched.th} (${matched.en})` : `${matched.en} (${matched.th})`;
+    pSearch.value = matched.en;
   } else {
     pSearch.value = provinceVal;
   }
@@ -901,8 +901,29 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeAllCustomSelects();
+    closeEventDetailsModal();
   }
 });
+
+// Event Details Modal Controls (Form 2)
+window.openEventDetailsModal = function () {
+  const modal = document.getElementById('event-details-modal');
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+};
+
+window.closeEventDetailsModal = function (event) {
+  if (event && event.target && event.target.closest && event.target.closest('.modal-dialog')) {
+    return;
+  }
+  const modal = document.getElementById('event-details-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+};
 
 // Determine active stage from URL Path or Query parameter
 function detectStage() {
@@ -1112,6 +1133,7 @@ const DROPDOWN_OPTIONS = {
   'f3-dest-rank': {
     en: [
       { value: "", text: "-- Choose --" },
+      { value: "None (Study in Thailand only)", text: "None (Study in Thailand only)" },
       { value: "Asia (outside Thailand)", text: "Asia (outside Thailand)" },
       { value: "Europe", text: "Europe" },
       { value: "Australia / New Zealand", text: "Australia / New Zealand" },

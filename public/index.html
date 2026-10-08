@@ -15,25 +15,11 @@
     <div class="header-container">
       <div class="logo-group">
         <img src="/cumedi-logo.png" alt="CU-MEDi" class="brand-logo-img">
-        <div class="brand-text">
-          <h1 id="header-stage-title">CU-MEDi 2027 Admissions Registration</h1>
-          <p>Faculty of Medicine, Chulalongkorn University</p>
-        </div>
       </div>
       <div class="header-actions">
         <div id="verified-user-pill"
           style="display: none; font-size: 0.825rem; background: var(--success-bg); color: var(--success); padding: 6px 14px; border-radius: 999px; border: 1px solid #a7f3d0; font-weight: 600;">
           <span id="verified-email-text"></span>
-        </div>
-
-        <!-- Language Switcher Button -->
-        <div class="lang-switch-group">
-          <button type="button" class="lang-btn active" id="btn-lang-en" onclick="setLanguage('en')">
-            <span>🇬🇧</span> EN
-          </button>
-          <button type="button" class="lang-btn" id="btn-lang-th" onclick="setLanguage('th')">
-            <span>🇹🇭</span> TH
-          </button>
         </div>
       </div>
     </div>
@@ -126,22 +112,22 @@
       <div class="form-intro">
         <span class="form-tag" id="f1-tag">Stage 01 · Lead Capture</span>
         <h3 id="f1-title">The CU-MEDi Applications for 2027</h3>
-        <p id="f1-desc">Sign up to get updates on the 2027 admission round. Learn more at <a
-            href="https://cu-medi.md.chula.ac.th" target="_blank"
-            style="color: var(--primary);">cu-medi.md.chula.ac.th</a>. <i>Remark: this portal is not an official
-            application process, but a reminder to ensure requirements are complete.</i></p>
+        <div id="f1-desc">
+          <p style="margin-bottom: 0.75rem;">Please sign up here to get updated information on the next admission round for the academic year 2027</p>
+          <p style="margin-bottom: 0.75rem;">To learn more about the Chulalongkorn University International Medical Program or CU-MEDi program, please visit <a href="https://cu-medi.md.chula.ac.th/" target="_blank" style="color: var(--primary); text-decoration: underline;">https://cu-medi.md.chula.ac.th/</a></p>
+          <p style="font-size: 0.875rem; color: var(--text-muted); font-style: italic;">Remark: This portal is not an official application process but a reminder for those who want to apply to ensure that all of the requirements are complete.</p>
+        </div>
       </div>
 
       <form id="form1">
         <!-- Section 1: Email Identification & Auto-fill -->
         <div class="email-gate-section" id="f1-email-box">
-          <label class="form-label" id="lbl-f1-email" style="font-weight: 700; color: var(--navy);">Email address /
-            อีเมลผู้สมัคร <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f1-email" style="font-weight: 700; color: var(--navy);">Email address <span class="req">*</span></label>
           <div class="email-input-group">
             <input type="email" name="email" id="f1-email" class="form-input" placeholder="e.g. yourname@example.com"
               required autocomplete="email">
             <button type="button" class="btn-verify-email" id="btn-f1-check-email" onclick="checkFormEmail(1)">
-              Continue / ดำเนินการต่อ →
+              Continue →
             </button>
           </div>
         </div>
@@ -169,7 +155,7 @@
               <label class="form-label" id="lbl-f1-country">Current Address (Country) <span class="req">*</span></label>
               <div class="searchable-combobox" id="f1-country-combobox">
                 <div class="combobox-input-wrapper">
-                  <input type="text" id="f1-country-search" class="form-input combobox-search" placeholder="Type or select country (e.g. Thailand, ไทย)..." autocomplete="off" required>
+                  <input type="text" id="f1-country-search" class="form-input combobox-search" placeholder="Type or select country (e.g. Thailand, United States)..." autocomplete="off" required>
                   <span class="combobox-arrow">▾</span>
                   <input type="hidden" name="country" id="f1-country" value="Thailand">
                 </div>
@@ -183,7 +169,7 @@
               <label class="form-label" id="lbl-f1-province">Province / State <span class="req" id="req-f1-province">*</span></label>
               <div class="searchable-combobox" id="f1-province-combobox">
                 <div class="combobox-input-wrapper">
-                  <input type="text" id="f1-province-search" class="form-input combobox-search" placeholder="Type or select province (e.g. Bangkok, สงขลา)..." autocomplete="off" required>
+                  <input type="text" id="f1-province-search" class="form-input combobox-search" placeholder="Type or select province (e.g. Bangkok, Songkhla)..." autocomplete="off" required>
                   <span class="combobox-arrow" id="f1-province-arrow">▾</span>
                   <input type="hidden" name="province" id="f1-province" value="">
                 </div>
@@ -219,7 +205,6 @@
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2px;">
               <label class="form-label" style="margin-bottom: 0;">
                 <span id="lbl-req-readiness">2027 Admission Requirements Readiness</span> <span class="req">*</span>
-                <span class="grid-badge">grid</span>
               </label>
             </div>
             <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;" id="lbl-req-readiness-sub">
@@ -333,7 +318,7 @@
               <label class="checkbox-label checkbox-label-other">
                 <input type="checkbox" name="heard_from" value="Other" id="f1-hf-other-check">
                 <span id="opt-hf-7">Other</span>
-                <input type="text" name="heard_other" id="f1-heard-other" class="inline-other-input" placeholder="Please specify if Other / โปรดระบุ..." style="display: none;">
+                <input type="text" name="heard_other" id="f1-heard-other" class="inline-other-input" placeholder="Please specify if Other" style="display: none;">
               </label>
             </div>
           </div>
@@ -353,7 +338,7 @@
               <label class="checkbox-label checkbox-label-other">
                 <input type="checkbox" name="info_wanted" value="Other" id="f1-iw-other-check">
                 <span id="opt-iw-5">Other</span>
-                <input type="text" name="info_other" id="f1-info-other" class="inline-other-input" placeholder="Please specify if Other / โปรดระบุ..." style="display: none;">
+                <input type="text" name="info_other" id="f1-info-other" class="inline-other-input" placeholder="Please specify if Other" style="display: none;">
               </label>
             </div>
           </div>
@@ -379,8 +364,7 @@
           <div class="form-group">
             <label class="checkbox-label" style="border-color: var(--primary);">
               <input type="checkbox" name="consent_pdpa" required>
-              <span id="lbl-f1-pdpa">I acknowledge and consent to the collection and processing of my personal data
-                under PDPA guidelines for CU-MEDi admissions purposes. <span class="req">*</span></span>
+              <span id="lbl-f1-pdpa">ข้าพเจ้ายินยอมให้เก็บรวบรวมและประมวลผลข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) เพื่อประโยชน์ในการรับสมัครและประชาสัมพันธ์หลักสูตร CU-MEDi <span class="req">*</span></span>
             </label>
           </div>
 
@@ -395,21 +379,22 @@
     <div class="form-card form-stage-container" id="form-stage-2" style="display: none;">
       <div class="form-intro">
         <span class="form-tag" id="f2-tag">Stage 02 · Event Registration</span>
-        <h3 id="f2-title">Pre-registration for CU-MEDi Open House</h3>
-        <p id="f2-desc">Pre-register for the Open House · Room 1209, Fl.12 Bhumisiri Mangkhalanusorn Bldg. & Live via
-          MDCU Facebook · <i>Limited Onsite seats.</i></p>
+        <h3 id="f2-title">CU-MEDi Open House Registration</h3>
+        <div id="f2-desc">
+          <p style="margin-bottom: 0.75rem;">Thank you for your interest in the Chulalongkorn University International Medical Program (CU-MEDi). Please fill out the following information to pre-register for the upcoming open house. Limited seats are available for onsite participation.</p>
+          <a href="javascript:void(0)" onclick="openEventDetailsModal()" class="event-details-link">Event Details & Schedule →</a>
+        </div>
       </div>
 
       <form id="form2">
         <!-- Section 1: Email Identification & Auto-fill -->
         <div class="email-gate-section" id="f2-email-box">
-          <label class="form-label" id="lbl-f2-email" style="font-weight: 700; color: var(--navy);">Email address /
-            อีเมลผู้สมัคร <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f2-email" style="font-weight: 700; color: var(--navy);">Email address <span class="req">*</span></label>
           <div class="email-input-group">
             <input type="email" name="email" id="f2-email" class="form-input" placeholder="e.g. yourname@example.com"
               required autocomplete="email">
             <button type="button" class="btn-verify-email" id="btn-f2-check-email" onclick="checkFormEmail(2)">
-              Continue / ดำเนินการต่อ →
+              Continue →
             </button>
           </div>
         </div>
@@ -436,7 +421,7 @@
               <label class="form-label" id="lbl-f2-country">Current Address (Country)</label>
               <div class="searchable-combobox" id="f2-country-combobox">
                 <div class="combobox-input-wrapper">
-                  <input type="text" id="f2-country-search" class="form-input combobox-search" placeholder="Type or select country (e.g. Thailand, ไทย)..." autocomplete="off">
+                  <input type="text" id="f2-country-search" class="form-input combobox-search" placeholder="Type or select country (e.g. Thailand, United States)..." autocomplete="off">
                   <span class="combobox-arrow">▾</span>
                   <input type="hidden" name="country" id="f2-country" value="">
                 </div>
@@ -450,7 +435,7 @@
               <label class="form-label" id="lbl-f2-province">Province / State</label>
               <div class="searchable-combobox" id="f2-province-combobox">
                 <div class="combobox-input-wrapper">
-                  <input type="text" id="f2-province-search" class="form-input combobox-search" placeholder="Type or select province (e.g. Bangkok, สงขลา)..." autocomplete="off">
+                  <input type="text" id="f2-province-search" class="form-input combobox-search" placeholder="Type or select province (e.g. Bangkok, Songkhla)..." autocomplete="off">
                   <span class="combobox-arrow" id="f2-province-arrow">▾</span>
                   <input type="hidden" name="province" id="f2-province" value="">
                 </div>
@@ -487,7 +472,7 @@
             <div class="form-group">
               <label class="form-label" id="lbl-f2-edu">Level of Education</label>
               <select name="education_level" class="form-select" id="sel-f2-edu">
-                <option value="" selected disabled>-- Select Level / เลือกระดับการศึกษา --</option>
+                <option value="" selected disabled>-- Select Level --</option>
                 <option value="High School">High School</option>
                 <option value="Bachelor">Bachelor's Degree</option>
                 <option value="Master">Master's Degree</option>
@@ -498,7 +483,7 @@
             <div class="form-group">
               <label class="form-label" id="lbl-f2-year">Year of Study (if Bachelor)</label>
               <select name="year_of_study" class="form-select" id="sel-f2-year">
-                <option value="" selected disabled>-- Select Year / เลือกชั้นปี --</option>
+                <option value="" selected disabled>-- Select Year --</option>
                 <option value="Year 1">Year 1</option>
                 <option value="Year 2">Year 2</option>
                 <option value="Year 3">Year 3</option>
@@ -561,7 +546,7 @@
               <label class="checkbox-label checkbox-label-other">
                 <input type="checkbox" name="heard_from" value="Other" id="f2-hf-other-check">
                 <span id="opt-f2-hf-6">Other</span>
-                <input type="text" name="heard_other" id="f2-heard-other" class="inline-other-input" placeholder="Please specify if Other / โปรดระบุ..." style="display: none;">
+                <input type="text" name="heard_other" id="f2-heard-other" class="inline-other-input" placeholder="Please specify if Other" style="display: none;">
               </label>
             </div>
           </div>
@@ -575,8 +560,7 @@
           <div class="form-group">
             <label class="checkbox-label" style="border-color: var(--primary);">
               <input type="checkbox" name="consent_pdpa" required>
-              <span id="lbl-f2-pdpa">I acknowledge that registration details will be used for event check-in and
-                communication. <span class="req">*</span></span>
+              <span id="lbl-f2-pdpa">ข้าพเจ้ายินยอมให้เก็บรวบรวมและประมวลผลข้อมูลส่วนบุคคลตาม พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล (PDPA) และรับทราบว่าข้อมูลจะถูกนำไปใช้สำหรับการลงทะเบียนเข้าร่วมงานและติดต่อสื่อสารสำหรับกิจกรรม CU-MEDi Open House <span class="req">*</span></span>
             </label>
           </div>
 
@@ -597,20 +581,21 @@
       <div class="form-intro">
         <span class="form-tag" id="f3-tag">Stage 03 · Research & Insight</span>
         <h3 id="f3-title">CU-MEDi Applicant Survey</h3>
-        <p id="f3-desc">A questionnaire about medical school applications (~3–5 min). Participation will not affect your
-          application status. Data will be used to enhance the curriculum and faculty.</p>
+        <div id="f3-desc">
+          <p style="margin-bottom: 0.75rem;">The Faculty of Medicine, Chulalongkorn University would like to invite you to participate in a questionnaire about medical school applications. This online survey should take approximately 3-5 minutes to complete. Participation is voluntary and responses will be kept anonymous and confidential to the degree permitted by the technology used. Participation in this survey will not affect your application to the Faculty of Medicine in any way. Survey data will be used for the purposes of improving the Faculty.</p>
+          <p style="font-weight: 700; color: var(--navy); margin-top: 0.5rem;">Faculty of Medicine, Chulalongkorn University</p>
+        </div>
       </div>
 
       <form id="form3">
         <!-- Section 1: Email Identification & Auto-fill -->
         <div class="email-gate-section" id="f3-email-box">
-          <label class="form-label" id="lbl-f3-email" style="font-weight: 700; color: var(--navy);">Email address /
-            อีเมลผู้สมัคร <span class="req">*</span></label>
+          <label class="form-label" id="lbl-f3-email" style="font-weight: 700; color: var(--navy);">Email address <span class="req">*</span></label>
           <div class="email-input-group">
             <input type="email" name="email" id="f3-email" class="form-input" placeholder="e.g. yourname@example.com"
               required autocomplete="email">
             <button type="button" class="btn-verify-email" id="btn-f3-check-email" onclick="checkFormEmail(3)">
-              Continue / ดำเนินการต่อ →
+              Continue →
             </button>
           </div>
         </div>
@@ -626,7 +611,7 @@
               <label class="form-label" id="lbl-f3-status">Have you applied to CU-MEDi? <span
                   class="req">*</span></label>
               <select name="applied_status" class="form-select" id="sel-f3-status" required>
-                <option value="" selected disabled>-- Select Status / สถานะการสมัคร --</option>
+                <option value="" selected disabled>-- Select Status --</option>
                 <option value="Applied">Applied</option>
                 <option value="Preparing">Preparing to Apply</option>
                 <option value="Not yet">Not yet</option>
@@ -640,7 +625,7 @@
               <div style="display: flex; gap: 8px; align-items: stretch;">
                 <div style="flex: 1.6; min-width: 0;">
                   <select name="gender" class="form-select" id="sel-f3-gender">
-                    <option value="" selected disabled>-- Gender / เพศ --</option>
+                    <option value="" selected disabled>-- Gender --</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Prefer not to say</option>
@@ -657,7 +642,7 @@
             <div class="form-group">
               <label class="form-label" id="lbl-f3-region">Region of Citizenship</label>
               <select name="region" class="form-select" id="sel-f3-region">
-                <option value="" selected disabled>-- Select Region / เลือกภูมิภาค --</option>
+                <option value="" selected disabled>-- Select Region --</option>
                 <option value="East & Southeast Asia">East & Southeast Asia</option>
                 <option value="Central & South Asia">Central & South Asia</option>
                 <option value="North America">North America (US / Canada)</option>
@@ -669,7 +654,7 @@
             <div class="form-group">
               <label class="form-label" id="lbl-f3-major">Major Type</label>
               <select name="major" class="form-select" id="sel-f3-major">
-                <option value="" selected disabled>-- Select Major / เลือกสายการศึกษา --</option>
+                <option value="" selected disabled>-- Select Major Type --</option>
                 <option value="Science">Science</option>
                 <option value="Non-science">Non-science</option>
               </select>
@@ -684,9 +669,9 @@
               <input type="text" name="school_rank1" class="form-input" placeholder="1st Rank Choice (e.g. CU-MEDi) *"
                 required>
               <input type="text" name="school_rank2" class="form-input"
-                placeholder="2nd Rank Choice (e.g. NUS, Duke-NUS)">
+                placeholder="2nd Rank Choice (e.g. NUS, Duke-NUS) - Optional">
               <input type="text" name="school_rank3" class="form-input"
-                placeholder="3rd Rank Choice (e.g. Sydney, Oxford)">
+                placeholder="3rd Rank Choice (e.g. Sydney, Oxford) - Optional">
             </div>
           </div>
 
@@ -700,6 +685,7 @@
                   rank *</label>
                 <select name="dest_rank1" id="f3-dest-r1" class="form-select" required>
                   <option value="">-- Choose --</option>
+                  <option value="None (Study in Thailand only)">None (Study in Thailand only)</option>
                   <option value="Asia (outside Thailand)">Asia (outside Thailand)</option>
                   <option value="Europe">Europe</option>
                   <option value="Australia / New Zealand">Australia / New Zealand</option>
@@ -712,7 +698,7 @@
                 <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);"
                   id="lbl-f3-dest-r2">Second rank</label>
                 <select name="dest_rank2" id="f3-dest-r2" class="form-select">
-                  <option value="">-- Choose --</option>
+                  <option value="">-- Choose (Optional) --</option>
                   <option value="Asia (outside Thailand)">Asia (outside Thailand)</option>
                   <option value="Europe">Europe</option>
                   <option value="Australia / New Zealand">Australia / New Zealand</option>
@@ -725,7 +711,7 @@
                 <label class="form-label" style="font-size: 0.8rem; color: var(--text-muted);" id="lbl-f3-dest-r3">Third
                   rank</label>
                 <select name="dest_rank3" id="f3-dest-r3" class="form-select">
-                  <option value="">-- Choose --</option>
+                  <option value="">-- Choose (Optional) --</option>
                   <option value="Asia (outside Thailand)">Asia (outside Thailand)</option>
                   <option value="Europe">Europe</option>
                   <option value="Australia / New Zealand">Australia / New Zealand</option>
@@ -834,7 +820,7 @@
           <div class="form-group">
             <label class="checkbox-label" style="border-color: var(--primary);">
               <input type="checkbox" name="consent_pdpa" required>
-              <span id="lbl-f3-pdpa">I consent to providing survey responses for CU-MEDi academic research. <span
+              <span id="lbl-f3-pdpa">ข้าพเจ้ายินยอมให้ใช้ข้อมูลแบบสำรวจเพื่อการวิเคราะห์และพัฒนาหลักสูตรของคณะแพทยศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย <span
                   class="req">*</span></span>
             </label>
           </div>
@@ -845,6 +831,72 @@
     </div>
 
   </main>
+
+  <!-- Event Details Modal (Form 2) -->
+  <div id="event-details-modal" class="modal-backdrop" style="display: none;" onclick="closeEventDetailsModal(event)">
+    <div class="modal-dialog" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-badge">CU-MEDi Open House</span>
+          <h3 class="modal-title">Event Schedule & Information</h3>
+        </div>
+        <button type="button" class="modal-close-btn" onclick="closeEventDetailsModal()" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="event-info-card">
+          <div class="event-info-row">
+            <span class="event-info-icon">📅</span>
+            <div>
+              <strong>Date:</strong>
+              <p>xxxx 2027</p>
+            </div>
+          </div>
+          <div class="event-info-row">
+            <span class="event-info-icon">⏰</span>
+            <div>
+              <strong>Time:</strong>
+              <p>12:30 - 04:00 PM (GMT+7)</p>
+            </div>
+          </div>
+          <div class="event-info-row">
+            <span class="event-info-icon">📍</span>
+            <div>
+              <strong>Venue:</strong>
+              <p>Room 1209, Floor 12, Bhumisiri Mangkhalanusorn (<a href="https://maps.google.com/?q=Bhumisiri+Mangkhalanusorn" target="_blank" class="event-map-link">Google map</a>)</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="schedule-section">
+          <h4 class="schedule-title">Tentative Schedule</h4>
+          <div class="schedule-timeline">
+            <div class="timeline-item">
+              <span class="timeline-time">12:30 - 01:00 PM</span>
+              <span class="timeline-desc">Registration</span>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-time">01:00 - 03:00 PM</span>
+              <span class="timeline-desc">Introduction to the CU-MEDi Program (Curriculum, Admission & Campus Life) *</span>
+            </div>
+            <div class="timeline-item">
+              <span class="timeline-time">03:00 - 04:00 PM</span>
+              <span class="timeline-desc">Hands-on Activities</span>
+            </div>
+          </div>
+          <p class="schedule-note">* The live broadcast will be streamed via MDCU Facebook.</p>
+        </div>
+
+        <div class="event-footer-notes">
+          <p><strong>Pre-registration opens until Sunday, xxxx 2027</strong></p>
+          <p>Please be noted that only limited seats are available for onsite participation.</p>
+          <p><em>For any inquiries, please feel free to contact +662-256-4721 ext. 14 or 15.</em></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-modal-close" onclick="closeEventDetailsModal()">Close</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Toast Notification -->
   <div id="toast" class="toast"></div>
